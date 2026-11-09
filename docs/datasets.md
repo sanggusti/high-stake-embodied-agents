@@ -6,6 +6,8 @@ models for high-stakes agentic disaster response — no simulator building.
 Researched 2026-11-09 by a 5-agent swarm with adversarial spot-checks; key HF
 ids, licenses, Lexsi repos, and PyPI versions independently re-verified via
 Hub/GitHub/PyPI APIs. Anything unverified is marked **[UNVERIFIED]**.
+Shortlist licenses cleared in [#24](license-clearance-24.md); rows marked
+(#24) below carry the cleared terms.
 
 Companion: [alignment-research](alignment-research.md) (direction, DORA brief,
 alignment playbook, Lexsi mapping, gaps).
@@ -22,22 +24,22 @@ alignment playbook, Lexsi mapping, gaps).
 | MEDIC | ground/social RGB | 71,198 images | 4 tasks: type/info/hum/severity | CC-BY-NC-SA-4.0 | `QCRI/MEDIC` (official) |
 | CrisisMMD | ground/social RGB+text | 18,082 imgs + 16,058 tweets | info/humanitarian/severity | CC-BY-NC-SA-4.0 | `QCRI/CrisisMMD` v2.0 (official) |
 | Incidents1M | ground/web RGB | 977k positive of 1.79M | 43 incidents + 49 places | MIT (repo; form-gated; image rights [UNVERIFIED]) | none |
-| LADI v1 | low-altitude aerial (CAP) | 40k+ labeled (638k pool) | hierarchical multi-label (crowd) | repo MIT; image terms [UNVERIFIED] | via `MITLL/LADI-v2-dataset` script configs |
+| LADI v1 | low-altitude aerial (CAP) | 40k+ labeled (638k pool) | hierarchical multi-label (crowd) | CC-BY-4.0 (#24; repo code MIT) | via `MITLL/LADI-v2-dataset` script configs |
 | LADI v2 | low-altitude aerial (CAP) | ~10k (9,969) | FEMA-scale multi-label (expert) | CC-BY-4.0 | `MITLL/LADI-v2-dataset` (official) |
-| VIDI | video (YouTube) | 4,534 clips, ~10 s avg | 43 incident categories | [UNVERIFIED] (none stated) | none verified |
-| Sen1Floods11 | satellite SAR+optical 512px | 4,831 chips, 120,406 km² | water masks (446 hand) | [UNVERIFIED] | community: `blumenstiel/Sen1Floods11` + 2 |
+| VIDI | video (YouTube) | 4,534 clips, ~10 s avg | 43 incident categories | none stated — BLOCKED (#24; YouTube ToS, no redistribution grant) | none verified |
+| Sen1Floods11 | satellite SAR+optical 512px | 4,831 chips, 120,406 km² | water masks (446 hand) | none stated — BLOCKED pending written terms (#24) | community: `blumenstiel/Sen1Floods11` + 2 |
 | SpaceNet 8 | satellite RGB 0.3–0.8 m | 850 km², ~32k bldgs, 1,300 km roads | flooded/non-flooded masks | CC 4.0 Non-Commercial | none verified |
 | DisasterM3 | satellite optical+SAR bi-temporal | 26,988 imgs + 123k instr. pairs | 6 VLM tasks incl. referring seg | CC-BY-NC-SA-4.0 | `Kingdrone-Junjue/DisasterM3` (official) |
-| DAD | ground/social RGB | ~25k images | 3 severity levels | [UNVERIFIED] | none verified |
-| DMD | ground/social RGB+text | 5,878 captioned images | 6 damage classes | [UNVERIFIED] | none verified |
-| SARD | UAV RGB (video frames) | 1,981 imgs, 6,532 persons | person bboxes (SAR actors) | [UNVERIFIED] (DataPort open access) | none verified |
-| HERIDAL | UAV RGB 4000×3000 | ~500 labeled + 68,750 patches | person patches/bboxes | [UNVERIFIED] (on-request) | none verified |
+| DAD | ground/social RGB | ~25k images | 3 severity levels | CrisisNLP ToS, research-only (CC-BY-NC-SA-4.0 in MEDIC bundle) (#24) | none verified |
+| DMD | ground/social RGB+text | 5,878 captioned images | 6 damage classes | CC-BY-4.0 (#24) | none verified |
+| SARD | UAV RGB (video frames) | 1,981 imgs, 6,532 persons | person bboxes (SAR actors) | CC-BY-4.0, DataPort Standard = paid-gated (#24) | none verified |
+| HERIDAL | UAV RGB 4000×3000 | ~500 labeled + 68,750 patches | person patches/bboxes | CC Attribution 3.0, pending user confirm (#24) | none verified |
 | NOMAD | UAV RGB frames | 42,825 frames, 100 actors | person bbox + 10 visibility levels | CC BY 4.0 | none verified |
 | WiSARD | UAV visual + LWIR thermal | 26,862 vis + 29,989 thm + 15,453 pairs | person bboxes, multimodal | MIT-style (site) | none verified |
-| D-Fire | mixed RGB | 21,527 images | fire/smoke YOLO bboxes | mixed (no single license) | none verified |
+| D-Fire | mixed RGB | 21,527 images | fire/smoke YOLO bboxes | CC0 collection; PublicDataset* per-provider terms (#24) | none verified |
 | FLAME 1 | UAV RGB+thermal | 39,375 train + 8,617 test + 2,003 seg | fire cls + segmentation | academic/non-commercial | derived only (`alarmod/forest_fire`) |
 | FLAME 2 | UAV RGB+IR pairs | 53,451 pairs (+39,751 full RGB) | fire/smoke frame labels | CC BY 4.0 | none verified |
-| FLAME 3 | UAV radiometric thermal | 622 fire + 116 no-fire quartets | fire CV subset | [UNVERIFIED] | none verified |
+| FLAME 3 | UAV radiometric thermal | 622 fire + 116 no-fire quartets | fire CV subset | CC-BY-4.0, DataPort Open Access (#24) | none verified |
 
 Key sources: xBD https://arxiv.org/abs/1911.09296; FloodNet https://arxiv.org/abs/2012.02951;
 RescueNet https://www.nature.com/articles/s41597-023-02799-4; AIDER https://zenodo.org/api/records/3888300;
@@ -50,7 +52,7 @@ DisasterM3 as format template; LADI v2 + AIDERv2 + FLAME 2 labels → QA pairs (
 (2) Victim detection: NOMAD + WiSARD + SARD + referring-expression overlays.
 (3) Incident semantics (ground-view, perspective-shift caution): MEDIC / CrisisMMD (official QCRI HF), Incidents1M, VIDI.
 (4) License caution: NC/SA on xBD, DisasterM3, MEDIC/CrisisMMD; ND (no derivatives) on RescueNet;
-unclear/mixed on D-Fire, Sen1Floods11, VIDI, SARD, HERIDAL — clear each before deployment finetuning.
+shortlist terms cleared in [#24](license-clearance-24.md) — VIDI/Sen1Floods11/CrisisHelpOffer blocked, RescueNet eval-only, NC/SA research-only.
 
 ```mermaid
 flowchart TD
@@ -84,8 +86,8 @@ flowchart TD
 |---|---|---|---|---|
 | HumAID | perception→decision routing (humanitarian categories) | ~77K tweets / 19 events | CC-BY-NC-SA-4.0 (HF mirror; primary gated by CrisisNLP+Twitter ToS) | `QCRI/HumAID-all` open |
 | CrisisMMD | informativeness + humanitarian + severity (dispatch priority) | 18,082 samples / 7 disasters | CC-BY-NC-SA-4.0 | `QCRI/CrisisMMD` open |
-| TREC-IS | 25 info types + criticality (prioritize/dispatch/escalate) | 19,784 (2018) → ~40K | [UNVERIFIED exact text; NIST/Twitter constraints] | none official [UNVERIFIED] |
-| CrisisHelpOffer | request-vs-offer dispatch matching | 101K tweets | [UNVERIFIED] | [UNVERIFIED] |
+| TREC-IS | 25 info types + criticality (prioritize/dispatch/escalate) | 19,784 (2018) → ~40K | tweet-ID lists; TREC/NIST research + X ToS, no redistribution (#24) | none official (ID lists via trecis.org) |
+| CrisisHelpOffer | request-vs-offer dispatch matching | 101K tweets | none (on-request, unreleased) — BLOCKED (#24) | none (on-request) |
 | CrisiText | warning-message generation + FEMA guidelines JSON | 400K+ warnings / 18K situations | CC-BY-4.0 | `LanD-FBK/crisitext` open |
 | MEDIC | multitask image classification (damage→dispatch perception) | 71,198 images | CC BY-NC-SA 4.0 | `QCRI/MEDIC` open (official) |
 | MIETIC | ESI acuity prediction (triage decisions) | 9,629 cases | PhysioNet gated [UNVERIFIED exact name] | none verified |
