@@ -3,15 +3,15 @@
 import pathlib
 import xml.etree.ElementTree as ET
 
-from dmb.perception.render_frames import frames_roots, survey_frame
-from dmb.perception.sam import (
+from hsea.perception.render_frames import frames_roots, survey_frame
+from hsea.perception.sam import (
     HAZARD_CONCEPTS,
     build_prompted_seg_map,
     concepts_for_scenario,
     hazard_point_proposer,
 )
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
 
 FIX = pathlib.Path(__file__).parent / "fixtures"
 

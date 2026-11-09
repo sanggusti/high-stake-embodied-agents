@@ -2,9 +2,9 @@
 
 from inspect_ai import Task, task
 
-from dmb.scenarios import build_samples
-from dmb.scorers.mission import mission_score
-from dmb.solvers.mission import drone_mission
+from hsea.scenarios import build_samples
+from hsea.scorers.mission import mission_score
+from hsea.solvers.mission import drone_mission
 
 
 @task

@@ -1,11 +1,11 @@
 """Phase B: dynamics snapshots, plausibility ordering, containment monotonicity."""
 
-from dmb.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
-from dmb.physics.fire import FireModel
-from dmb.physics.terrain import SlipModel
-from dmb.physics.water import WaterModel
-from dmb.scorers.mission import compute_mission_scores
-from dmb.sim.bridge import MockBridge, Victim
+from hsea.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
+from hsea.physics.fire import FireModel
+from hsea.physics.terrain import SlipModel
+from hsea.physics.water import WaterModel
+from hsea.scorers.mission import compute_mission_scores
+from hsea.sim.bridge import MockBridge, Victim
 
 FIRE_CFG = {
     "ignition": [{"x": 2, "y": 2}],
@@ -203,7 +203,7 @@ def test_fire_weather_diverges_same_seed():
 
 
 def test_weather_axis_end_to_end():
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     plain = build_samples("forest_fire", seeds=[1])[0]
     assert plain.metadata["weather_active"] is None
@@ -223,7 +223,7 @@ def test_weather_axis_end_to_end():
 def test_unknown_dynamics_key_fails_loudly():
     import pytest
 
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     meta = dict(build_samples("forest_fire", seeds=[1])[0].metadata)
     meta["dynamics"] = {**meta["dynamics"], "fier": {"ignition": []}}
@@ -258,7 +258,7 @@ def test_terrain_weather_diverges_slip_step():
 def test_unknown_mobility_fails_loudly():
     import pytest
 
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     meta = dict(build_samples("forest_fire", seeds=[1])[0].metadata)
     meta["victim_placements"] = [

@@ -1,6 +1,6 @@
 """Recon compliance: chain parsing + truth scoring (no model calls)."""
 
-from dmb.scorers.recon import compute_recon_compliance, extract_chains
+from hsea.scorers.recon import compute_recon_compliance, extract_chains
 from evals.recon_advisor import build_recon_dataset
 
 

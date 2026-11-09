@@ -8,13 +8,13 @@ eval).
 
 ## What shipped
 
-- `dmb/perception/sam.py` — SAM client, grammar parser (image + video),
+- `hsea/perception/sam.py` — SAM client, grammar parser (image + video),
   scenario concept table, overlap rules, severity, `SAMEdgePerception`.
-- `dmb/perception/grounding.py` — pinhole pixel→grid math (assumed
+- `hsea/perception/grounding.py` — pinhole pixel→grid math (assumed
   nadir survey stance until calibration lands).
-- `dmb/perception/segmap.py` — cost grid, A* planner, rescuer text.
+- `hsea/perception/segmap.py` — cost grid, A* planner, rescuer text.
 - `request_route_map` tool (SAM-only, one snapshot) + solver
-  `DMB_EDGE_PERCEPTION=stub|sam` switch (default stub: no behavior
+  `HSEA_EDGE_PERCEPTION=stub|sam` switch (default stub: no behavior
   change).
 - 31 new tests (real-API fixtures); suite 120 passed, 4 skipped
   (pre-existing SITL/docker skips).

@@ -9,7 +9,7 @@ backend) + SAM 3.1 probes (mock edge + native frames).
 |---|---|---|---|---|---|---|
 | baseten `meta-models/muse-spark-open-1026` | yes | stub | 1 | 0.780 | 102k | `logs/2026-11-04T08-18-38*_GrezgBnGE497G8vtJWYPCR.eval` |
 | baseten muse-spark (same slug) | yes | stub | 1-3 | **0.722** | 341k | `logs/2026-11-04T11-18-00*_axK9Tqay7yGMgcBCmYtjtC.eval` |
-| modal `Qwen/Qwen2.5-7B-Instruct` (fresh `modal deploy`) | text (`DMB_VISION=text`) | stub | 1 | 0.633 | 2.7k | `logs/2026-11-04T08-27-32*_GnNwPE8B7ptre3DdviuBit.eval` |
+| modal `Qwen/Qwen2.5-7B-Instruct` (fresh `modal deploy`) | text (`HSEA_VISION=text`) | stub | 1 | 0.633 | 2.7k | `logs/2026-11-04T08-27-32*_GnNwPE8B7ptre3DdviuBit.eval` |
 | modal Qwen2.5-7B | text | stub | 1-3 | **0.586** | 26k | `logs/2026-11-04T11-19-06*_7PDusFNuSY9LRHNiVpDFaj.eval` |
 | baseten muse-spark | yes | SAM 3.1 (Meta API `sam-3.1`) | 1 | 0.075 | 108k | `logs/2026-11-04T08-47-57*_7knBm5hQzsHzUDScCSfLRz.eval` |
 

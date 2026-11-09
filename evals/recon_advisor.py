@@ -8,10 +8,10 @@ from inspect_ai import Task, task
 from inspect_ai.dataset import Sample
 from inspect_ai.solver import generate, system_message
 
-from dmb.scenarios import build_samples, load_scenario
-from dmb.scorers.recon import recon_compliance
-from dmb.sim.bridge import danger_cells_from_state
-from dmb.solvers.baselines import run_oracle_route
+from hsea.scenarios import build_samples, load_scenario
+from hsea.scorers.recon import recon_compliance
+from hsea.sim.bridge import danger_cells_from_state
+from hsea.solvers.baselines import run_oracle_route
 
 RECON_VIGNETTES = (("flood", 1), ("forest_fire", 2), ("flood", 3))
 

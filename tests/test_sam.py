@@ -7,7 +7,7 @@ no test in this file touches the network.
 import os
 import pathlib
 
-from dmb.perception.sam import (
+from hsea.perception.sam import (
     SAMBox,
     SAMEdgePerception,
     SAMMask,
@@ -26,9 +26,9 @@ from dmb.perception.sam import (
     sam_from_env,
     severity_of,
 )
-from dmb.perception.edge import Detection, FrameBudget, TriggerConfig
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
+from hsea.perception.edge import Detection, FrameBudget, TriggerConfig
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
 
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
@@ -142,7 +142,7 @@ def test_rubble_point_prompt_exact():
 def test_sam_from_env_key_and_fallback():
     old = dict(os.environ)
     try:
-        os.environ.pop("DMB_SAM_API_KEY", None)
+        os.environ.pop("HSEA_SAM_API_KEY", None)
         os.environ.pop("META_AI_API_KEY", None)
         try:
             sam_from_env()
@@ -155,7 +155,7 @@ def test_sam_from_env_key_and_fallback():
         assert seg.keywords["api_key"] == "fallback-key"
         assert seg.keywords["base_url"] == "https://api.meta.ai/v1"
         assert seg.keywords["model"] == "sam-3.1"
-        os.environ["DMB_SAM_API_KEY"] = " direct-key "
+        os.environ["HSEA_SAM_API_KEY"] = " direct-key "
         assert sam_from_env().keywords["api_key"] == "direct-key"
     finally:
         os.environ.clear()
@@ -215,12 +215,12 @@ def test_sam_edge_without_grounding_reports_no_victims():
 def test_max_scans_from_env():
     old = dict(os.environ)
     try:
-        os.environ.pop("DMB_SAM_MAX_SCANS_PER_EPISODE", None)
+        os.environ.pop("HSEA_SAM_MAX_SCANS_PER_EPISODE", None)
         assert max_scans_from_env() == 3
-        os.environ["DMB_SAM_MAX_SCANS_PER_EPISODE"] = "7"
+        os.environ["HSEA_SAM_MAX_SCANS_PER_EPISODE"] = "7"
         assert max_scans_from_env() == 7
         for bad in ("0", "-2", "lots"):
-            os.environ["DMB_SAM_MAX_SCANS_PER_EPISODE"] = bad
+            os.environ["HSEA_SAM_MAX_SCANS_PER_EPISODE"] = bad
             try:
                 max_scans_from_env()
             except ValueError:
@@ -295,7 +295,7 @@ def test_concepts_firms_includes_smoke():
 
 
 def test_build_prompted_seg_map_labels():
-    from dmb.perception.sam import build_prompted_seg_map
+    from hsea.perception.sam import build_prompted_seg_map
 
     seg = build_prompted_seg_map(
         lambda png, prompt: _person_line(), b"png", [("fire", "prompt1")]
@@ -306,9 +306,9 @@ def test_build_prompted_seg_map_labels():
 
 
 def test_ignition_point_proposer_hits_firebed():
-    from dmb.perception.grounding import CameraModel, DronePose
-    from dmb.perception.render_frames import SurveyFrame
-    from dmb.perception.sam import ignition_point_proposer
+    from hsea.perception.grounding import CameraModel, DronePose
+    from hsea.perception.render_frames import SurveyFrame
+    from hsea.perception.sam import ignition_point_proposer
 
     class FakeBridge:
         survey_camera = SurveyFrame(
@@ -368,7 +368,7 @@ def test_stale_fuse_keeps_stub_detections():
 
 
 def test_survey_frame_loads_kalimantan():
-    from dmb.perception.render_frames import survey_frame
+    from hsea.perception.render_frames import survey_frame
 
     survey = survey_frame("firms_peat_kalimantan_01", 7)
     assert survey is not None
@@ -379,7 +379,7 @@ def test_survey_frame_loads_kalimantan():
 
 
 def test_bridge_capture_serves_survey_frame():
-    from dmb.perception.render_frames import survey_frame
+    from hsea.perception.render_frames import survey_frame
 
     meta = dict(build_samples("firms_peat_kalimantan_01", seeds=[7])[0].metadata)
     bridge = MockBridge.from_metadata(meta)
@@ -393,7 +393,7 @@ def test_prompted_photometric_gate():
 
     from PIL import Image
 
-    from dmb.perception.sam import _prompted_record_valid
+    from hsea.perception.sam import _prompted_record_valid
 
     buf = io.BytesIO()
     frame = Image.new("RGB", (100, 100), (250, 250, 250))

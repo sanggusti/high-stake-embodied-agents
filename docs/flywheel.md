@@ -7,8 +7,8 @@ finetune → held-out re-eval. This doc records the v1 loop end to end.
 
 1. **Teacher run** — `evals/flywheel_train.py` (forest_fire + tsunami ×
    train seeds 1..20 = 40 episodes) on the Modal teacher with
-   `DMB_VISION=text`. Every episode records L2 (`dmb/watch/`) + L1 (.eval).
-2. **Export** — `python -m dmb.data.export --log … --l2 … --out
+   `HSEA_VISION=text`. Every episode records L2 (`hsea/watch/`) + L1 (.eval).
+2. **Export** — `python -m hsea.data.export --log … --l2 … --out
    data/flywheel-v1 --split train --min-composite 0.5`:
    `sft.jsonl` (one chat sample per assistant tool-call turn, CoT kept),
    `rlvr.jsonl` (per-episode reward vectors), `manifest.json` (teacher,
@@ -64,7 +64,7 @@ exported `rlvr.jsonl` failure episodes instead of pure success-filtered BC.
 - Weights: https://huggingface.co/sanggusti/dmb-qwen2.5-7b-flywheel-v1
   (merged bf16; tokenizer files pinned to base to dodge the v5 schema drift below)
 - L2 trajectories: `runs/flytrain-v1`, `runs/flytest-base`, `runs/flytest-ft`
-  (local only, gitignored; replay with `python -m dmb.watch.replay`)
+  (local only, gitignored; replay with `python -m hsea.watch.replay`)
 
 ## Serving gotchas (all hit live)
 

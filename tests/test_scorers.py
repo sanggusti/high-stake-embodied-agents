@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from dmb.scorers.mission import (
+from hsea.scorers.mission import (
     compute_mission_scores,
     compute_route_scores,
     parse_route_readings,

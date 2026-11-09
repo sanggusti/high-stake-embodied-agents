@@ -19,8 +19,8 @@ and keeps LM scores about decisions, not detector quality.
 
 ## Budgets (env-configurable)
 
-- `DMB_EDGE_REPORT_INTERVAL_STEPS` (default 5): heartbeat cadence.
-- `DMB_EDGE_MAX_SNAPSHOTS_PER_EPISODE` (default 8): on-demand frames per
+- `HSEA_EDGE_REPORT_INTERVAL_STEPS` (default 5): heartbeat cadence.
+- `HSEA_EDGE_MAX_SNAPSHOTS_PER_EPISODE` (default 8): on-demand frames per
   episode. Exhaustion degrades to report-only, never fails the episode.
 
 ## Vision channel (#27)
@@ -32,16 +32,16 @@ and keeps LM scores about decisions, not detector quality.
   camera frames with telemetry overlay (rendered fallback if capture
   fails). Frames show only observable content: visible dynamics, found
   victims, drone pose — never unfound victims or invisible zones.
-- `VLMEdgePerception` (`dmb/perception/vlm.py`) is the detector baseline:
+- `VLMEdgePerception` (`hsea/perception/vlm.py`) is the detector baseline:
   same triggers/budget, detections from a VLM over sensor-view frames
-  (`DMB_VLM_BASE_URL` / `DMB_VLM_API_KEY` / `DMB_VLM_MODEL`). Native-pixel
+  (`HSEA_VLM_BASE_URL` / `HSEA_VLM_API_KEY` / `HSEA_VLM_MODEL`). Native-pixel
   VLM input is later work (needs camera grounding).
 
 ## Implementation
 
-- `dmb/perception/edge.py`: `EdgePerception` ABC, `TriggerConfig`,
+- `hsea/perception/edge.py`: `EdgePerception` ABC, `TriggerConfig`,
   `FrameBudget`, `StubEdgePerception` (rule-based over `MockBridge` state).
-- `dmb/perception/sam.py`: `SAMEdgePerception` — SAM 3.1 seg-maps
+- `hsea/perception/sam.py`: `SAMEdgePerception` — SAM 3.1 seg-maps
   (masks → route blockages + severity, same triggers/budget; native
   frames only, see [sam-segmap](sam-segmap.md)).
 - Real backends implement the same interface with an on-device model; trigger

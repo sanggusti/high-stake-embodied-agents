@@ -1,12 +1,12 @@
 """Seg-map routing: costs, A*, blockages, rescuer text (no network)."""
 
-from dmb.perception.grounding import (
+from hsea.perception.grounding import (
     CameraModel,
     DronePose,
     GridSpec,
     project_mask,
 )
-from dmb.perception.sam import (
+from hsea.perception.sam import (
     DerivedBlockage,
     SAMBox,
     SAMMask,
@@ -14,7 +14,7 @@ from dmb.perception.sam import (
     SegMap,
     SeverityScore,
 )
-from dmb.perception.segmap import (
+from hsea.perception.segmap import (
     COST_BLOCKED,
     COST_HAZARD,
     COST_OPEN,
@@ -119,7 +119,7 @@ def test_grounding_to_costs_to_route_integration():
 
 
 def _overlay_seg():
-    from dmb.perception.sam import SegConceptResult
+    from hsea.perception.sam import SegConceptResult
 
     rec = SAMRecord(
         object_id=0,
@@ -138,7 +138,7 @@ def test_render_seg_overlay_png_with_legend():
 
     from PIL import Image
 
-    from dmb.perception.segmap import render_seg_overlay
+    from hsea.perception.segmap import render_seg_overlay
 
     buf = io.BytesIO()
     Image.new("RGB", (100, 100), (10, 10, 10)).save(buf, format="PNG")
@@ -154,8 +154,8 @@ def test_render_seg_overlay_registers_nonsquare():
 
     from PIL import Image
 
-    from dmb.perception.sam import SegConceptResult
-    from dmb.perception.segmap import render_seg_overlay
+    from hsea.perception.sam import SegConceptResult
+    from hsea.perception.segmap import render_seg_overlay
 
     rec = SAMRecord(
         object_id=0,
@@ -175,7 +175,7 @@ def test_render_seg_overlay_registers_nonsquare():
 
 
 def test_render_route_map_calibrated_override():
-    from dmb.perception.segmap import render_route_map
+    from hsea.perception.segmap import render_route_map
 
     seg = _overlay_seg()
     state = {"drone": {"x": 0, "y": 0}, "grid": {"width": 10, "height": 10},

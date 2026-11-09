@@ -27,7 +27,7 @@ home anchor (east = +x, north = +y, 5 m/cell).
 Refusals (disarmed takeoff, grounded goto, rejected mode) return text, never
 raise; only infrastructure failures (container, link loss) raise.
 
-## LM tools (`dmb/tools/drone.py`)
+## LM tools (`hsea/tools/drone.py`)
 
 | Tool | Args | Effect |
 |---|---|---|

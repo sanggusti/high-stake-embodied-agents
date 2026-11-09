@@ -9,7 +9,7 @@ score against visible evidence.
 | Layer | Content | Source | Status |
 |---|---|---|---|
 | L1 transcript | LM messages, tool calls + results, scores | inspect-ai `.eval` log | exists (`inspect view`) |
-| L2 event log | timestamped sim events: actions, edge reports, victim/hazard transitions, scorer inputs | new `dmb/watch/` recorder | built (#28); enriched with pos + detections |
+| L2 event log | timestamped sim events: actions, edge reports, victim/hazard transitions, scorer inputs | new `hsea/watch/` recorder | built (#28); enriched with pos + detections |
 | L3 sim capture | backend-native replay artifacts | `--record-path` / `startRecording` / frame dumps | specified here, wired per backend |
 
 No single layer is sufficient: L1 shows reasoning, L2 shows episode
@@ -39,7 +39,7 @@ Every line is one event:
 
 - **Mock**: trajectory renderer — replay L2 into an SVG/frame sequence
   (grid, drone path, detections, hazard overlays). No external dependency.
-  BUILT: `python -m dmb.watch.render <sample.jsonl> --out <dir>` emits an
+  BUILT: `python -m hsea.watch.render <sample.jsonl> --out <dir>` emits an
   animated GIF + final PNG (world rebuilt from scenario+seed, hash-verified).
 - **Gazebo (Track 1)**: launch the sample's sim with
   `gz sim --record-path runs/<id>/sim/<sample> ...`; playback any episode
@@ -58,14 +58,14 @@ Every line is one event:
 
 - **T0 transcript replay** — `inspect view` on the `.eval` log. Available now.
 - **T1 event replay** — CLI reading L2 JSONL: step, filter by kind, print the
-  episode as a narrated timeline. BUILT (`dmb.watch.replay`).
+  episode as a narrated timeline. BUILT (`hsea.watch.replay`).
 - **T2 sim playback** — backend-native. ALL LEGS BUILT: mock GIF+PNG
-  (`dmb.watch.render`); Gazebo `--record-path` per sample + `--playback`
+  (`hsea.watch.render`); Gazebo `--record-path` per sample + `--playback`
   (verified live incl. the fresh-leaf-dir gotcha); Colosseum
   start/stopRecording + simGetImages keyframes (fake-tested, calls
   verified against beta client source; sim-side live recording check
   deferred to a PC session). Proves the world behaved as claimed.
-- **T3 composite replay** — BUILT (`dmb.watch.compose`): one HTML page per
+- **T3 composite replay** — BUILT (`hsea.watch.compose`): one HTML page per
   episode with score card, embedded L3 replay, L2 timeline, and L1
   transcript turns. Proven on the Baseten replay episode (49 turns, 37
   events, 2 artifacts, L2==eval audit holds).

@@ -1,5 +1,5 @@
-from dmb.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
-from dmb.sim.bridge import MockBridge
+from hsea.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
+from hsea.sim.bridge import MockBridge
 
 
 def _bridge():
@@ -35,14 +35,14 @@ def test_snapshot_budget_is_enforced():
 
 
 def test_mobility_detectability_profile():
-    from dmb.perception.edge import (
+    from hsea.perception.edge import (
         MOBILITY_CONFIDENCE,
         MOBILITY_RADIUS_FACTOR,
         FrameBudget,
         StubEdgePerception,
         TriggerConfig,
     )
-    from dmb.sim.bridge import MockBridge
+    from hsea.sim.bridge import MockBridge
 
     assert MOBILITY_RADIUS_FACTOR["buried"] < MOBILITY_RADIUS_FACTOR["trapped"] < 1.0
     assert MOBILITY_CONFIDENCE["buried"] < MOBILITY_CONFIDENCE["trapped"]
@@ -74,12 +74,12 @@ def test_mobility_detectability_profile():
 def test_time_of_day_shrinks_radius():
     import pytest
 
-    from dmb.perception.edge import (
+    from hsea.perception.edge import (
         FrameBudget,
         StubEdgePerception,
         TriggerConfig,
     )
-    from dmb.sim.bridge import MockBridge
+    from hsea.sim.bridge import MockBridge
 
     def scan_at(tod):
         bridge = MockBridge()

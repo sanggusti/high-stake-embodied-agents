@@ -7,7 +7,7 @@ builders + model/texture bulk (`assets/` except drone specs), sim Docker image
 
 ## COPIED as-is
 
-- `dmb/` harness core: scenarios, solvers (mission/baselines), scorers
+- `hsea/` harness core: scenarios, solvers (mission/baselines), scorers
   (mission/firms_spread/recon), tools/drone, models, config, registry,
   aggregate, difficulty, human_cli, verdicts; data/{export,splits,firms};
   physics/{fire,terrain,water}; perception/{edge,vlm,oracle,segmap,grounding};
@@ -25,11 +25,11 @@ builders + model/texture bulk (`assets/` except drone specs), sim Docker image
 
 ## COPIED pending ADAPT (follow-up issues)
 
-- `dmb/sim/bridge.py`: keep MockBridge/SimBridge; strip GazeboSITLBridge.
-- `dmb/sim/assets.py`: keep spec loader; drop gazebo_model refs.
-- `dmb/perception/{frames,sam,render_frames}.py`: keep map-render + Meta
+- `hsea/sim/bridge.py`: keep MockBridge/SimBridge; strip GazeboSITLBridge.
+- `hsea/sim/assets.py`: keep spec loader; drop gazebo_model refs.
+- `hsea/perception/{frames,sam,render_frames}.py`: keep map-render + Meta
   SAM API layer; drop Gazebo capture + survey-corpus paths (or re-point).
-- `dmb/watch/l3.py`: keep runs/<id> contract; drop Gazebo record hooks.
+- `hsea/watch/l3.py`: keep runs/<id> contract; drop Gazebo record hooks.
 - Docs: compute-split, physics-assets, assets, frontier, peatforest-evals
   (bench+sim mix; re-point slugs/app names).
 - Tests: test_sitl_units, test_assets, test_flood, test_quake_slide (split
@@ -39,9 +39,9 @@ builders + model/texture bulk (`assets/` except drone specs), sim Docker image
 
 ## Stack mapping (planned)
 
-- CuratorKIT <- dmb/data/export.py + runs trajectories + data/flywheel-v1.
+- CuratorKIT <- hsea/data/export.py + runs trajectories + data/flywheel-v1.
 - AlignTune <- infra/modal/finetune.py + reshard.py + vllm_* eval endpoints.
 - SafeTune <- NEW around AlignTune/AgentTune outputs (Harden/Recover/Steer).
-- AgentTune <- dmb/solvers/mission.py ReAct loop + tools + watch L2 logs.
-- Modal <- infra/modal/* + dmb/models.py routing. HF: new gated rev-pinned
+- AgentTune <- hsea/solvers/mission.py ReAct loop + tools + watch L2 logs.
+- Modal <- infra/modal/* + hsea/models.py routing. HF: new gated rev-pinned
   dataset + model collections (do NOT reuse peatforest pointers).

@@ -3,10 +3,10 @@
 import pathlib
 import xml.etree.ElementTree as ET
 
-from dmb.perception.render_frames import frames_roots, survey_frame
-from dmb.perception.sam import concepts_for_scenario, hazard_point_proposer
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
+from hsea.perception.render_frames import frames_roots, survey_frame
+from hsea.perception.sam import concepts_for_scenario, hazard_point_proposer
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
 
 
 def test_hard_concepts_include_water():

@@ -1,6 +1,6 @@
 """Camera grounding: hand-checked pixel-to-grid projections."""
 
-from dmb.perception.grounding import (
+from hsea.perception.grounding import (
     CameraModel,
     DronePose,
     GridSpec,
@@ -8,7 +8,7 @@ from dmb.perception.grounding import (
     project_pixel,
     survey_camera,
 )
-from dmb.perception.sam import SAMBox, SAMMask, SAMRecord
+from hsea.perception.sam import SAMBox, SAMMask, SAMRecord
 
 
 def _nadir():
@@ -92,7 +92,7 @@ def test_survey_camera_is_nadir():
 
 
 def test_grid_to_pixel_yaw_roundtrip():
-    from dmb.perception.grounding import (
+    from hsea.perception.grounding import (
         CameraModel, DronePose, GridSpec, grid_to_pixel, project_pixel,
     )
 
@@ -109,7 +109,7 @@ def test_grid_to_pixel_yaw_roundtrip():
 
 def test_grid_to_pixel_firms_nadir_hits_beds():
     """Yaw-90 survey model lands on the rendered firebeds (<30 px)."""
-    from dmb.perception.grounding import (
+    from hsea.perception.grounding import (
         CameraModel, DronePose, GridSpec, grid_to_pixel,
     )
 

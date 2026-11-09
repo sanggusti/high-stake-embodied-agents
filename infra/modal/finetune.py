@@ -1,7 +1,7 @@
 """Flywheel LoRA finetune on Modal (Phase D).
 
 Trains Qwen2.5-7B-Instruct on success-filtered teacher pairs
-(chat ``messages`` format from ``dmb.data.export``), merges the adapter,
+(chat ``messages`` format from ``hsea.data.export``), merges the adapter,
 and writes a full servable model dir to the flywheel volume.
 
 Usage (needs `modal` auth; GPU spend applies):

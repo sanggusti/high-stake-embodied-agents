@@ -26,6 +26,6 @@ advisors** in simulated 3D disaster environments.
 | [runbooks](runbooks.md) | Setup, daily commands, troubleshooting |
 | [roadmap](roadmap.md) | Workstreams and their GitHub issues |
 
-Conventions: `dmb/` is the Python package, `evals/` holds inspect-ai tasks,
+Conventions: `hsea/` is the Python package, `evals/` holds inspect-ai tasks,
 `scenarios/` the disaster definitions, `assets/drones/` the vehicle specs,
 `infra/` the sim + serving definitions, `runs/` the tracked outputs.

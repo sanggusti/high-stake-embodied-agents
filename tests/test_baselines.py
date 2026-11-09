@@ -7,9 +7,9 @@ fixed-effort probe must score easy > medium > hard.
 import statistics
 from collections import defaultdict
 
-from dmb.scenarios import build_samples
-from dmb.scorers.mission import compute_mission_scores
-from dmb.solvers.baselines import run_baseline
+from hsea.scenarios import build_samples
+from hsea.scorers.mission import compute_mission_scores
+from hsea.solvers.baselines import run_baseline
 
 SEEDS_100 = list(range(1, 101))
 

@@ -2,17 +2,17 @@
 
 from types import SimpleNamespace
 
-from dmb.perception.grounding import (
+from hsea.perception.grounding import (
     CameraModel,
     DronePose,
     GridSpec,
     grid_to_pixel,
     project_pixel,
 )
-from dmb.perception.oracle import oracle_seg_provider
-from dmb.scorers.mission import compute_mission_scores
-from dmb.sim.bridge import MockBridge
-from dmb.solvers.baselines import run_oracle_route
+from hsea.perception.oracle import oracle_seg_provider
+from hsea.scorers.mission import compute_mission_scores
+from hsea.sim.bridge import MockBridge
+from hsea.solvers.baselines import run_oracle_route
 
 
 def _metadata():
@@ -61,7 +61,7 @@ def test_oracle_provider_covers_truth():
 
 
 def test_oracle_finds_adjacent_same_kind_victims():
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     metadata = dict(build_samples("flood", seeds=[1])[0].metadata)
     final, _ = run_oracle_route(metadata)

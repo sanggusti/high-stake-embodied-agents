@@ -1,6 +1,6 @@
 import pytest
 
-from dmb.sim.assets import assert_mission_capable, list_drone_specs, load_drone_spec
+from hsea.sim.assets import assert_mission_capable, list_drone_specs, load_drone_spec
 
 
 def test_specs_are_sourced_not_placeholders():
@@ -42,8 +42,8 @@ def test_mission_capability_enforcement():
 
 
 def test_backend_rejects_unsupported_vehicle_class():
-    from dmb.scenarios import build_samples
-    from dmb.sim.bridge import GazeboSITLBridge, MockBridge
+    from hsea.scenarios import build_samples
+    from hsea.sim.bridge import GazeboSITLBridge, MockBridge
 
     meta = dict(build_samples("forest_fire", seeds=[1])[0].metadata)
     MockBridge().reset(meta)  # quad on mock: fine

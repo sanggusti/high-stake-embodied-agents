@@ -17,18 +17,18 @@ Sample (mission brief + metadata)
 
 ## Package map
 
-- `dmb/config.py` — env-driven `Settings` (providers, backend, budgets).
-- `dmb/models.py` — inspect-ai model ids for Baseten/Modal
+- `hsea/config.py` — env-driven `Settings` (providers, backend, budgets).
+- `hsea/models.py` — inspect-ai model ids for Baseten/Modal
   (`openai-api/<service>/<model>`).
-- `dmb/registry.py` — `RunRegistry`: `runs/<run_id>/{config,scores,events}`.
-- `dmb/scenarios.py` — YAML loading, seeded `Sample` generation, world hashes.
-- `dmb/sim/bridge.py` — `SimBridge` ABC; `MockBridge` (runnable grid world);
+- `hsea/registry.py` — `RunRegistry`: `runs/<run_id>/{config,scores,events}`.
+- `hsea/scenarios.py` — YAML loading, seeded `Sample` generation, world hashes.
+- `hsea/sim/bridge.py` — `SimBridge` ABC; `MockBridge` (runnable grid world);
   `GazeboSITLBridge` / `ColosseumBridge` stubs for the sim workstreams.
-- `dmb/sim/assets.py` — versioned drone-spec loader.
-- `dmb/perception/edge.py` — `EdgePerception` interface, trigger config,
+- `hsea/sim/assets.py` — versioned drone-spec loader.
+- `hsea/perception/edge.py` — `EdgePerception` interface, trigger config,
   snapshot budget, rule-based stub.
-- `dmb/tools/drone.py` — `@tool` factories bound to one episode's instances.
-- `dmb/scorers/mission.py` — pure `compute_mission_scores` + scorer wrapper.
+- `hsea/tools/drone.py` — `@tool` factories bound to one episode's instances.
+- `hsea/scorers/mission.py` — pure `compute_mission_scores` + scorer wrapper.
 - `evals/` — `smoke_inference` (provider routing), `forest_fire` (sample
   mission), `recon_advisor` (human-guidance stub).
 - `infra/sim/` — pinned Track 1 image + compose topology.

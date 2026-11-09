@@ -1,6 +1,6 @@
 """FIRMS parsing/projection/event-split (synthetic fixture, no network)."""
 
-from dmb.data.firms import FirmsEvent, load_hotspots, project, split_event
+from hsea.data.firms import FirmsEvent, load_hotspots, project, split_event
 
 FIX = "tests/fixtures/firms_sample.csv"
 EVENT = FirmsEvent(lat=0.0, lon=0.0, t0="2019-09-20", grid=120)

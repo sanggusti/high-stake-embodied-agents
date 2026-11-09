@@ -1,6 +1,6 @@
 """Tests for FIRMS spread-overlap scoring and scenario plumbing."""
 
-from dmb.scorers.firms_spread import TOL_CELLS, compute_spread_scores
+from hsea.scorers.firms_spread import TOL_CELLS, compute_spread_scores
 
 
 def test_perfect_overlap_scores_one():
@@ -41,7 +41,7 @@ def test_empty_sim_scores_zero():
 
 
 def test_firms_scenarios_carry_spread_reference():
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     for name, n_ign, n_ref in [
         ("firms_peat_sumatra_01", 4, 2),

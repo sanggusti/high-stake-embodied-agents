@@ -15,7 +15,7 @@ import modal
 # (16k ctx, mm-limit 8) serves but will not emit Hermes tool calls
 # (outputs pseudo-calls like arm_drone_motors() as text; forced
 # tool_choice works). Flywheel v1 is text-policy: the LM navigates on
-# edge REPORTS, DMB_VISION=text. Serve a finetune via
+# edge REPORTS, HSEA_VISION=text. Serve a finetune via
 # infra/modal/vllm_flywheel.py (same factory, merged-weights path).
 MODEL_NAME = "Qwen/Qwen2.5-7B-Instruct"
 APP_NAME = "dmb-vllm-openai-compatible"

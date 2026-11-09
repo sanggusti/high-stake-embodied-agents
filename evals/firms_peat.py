@@ -7,10 +7,10 @@ objective and the FIRMS spread-overlap metric.
 
 from inspect_ai import Task, task
 
-from dmb.scenarios import build_samples
-from dmb.scorers.firms_spread import firms_spread_score
-from dmb.scorers.mission import mission_score
-from dmb.solvers.mission import drone_mission
+from hsea.scenarios import build_samples
+from hsea.scorers.firms_spread import firms_spread_score
+from hsea.scorers.mission import mission_score
+from hsea.solvers.mission import drone_mission
 
 
 @task

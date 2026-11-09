@@ -8,9 +8,9 @@ on clean worlds. Run with any model id (unused), e.g. mockllm/model.
 
 from inspect_ai import Task, task
 
-from dmb.scenarios import build_samples
-from dmb.scorers.mission import mission_score
-from dmb.solvers.baselines import oracle_route_mission
+from hsea.scenarios import build_samples
+from hsea.scorers.mission import mission_score
+from hsea.solvers.baselines import oracle_route_mission
 
 
 @task

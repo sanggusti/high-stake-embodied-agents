@@ -2,7 +2,7 @@
 
 import json
 
-from dmb.aggregate import _load_rows, render_csv, render_markdown, uplift_markdown
+from hsea.aggregate import _load_rows, render_csv, render_markdown, uplift_markdown
 
 
 def _write_run(root, run_id, model, samples):
@@ -60,7 +60,7 @@ def test_empty_registry_renders_header(tmp_path):
 def test_scores_from_l2_reproduces_breakdown(tmp_path):
     import json
 
-    from dmb.aggregate import scores_from_l2
+    from hsea.aggregate import scores_from_l2
 
     path = tmp_path / "s.jsonl"
     path.write_text(
@@ -101,7 +101,7 @@ def test_uplift_no_pairs_fails_loudly(tmp_path):
 def test_table_run_filter(tmp_path, monkeypatch):
     import sys
 
-    from dmb.aggregate import main
+    from hsea.aggregate import main
 
     _write_run(
         tmp_path, "r1", "mA", [_sample("a-1", "forest_fire", 0.5)]

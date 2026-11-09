@@ -4,17 +4,17 @@ import io
 
 from PIL import Image
 
-from dmb.perception.edge import EdgeReport
-from dmb.perception.frames import (
+from hsea.perception.edge import EdgeReport
+from hsea.perception.frames import (
     FOUND_COLOR,
     overlay_telemetry,
     render_map_frame,
     render_sensor_frame,
     to_data_url,
 )
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
-from dmb.tools.drone import edge_report_message
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
+from hsea.tools.drone import edge_report_message
 from inspect_ai.tool import ContentImage, ContentText
 
 
@@ -91,9 +91,9 @@ def test_edge_report_message_multimodal():
 
 
 def test_edge_report_message_text_mode(monkeypatch):
-    from dmb.tools.drone import edge_report_message
+    from hsea.tools.drone import edge_report_message
 
-    monkeypatch.setenv("DMB_VISION", "text")
+    monkeypatch.setenv("HSEA_VISION", "text")
     report = EdgeReport(trigger="requested", step=1, summary="scan", frame_ref="f1")
     bridge = _state()
     png = bridge.capture_frame("t6")

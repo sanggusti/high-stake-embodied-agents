@@ -1,9 +1,9 @@
 """Fleet (multi-drone) bridge, perception, and baseline policy."""
 
-from dmb.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
-from dmb.solvers.baselines import run_baseline
+from hsea.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
+from hsea.solvers.baselines import run_baseline
 
 
 def _meta(scenario="forest_fire", seed=1, fleet_size=2):

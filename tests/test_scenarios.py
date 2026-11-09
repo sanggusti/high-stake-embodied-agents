@@ -1,4 +1,4 @@
-from dmb.scenarios import build_samples, list_scenarios, load_scenario, world_hash
+from hsea.scenarios import build_samples, list_scenarios, load_scenario, world_hash
 
 
 def test_all_scenarios_load():
@@ -45,7 +45,7 @@ def test_distinct_seeds_differ():
 
 
 def test_brief_states_grid_bounds():
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     sample = build_samples("forest_fire", seeds=[1])[0]
     assert "10x10" in sample.input
@@ -56,7 +56,7 @@ def test_brief_states_grid_bounds():
 def test_time_of_day_axis():
     import pytest
 
-    from dmb.scenarios import build_samples
+    from hsea.scenarios import build_samples
 
     sample = build_samples("flood", seeds=[2], time_of_day="night")[0]
     assert sample.id == "flood-seed-2-night"
@@ -68,7 +68,7 @@ def test_time_of_day_axis():
 
 
 def test_bands_cover_easy_medium_hard():
-    from dmb.scenarios import build_samples, list_scenarios
+    from hsea.scenarios import build_samples, list_scenarios
 
     bands = set()
     for scenario in list_scenarios():
@@ -119,7 +119,7 @@ def test_baseline_pack_matches_lm_pack():
 
 
 def test_large_grid_mock_flight():
-    from dmb.sim.bridge import MockBridge
+    from hsea.sim.bridge import MockBridge
 
     md = dict(build_samples("forest_fire_large", seeds=[1])[0].metadata)
     bridge = MockBridge.from_metadata(md)

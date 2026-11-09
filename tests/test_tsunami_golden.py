@@ -1,9 +1,9 @@
 """Tsunami golden: scripted rollout + phase timing regression tests."""
 
-from dmb.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
-from dmb.scenarios import build_samples
-from dmb.scorers.mission import compute_mission_scores
-from dmb.sim.bridge import MockBridge
+from hsea.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
+from hsea.scenarios import build_samples
+from hsea.scorers.mission import compute_mission_scores
+from hsea.sim.bridge import MockBridge
 
 
 def _rollout(seed: int = 1) -> tuple[MockBridge, dict]:

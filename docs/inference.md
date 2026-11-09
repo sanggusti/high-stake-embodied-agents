@@ -10,7 +10,7 @@ Verified against the installed inspect-ai provider: model id
 - Base URL: `https://inference.baseten.co/v1`
 - Env: `BASETEN_API_KEY`, `BASETEN_BASE_URL` (see `.env.example`)
 - Model id: `openai-api/baseten/<model-slug>` (helper:
-  `dmb.models.baseten_model_id`)
+  `hsea.models.baseten_model_id`)
 - Requirements for mission evals: the slug must support **tool calling**
   (all Model APIs do) and **vision** (model-specific — confirm per slug).
 - Status: **verified 2026-10-29** with `meta-models/muse-spark-open-1026`
@@ -37,7 +37,7 @@ Verified against the installed inspect-ai provider: model id
 - After `modal deploy`, set `MODAL_BASE_URL=<serve-url>/v1` and
   `MODAL_API_KEY`.
 - Model id: `openai-api/modal/<model-name>` (helper:
-  `dmb.models.modal_model_id`).
+  `hsea.models.modal_model_id`).
 - Live endpoints (2026-11-04, serverless, scale to zero):
   `https://sanggusti--dmb-vllm-openai-compatible-serve.us-east.modal.run`
   (Qwen2.5-7B),

@@ -1,9 +1,9 @@
 """Edge-VLM baseline: protocol parsing + trigger integration (stubbed VLM)."""
 
-from dmb.perception.edge import Detection, FrameBudget, TriggerConfig
-from dmb.perception.vlm import VLMEdgePerception, parse_detections
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
+from hsea.perception.edge import Detection, FrameBudget, TriggerConfig
+from hsea.perception.vlm import VLMEdgePerception, parse_detections
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
 
 
 def test_parse_detections_protocol():

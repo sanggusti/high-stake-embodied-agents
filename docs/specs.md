@@ -40,18 +40,18 @@ No provider-backed run has succeeded yet. First success criteria live in #1.
 |---|---|---|
 | Agent message cap | 50 (`message_limit`) | `evals/forest_fire.py` |
 | Episode step budget | 60 | `MockBridge` |
-| Edge heartbeat | every 5 steps | `DMB_EDGE_REPORT_INTERVAL_STEPS` |
-| Snapshot budget | 8 per episode | `DMB_EDGE_MAX_SNAPSHOTS_PER_EPISODE` |
-| Edge backend | `stub` (`sam` opts in) | `DMB_EDGE_PERCEPTION` |
-| SAM scan budget | 3 scans/episode, stale reuse | `DMB_SAM_MAX_SCANS_PER_EPISODE` |
+| Edge heartbeat | every 5 steps | `HSEA_EDGE_REPORT_INTERVAL_STEPS` |
+| Snapshot budget | 8 per episode | `HSEA_EDGE_MAX_SNAPSHOTS_PER_EPISODE` |
+| Edge backend | `stub` (`sam` opts in) | `HSEA_EDGE_PERCEPTION` |
+| SAM scan budget | 3 scans/episode, stale reuse | `HSEA_SAM_MAX_SCANS_PER_EPISODE` |
 | Sample seeds (v0) | `[1, 2, 3]` | per task |
-| Victim weights | child 3, human 2, animal 1 | `dmb/scorers/mission.py` |
+| Victim weights | child 3, human 2, animal 1 | `hsea/scorers/mission.py` |
 
 ## Track 1 sim (verified in #2)
 
 | Item | Spec |
 |---|---|
-| OS image | Ubuntu 22.04 arm64 (`infra/sim/Dockerfile` → `dmb/sim:track1`) |
+| OS image | Ubuntu 22.04 arm64 (`infra/sim/Dockerfile` → `hsea/sim:track1`) |
 | Renderer/sim | Gazebo Harmonic (`gz-harmonic` 8.x), headless server |
 | Plugin | `ArduPilot/ardupilot_gazebo` @ `80dc9664` |
 | ArduPilot | `Copter-4.6.3` (`92b0cd78`); `waf configure --board sitl`, `waf copter` |

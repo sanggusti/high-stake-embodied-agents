@@ -2,9 +2,9 @@
 
 import pytest
 
-from dmb.sim.bridge import _offset_latlon, _offset_meters
-from dmb.solvers.mission import _bridge_for_backend
-from dmb.sim.bridge import GazeboSITLBridge, MockBridge
+from hsea.sim.bridge import _offset_latlon, _offset_meters
+from hsea.solvers.mission import _bridge_for_backend
+from hsea.sim.bridge import GazeboSITLBridge, MockBridge
 
 
 def test_latlon_offset_roundtrip():
@@ -30,22 +30,22 @@ def test_backend_selection():
 
 
 def test_docker_args_mount_record_by_default(tmp_path, monkeypatch):
-    monkeypatch.setenv("DMB_L3_DIR", str(tmp_path / "sim"))
-    monkeypatch.delenv("DMB_L3", raising=False)
+    monkeypatch.setenv("HSEA_L3_DIR", str(tmp_path / "sim"))
+    monkeypatch.delenv("HSEA_L3", raising=False)
     bridge = GazeboSITLBridge.__new__(GazeboSITLBridge)
-    bridge._partition = "dmb-test"
+    bridge._partition = "hsea-test"
     bridge._sample_id = "s-1"
-    bridge.image = "dmb/sim:track1"
+    bridge.image = "hsea/sim:track1"
     args = GazeboSITLBridge._docker_run_args(bridge)
-    assert "-v" in args and "DMB_GZ_RECORD_PATH=/record" in args
+    assert "-v" in args and "HSEA_GZ_RECORD_PATH=/record" in args
     assert (tmp_path / "sim" / "s-1").exists()
 
 
 def test_docker_args_skip_record_when_l3_off(tmp_path, monkeypatch):
-    monkeypatch.setenv("DMB_L3", "off")
+    monkeypatch.setenv("HSEA_L3", "off")
     bridge = GazeboSITLBridge.__new__(GazeboSITLBridge)
-    bridge._partition = "dmb-test"
-    bridge.image = "dmb/sim:track1"
+    bridge._partition = "hsea-test"
+    bridge.image = "hsea/sim:track1"
     args = GazeboSITLBridge._docker_run_args(bridge)
     assert "-v" not in args
-    assert "DMB_GZ_RECORD_PATH=/record" not in args
+    assert "HSEA_GZ_RECORD_PATH=/record" not in args

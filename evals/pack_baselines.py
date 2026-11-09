@@ -2,9 +2,9 @@
 
 from inspect_ai import Task, task
 
-from dmb.scenarios import build_samples, pack_scenarios
-from dmb.scorers.mission import mission_score
-from dmb.solvers.baselines import heuristic_mission, random_mission
+from hsea.scenarios import build_samples, pack_scenarios
+from hsea.scorers.mission import mission_score
+from hsea.solvers.baselines import heuristic_mission, random_mission
 
 PACK_SEEDS = [1, 2, 3]  # same seeds as evals/scenario_pack.py
 

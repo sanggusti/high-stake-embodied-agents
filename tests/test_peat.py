@@ -1,8 +1,8 @@
 """Peatland fire dynamics (#50): smolder, breakout, drought, haze."""
 
-from dmb.physics.fire import FireModel
-from dmb.scenarios import build_samples
-from dmb.sim.bridge import MockBridge
+from hsea.physics.fire import FireModel
+from hsea.scenarios import build_samples
+from hsea.sim.bridge import MockBridge
 
 # Small exact-pin config: eastern block (x >= 2) over deep peat.
 SMALL_PEAT = {

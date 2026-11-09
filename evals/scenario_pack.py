@@ -6,9 +6,9 @@ via their own tasks so the published pack table stays comparable.
 
 from inspect_ai import Task, task
 
-from dmb.scenarios import build_samples, pack_scenarios
-from dmb.scorers.mission import mission_score
-from dmb.solvers.mission import drone_mission
+from hsea.scenarios import build_samples, pack_scenarios
+from hsea.scorers.mission import mission_score
+from hsea.solvers.mission import drone_mission
 
 PACK_SEEDS = [1, 2, 3]
 

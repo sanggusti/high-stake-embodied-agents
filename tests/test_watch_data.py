@@ -5,14 +5,14 @@ from types import SimpleNamespace
 
 import pytest
 
-from dmb.data.export import messages_to_sft_pairs
-from dmb.data.splits import TEST_SEEDS, TRAIN_SEEDS, split_for_seed
-from dmb.watch.recorder import JsonlWatcher, record_score
-from dmb.watch.replay import narrate
+from hsea.data.export import messages_to_sft_pairs
+from hsea.data.splits import TEST_SEEDS, TRAIN_SEEDS, split_for_seed
+from hsea.watch.recorder import JsonlWatcher, record_score
+from hsea.watch.replay import narrate
 
 
 def test_recorder_writes_contract(tmp_path, monkeypatch):
-    monkeypatch.setenv("DMB_WATCH_DIR", str(tmp_path))
+    monkeypatch.setenv("HSEA_WATCH_DIR", str(tmp_path))
     watch = JsonlWatcher("s-1", tmp_path)
     watch.on_start({"scenario": "forest_fire", "seed": 1, "world_hash": "ab", "backend": "mock"})
     watch.on_event("action", 5.0, 1, tool="goto_location", args={"x": 1, "y": 2}, obs="Moved")
@@ -90,8 +90,8 @@ def test_image_blocks_become_marker():
 
 def test_render_produces_gif_and_png(tmp_path):
     import json
-    from dmb.scenarios import build_samples
-    from dmb.watch.render import render
+    from hsea.scenarios import build_samples
+    from hsea.watch.render import render
 
     meta = build_samples("forest_fire", seeds=[1])[0].metadata
     events = [
@@ -119,7 +119,7 @@ def test_render_produces_gif_and_png(tmp_path):
 def test_render_rejects_hash_mismatch(tmp_path):
     import json
     import pytest
-    from dmb.watch.render import render
+    from hsea.watch.render import render
 
     src = tmp_path / "ep.jsonl"
     src.write_text(json.dumps(
@@ -130,22 +130,22 @@ def test_render_rejects_hash_mismatch(tmp_path):
 
 
 def test_l3_paths_link_beside_trajectories(tmp_path, monkeypatch):
-    from dmb.watch.l3 import l3_enabled, l3_sample_dir
+    from hsea.watch.l3 import l3_enabled, l3_sample_dir
 
-    monkeypatch.setenv("DMB_WATCH_DIR", str(tmp_path / "runs" / "r1" / "trajectories"))
-    monkeypatch.delenv("DMB_L3", raising=False)
+    monkeypatch.setenv("HSEA_WATCH_DIR", str(tmp_path / "runs" / "r1" / "trajectories"))
+    monkeypatch.delenv("HSEA_L3", raising=False)
     assert l3_enabled()
     path = l3_sample_dir("s-1")
     assert path == tmp_path / "runs" / "r1" / "sim" / "s-1"
     assert path.exists()
-    monkeypatch.setenv("DMB_L3", "off")
+    monkeypatch.setenv("HSEA_L3", "off")
     assert not l3_enabled()
 
 
 def test_compose_renders_all_layers(tmp_path):
     from types import SimpleNamespace
 
-    from dmb.watch.compose import collect_artifacts, render_html, transcript_turns
+    from hsea.watch.compose import collect_artifacts, render_html, transcript_turns
 
     user = SimpleNamespace(role="user", content="brief")
     turn = SimpleNamespace(

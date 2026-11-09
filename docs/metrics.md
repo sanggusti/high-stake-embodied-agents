@@ -1,6 +1,6 @@
 # Metrics
 
-## Score vector (v0, `dmb/scorers/mission.py`)
+## Score vector (v0, `hsea/scorers/mission.py`)
 
 Computed deterministically from final sim state + transcript stats:
 
@@ -50,7 +50,7 @@ dimension.
   cleared) awaits mitigation actions, which no tool currently offers; the
   exposure metrics above quantify disaster scale in the meantime.
 
-## Difficulty scoring (`dmb/difficulty.py`)
+## Difficulty scoring (`hsea/difficulty.py`)
 
 Every sample carries `difficulty_score: {score 0..1, band}` computed
 deterministically from victim count, mean distance from origin, hazard
@@ -59,7 +59,7 @@ coverage, visibility, and mobility mix. Bands (easy < 0.55 < medium < 0.65
 fixed-effort probe scores easy > medium > hard
 (`tests/test_baselines.py`).
 
-## Recon compliance (`dmb/scorers/recon.py`)
+## Recon compliance (`hsea/scorers/recon.py`)
 
 Scripted-actor check of advisor waypoint chains against hidden truth:
 `recon_compliance` (per-victim best chain, validity × safety, averaged),

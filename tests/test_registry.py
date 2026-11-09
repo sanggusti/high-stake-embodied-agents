@@ -1,6 +1,6 @@
 import json
 
-from dmb.registry import RunRegistry
+from hsea.registry import RunRegistry
 
 
 def test_run_lifecycle(tmp_path):
