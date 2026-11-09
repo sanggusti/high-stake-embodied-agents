@@ -15,7 +15,7 @@ alignment playbook, Lexsi mapping, gaps).
 | Dataset | Modality | Size | Labels / tasks | License | HF id (verified) |
 |---|---|---|---|---|---|
 | xBD | satellite RGB 1024px | 850,736 bldgs, 45,362 km² | polygons + damage grades [UNVERIFIED schema] | CC BY-NC-SA 4.0 | community mirrors only (e.g. `kshitijrajsharma/xview2-xbd`) |
-| FloodNet | UAV RGB 3000×4000 | 2,343 images | 10-class seg + VQA (4,511 pairs std; ~10.5k [UNVERIFIED]) | CDLA-Permissive-1.0 | `torchgeo/floodnet`, community VQA mirrors |
+| FloodNet | UAV RGB 3000×4000 | 2,343 images | 10-class seg + VQA (4,511 pairs std; ~10.5k [UNVERIFIED]) | CDLA-Permissive-1.0 | `torchgeo/floodnet` (images/seg only, no VQA pairs); VQA pinned to `ljx620/FloodNet-VQA` @ `ec9277af` (ungated webdataset; card license untagged — eval use only) |
 | RescueNet | UAV RGB 3000×4000 | 4,494 images | 11-class seg (damage grades) | CC BY-NC-ND 4.0 (no derivatives!) | community mirrors (e.g. `USF-IAE/RescueNet_BDA`) |
 | AIDER v1 | aerial RGB (web) | ~6k images | 5-class classification | CC-BY-4.0 | none (Hub search: no match) |
 | AIDERv2 | aerial RGB (web+YouTube) | 16,723 images | 4-class classification | CC-BY-4.0 | none verified |

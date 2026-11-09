@@ -66,6 +66,24 @@ Scripted-actor check of advisor waypoint chains against hidden truth:
 `recon_chains`, `recon_coverage`. Complements the human rubric grades in
 [human-evals](human-evals.md); never replaces them.
 
+## Footage VLM scoring (`hsea/scorers/footage.py`)
+
+One question per sample; `metadata["kind"]` routes to its metric and the
+scorer value is that metric (`footage_composite`):
+
+| Metric | Definition |
+|---|---|
+| `vqa_accuracy` | Normalized exact match (lowercase/strip/punct) for yes/no + short phrases |
+| `counting_acc` | 1.0 when the first integers of pred/gold match, else 0.0 |
+| `counting_mae` | Absolute count error, or null when the output has no number |
+| `severity_f1` | Per-sample yes/no EM on damage-grade judgments (the mean is micro-F1) |
+| `grounding_acc` | Grid-cell match (e.g. `B3`), case-insensitive — no free-form boxes |
+| `footage_composite` | The routed metric for the sample |
+
+Inapplicable metrics are null (skipped by table means). All functions are
+total: malformed output scores 0, never raises. Results table:
+[footage-evals](footage-evals.md).
+
 ## Metric roadmap
 
 `something found along the way` goes here through issues, not ad-hoc edits:
