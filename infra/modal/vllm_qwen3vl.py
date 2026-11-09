@@ -5,8 +5,9 @@ Same factory shape as ``vllm_server.py`` but serving Qwen3-VL-8B-Instruct
 are generate-only, so no ``--tool-call-parser`` is needed. inspect-ai reaches
 it as ``openai-api/modal/<model>`` with ``MODAL_BASE_URL=<serve_url>/v1``.
 
-UNTESTED: needs `modal` credentials (`modal setup`) and a GPU-enabled
-workspace. See docs/inference.md.
+Verified 2026-11-09: deployed with `modal` credentials on a GPU-enabled
+workspace; serves the #19 footage harness (see docs/footage-evals.md).
+Needs `--max-model-len 4096` on a 24 GB A10G (16384 starves KV cache).
 """
 
 import modal
@@ -56,11 +57,13 @@ def serve():
         "0.0.0.0",
         "--port",
         "8000",
-        # Vision encoder is VRAM-hungry; footage prompts carry one image.
+        # Vision encoder is VRAM-hungry on a 24 GB A10G: 16384 leaves ~0.3 GB
+        # for KV cache and EngineCore fails to start. Footage prompts are
+        # ~2k tokens in + short answers, so 4096 is plenty.
         "--max-model-len",
-        "16384",
+        "4096",
         "--gpu-memory-utilization",
-        "0.90",
+        "0.95",
         "--limit-mm-per-prompt",
         '{"image": 2}',
     ]

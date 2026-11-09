@@ -33,16 +33,20 @@ Verified against the installed inspect-ai provider: model id
   + vLLM caches on Modal Volumes). One server file per model:
   `infra/modal/vllm_server.py` (Qwen2.5-7B, hermes parser),
   `infra/modal/vllm_mistral.py` (Mistral-7B-v0.3, mistral parser),
-  `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`).
+  `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
+  `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
+  verified 2026-11-09, see below).
 - After `modal deploy`, set `MODAL_BASE_URL=<serve-url>/v1` and
   `MODAL_API_KEY`.
 - Model id: `openai-api/modal/<model-name>` (helper:
   `hsea.models.modal_model_id`).
-- Live endpoints (2026-11-04, serverless, scale to zero):
+- Live endpoints (serverless, scale to zero):
   `https://sanggusti--dmb-vllm-openai-compatible-serve.us-east.modal.run`
   (Qwen2.5-7B),
   `https://sanggusti--dmb-vllm-mistral-serve.us-east.modal.run` (Mistral-7B),
-  `https://sanggusti--dmb-vllm-qwen14b-serve.us-east.modal.run` (Qwen14B-AWQ).
+  `https://sanggusti--dmb-vllm-qwen14b-serve.us-east.modal.run` (Qwen14B-AWQ),
+  `https://sanggusti--dmb-vllm-qwen3vl-serve.us-east.modal.run`
+  (Qwen3-VL-8B-Instruct vision, 2026-11-09).
 - Status: **verified 2026-10-27** (smoke 1.0, forest_fire limit-1 0.627);
   Mistral + 14B tool-gated 2026-11-04 (forced tool_choice yields valid calls).
 - Gotchas observed: vLLM must be pinned (0.21.0 on CUDA 12.9; 0.32 on
@@ -51,7 +55,11 @@ Verified against the installed inspect-ai provider: model id
   blocks Modal's connection (DNS), so Modal commands need an unsandboxed
   shell; Llama repos are HF-gated (401) so the matrix uses ungated
   Mistral/Qwen only; Mistral-7B-v0.3 needs temperature=0 for reliable
-  tool calls (temp 1.0 wanders to max-length empties).
+  tool calls (temp 1.0 wanders to max-length empties); Qwen3-VL-8B on a
+  24 GB A10G needs `--max-model-len 4096` + `--gpu-memory-utilization
+  0.95` (16384 leaves ~0.3 GB KV cache and EngineCore fails to start);
+  the inspect provider requires `MODAL_API_KEY` set (any value) even
+  though the vLLM server checks no key.
 
 ## Verification ladder
 
