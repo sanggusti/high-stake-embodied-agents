@@ -1,6 +1,6 @@
-# Inference — Baseten + Modal through inspect-ai
+# Inference — Baseten + Modal + HF through inspect-ai
 
-Both providers are OpenAI-compatible, so one routing convention covers both.
+All providers are OpenAI-compatible, so one routing convention covers all.
 Verified against the installed inspect-ai provider: model id
 `openai-api/<service>/<model>` reads `<SERVICE>_API_KEY` and
 `<SERVICE>_BASE_URL` (upper-cased, `-` → `_`).
@@ -64,12 +64,55 @@ Verified against the installed inspect-ai provider: model id
   the inspect provider requires `MODAL_API_KEY` set (any value) even
   though the vLLM server checks no key.
 
+## HF Inference Providers (frontier weights)
+
+- Router base URL: `https://router.huggingface.co/v1` (OpenAI-compatible).
+- Env: `HF_API_KEY`, `HF_BASE_URL` (see `.env.example`). `HF_API_KEY` is a
+  user access token with Inference Providers permission; any existing
+  `HUGGINGFACE_TOKEN` with that permission works as the value — export it
+  as `HF_API_KEY` at runtime, never commit it.
+- Model id: `openai-api/hf/<hub-repo-id>` (helper:
+  `hsea.models.hf_model_id`). Pin a serving backend with
+  `hf_model_id(<slug>, provider="<name>")`, which emits the router's
+  `<model>:<provider>` syntax (e.g.
+  `openai-api/hf/deepseek-ai/DeepSeek-V4.1-Flash:deepinfra`).
+- Why it exists: the Baseten key is scope-locked to muse-spark-open-1026
+  and frontier weights (Command A+, DeepSeek V4.1-Flash, Mistral Large
+  3/4, Kimi K2.6) are too big for Modal self-host — this segment is the
+  only route for them (see `docs/models.md` §4).
+- Status: **verified 2026-11-09** with `deepseek-ai/DeepSeek-V4.1-Flash`
+  (smoke 1.0; forest_fire limit-1 0.745, 27 tool calls, full recall).
+- Quotas: Free accounts must purchase credits before using Inference
+  Providers; PRO/Team/Enterprise get monthly compute credits ($2 list at
+  time of writing) applied automatically to routed requests. Quotas and
+  rate limits depend on the account tier and the serving provider —
+  check the [billing page](https://huggingface.co/settings/billing) and
+  [Inference Providers settings](https://huggingface.co/settings/inference-providers/overview)
+  (per-model, per-provider usage breakdown) before large sweeps.
+- Cost behavior: Hugging Face passes provider rates through with no
+  markup; each model+provider pair has its own per-1M-token input/output
+  rates, listed on the [router](https://router.huggingface.co/v1/models)
+  and the model's provider widgets. Observed 2026-11-09 for
+  `deepseek-ai/DeepSeek-V4.1-Flash`: novita/baseten $0.30 in / $1.20 out
+  per 1M tokens, deepinfra $0.20 / $0.60. Smoke (~51 tokens) costs a
+  fraction of a cent; forest_fire limit-1 (~187k tokens) cost ≈ $0.08
+  upper bound at the higher rate. HF spend counts against the same $50
+  project cap as Modal (see `docs/reports/modal-spend.md`).
+- Billing follows the token (viewer-billed analogue): whoever runs the
+  eval pays — each operator exports their own `HF_API_KEY`, so cost
+  lands on their account/subscription credits, mirroring the Space
+  pattern where the viewer is billed. Team/Enterprise orgs bill a
+  selected org. Never share keys.
+- Example: `inspect eval evals/forest_fire.py --limit 1 --model
+  openai-api/hf/deepseek-ai/DeepSeek-V4.1-Flash`
+
 ## Verification ladder
 
 1. `inspect eval evals/smoke_inference.py --model mockllm/model` — harness.
 2. Same with `--model openai-api/baseten/<slug>` — paid routing + keys.
 3. Same with `--model openai-api/modal/<name>` — custom serving.
-4. `evals/forest_fire.py --limit 1` on each real provider — tools + vision.
-5. Full sweep (baseline issue) — tracked results table.
+4. Same with `--model openai-api/hf/<hub-repo-id>` — frontier routing.
+5. `evals/forest_fire.py --limit 1` on each real provider — tools + vision.
+6. Full sweep (baseline issue) — tracked results table.
 
-Keep `--limit 1` until step 4 passes; provider-backed runs cost money.
+Keep `--limit 1` until step 5 passes; provider-backed runs cost money.
