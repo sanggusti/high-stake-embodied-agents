@@ -23,5 +23,7 @@ the same $50 cap as Modal GPU spend.
 22 rt-v41flash-probe2 api 0.3 $0.04
 22 rt-v41flash-probe3 api 0.6 $0.04
 22 rt-v41flash-seed0 api 0.6 $0.04
+5 cmdaplus-probes api 0.1 $0.00
+23 dora-access-probe api 0.1 $0.00
 TOTAL 0.50
 ```
