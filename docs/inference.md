@@ -36,6 +36,9 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
   `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
   verified 2026-11-09, see below).
+- Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
+  (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
+  needed.
 - After `modal deploy`, set `MODAL_BASE_URL=<serve-url>/v1` and
   `MODAL_API_KEY`.
 - Model id: `openai-api/modal/<model-name>` (helper:
