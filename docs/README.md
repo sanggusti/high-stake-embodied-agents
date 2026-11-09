@@ -21,6 +21,8 @@ advisors** in simulated 3D disaster environments.
 | [metrics](metrics.md) | Score vector, weights, and metric roadmap |
 | [inference](inference.md) | Baseten + Modal model routing through inspect-ai |
 | [models](models.md) | Newest open models to benchmark/finetune/evaluate |
+| [datasets](datasets.md) | Disaster footage + action datasets to align on |
+| [alignment-research](alignment-research.md) | DORA-inspired alignment research + playbook |
 | [tracking](tracking.md) | Run registry, eval logs, reproducibility contract |
 | [flywheel](flywheel.md) | Phase D data loop: export, finetune, delta, artifacts |
 | [human-evals](human-evals.md) | Operator-in-the-loop baselines and grading |
