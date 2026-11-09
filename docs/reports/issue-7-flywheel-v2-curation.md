@@ -99,7 +99,7 @@ provenance. Overall dataset research-only (NC/SA components).
   `tests/test_curate_v2.py` (13 tests), `scripts/plot_flywheel_v2.py`.
 - `data/flywheel-v2/` (sft/dpo/rlvr + manifest + card).
 - `pyproject.toml`: `matplotlib>=3.10` in the dev extra (reports infra).
-- HF: `sanggusti/dmb-flywheel-v2` (gated), rev `HF_REV_PLACEHOLDER`.
+- HF: `sanggusti/dmb-flywheel-v2` (gated, manual), rev `b44237e145af1f0d9cfa3f22ec36f77d22ca5393`.
 - Consistency: FloodNet-VQA training clarification back-ported to
   `hsea/data/footage.py`, `docs/footage-evals.md`, `docs/datasets.md`.
 
