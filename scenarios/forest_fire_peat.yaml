@@ -1,0 +1,65 @@
+name: forest_fire_peat
+variant_of: forest_fire
+kind: Peatland fire (smolder + haze)
+description: >-
+  Indonesian-style peatland fire: a single ignition smolders underground
+  through dried peat, breaks out to the surface at multiple points, then
+  runs fast under El Nino drought while thick peat smoke cuts visibility.
+  Victims are scattered hikers and trapped wildlife near the treeline.
+grid:
+  width: 10
+  height: 10
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: static
+    child:
+      min: 0
+      max: 1
+      mobility: static
+    animal:
+      min: 1
+      max: 3
+      mobility: static
+hazards:
+  - {x: 5, y: 5, radius: 1.0, label: fire-front}
+weather:
+  - drought-moderate
+  - drought-extreme
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: static
+  hazard_drift: true
+dynamics:
+  fire:
+    ignition: [{x: 5, y: 5}]
+    moisture: 0.15
+    wind_dir: [1, 0]
+    wind_speed: 4.0
+    fuel_default: 0.5
+    burn_duration: 25
+    ignition_threshold: 1.0
+    base_ros: 0.06
+    # Peat layer (#50): drained eastern block (x >= 5) over deep dried
+    # peat; western half is mineral soil. The single ignition starts
+    # underground, breakouts follow, drought accelerates surface spread.
+    peat:
+      depth_default: 0.0
+      peat_blocks: [{x0: 5, y0: 0, x1: 9, y1: 9, depth: 0.8}]
+      smolder_ros: 0.07
+      smolder_threshold: 0.5
+      breakout_threshold: 1.75
+      drought: 1.5
+      smolder_duration_mult: 3.0
+      haze_per_burning: 0.05
+      haze_per_smoldering: 0.08
+    weather_modifiers:
+      drought-moderate: {wind_speed: 3.0, moisture: 0.25, drought: 1.2}
+      drought-extreme: {wind_speed: 6.0, moisture: 0.06, drought: 1.8}

@@ -1,0 +1,59 @@
+name: flash_flood_hard
+variant_of: flash_flood
+kind: Flash flood (valley surge, hard)
+description: >-
+  Sudden surge through a 240x320 m valley settlement: a rain-swollen
+  river takes the valley floor, a truss bridge is the only high
+  crossing, and homes on both banks flood in minutes. Victims cling to
+  rooftops (trapped) while livestock is swept downstream (mobile).
+  Fast-current channels drift each phase; a second surge pulse
+  mid-run re-opens the upper channel. Visual reference: Windhoek
+  flash-flood streets (docs/flood-sim2real/refs/).
+grid:
+  width: 48
+  height: 64
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: trapped
+    child:
+      min: 1
+      max: 2
+      mobility: trapped
+    animal:
+      min: 1
+      max: 2
+      mobility: mobile
+hazards:
+  - {x: 24, y: 32, radius: 6.0, label: main-channel}
+  - {x: 24, y: 12, radius: 5.0, label: upper-rapids}
+  - {x: 12, y: 48, radius: 4.0, label: bank-spill}
+  - {x: 36, y: 48, radius: 4.0, label: bank-spill}
+  - {x: 24, y: 56, radius: 5.0, label: surge-pulse, active_from_phase: 1}
+  - {x: 10, y: 24, radius: 3.0, label: debris-sluice, active_from_phase: 2}
+weather:
+  - storm
+  - rain-heavy
+  - rain-light
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: mixed
+  hazard_drift: true
+  phases:
+    - {name: first-surge, until_step: 40}
+    - {name: pulse, until_step: 80}
+    - {name: recession}
+dynamics:
+  water:
+    origin: south
+    rate_num: 1
+    rate_den: 3
+    current: [0, -1]
+    drift_every: 3

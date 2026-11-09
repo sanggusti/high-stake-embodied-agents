@@ -1,0 +1,26 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "flash_flood", "seed": 2, "world_hash": "0759e5616046480b", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (1,1).", "frame_ref": null, "detections": [{"label": "human", "x": 1, "y": 1}]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0).", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-flash_flood-step-2-1", "detections": [{"label": "human", "x": 1, "y": 1}]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8.", "pos": [0, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (0, 0).", "pos": [0, 0]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 5}, "obs": "Moved to (5, 5). WARNING: hazard zone.", "pos": [5, 5]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (5,2), animal at (6,6).", "frame_ref": null, "detections": [{"label": "human", "x": 5, "y": 2}, {"label": "animal", "x": 6, "y": 6}]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 2 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-flash_flood-step-4-2", "detections": [{"label": "human", "x": 5, "y": 2}, {"label": "animal", "x": 6, "y": 6}]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 2 in view (0 new). Snapshot budget 2/8.", "pos": [5, 5]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5).", "pos": [5, 5]}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 2 in view, 3 total found.", "frame_ref": null, "detections": [{"label": "human", "x": 5, "y": 2}, {"label": "animal", "x": 6, "y": 6}]}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 11, "y": 9}, "obs": "Moved to (11, 9). WARNING: hazard zone.", "pos": [11, 9]}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-flash_flood-step-6-3", "detections": []}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "pos": [11, 9]}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (11, 9).", "pos": [11, 9]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 6, "y": 4}, "obs": "Moved to (6, 4). WARNING: hazard zone.", "pos": [6, 4]}
+{"t": 40.0, "step": 8, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 2 in view (0 new). Snapshot budget 4/8.", "frame_ref": "snapshot-ep-flash_flood-step-8-4", "detections": [{"label": "human", "x": 5, "y": 2}, {"label": "animal", "x": 6, "y": 6}]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 2 in view (0 new). Snapshot budget 4/8.", "pos": [6, 4]}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (6, 4).", "pos": [6, 4]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (6, 4).", "pos": [6, 4]}
+{"t": 50.0, "step": 10, "kind": "state", "rescued": 3, "violations": 3, "coverage": 0.03333333333333333}
+{"t": 50.0, "step": 10, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.6666666666666666, "saved_animal": 0.5, "rescue_recall": 0.35714285714285715, "containment": 0.08928571428571429, "efficiency": 0.8333333333333334, "safety": 0.25, "tool_calls": 15.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.03333333333333333, "damage_cells": 120.0, "unburned_fraction": 1.0, "unflooded_fraction": 0.7, "debris_cells": 0.0, "buried_victims": 0.0, "composite": 0.3589285714285714}

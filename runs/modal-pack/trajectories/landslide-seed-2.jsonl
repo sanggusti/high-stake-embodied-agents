@@ -1,0 +1,17 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "landslide", "seed": 2, "world_hash": "820af13fc093416b", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 10.0}, "obs": "Takeoff to 10.0 m.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (1,1).", "frame_ref": null, "detections": [{"label": "human", "x": 1, "y": 1}]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0).", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-landslide-step-2-1", "detections": [{"label": "human", "x": 1, "y": 1}]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8.", "pos": [0, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (0, 0).", "pos": [0, 0]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 1}, "obs": "Moved to (1, 1).", "pos": [1, 1]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-landslide-step-4-2", "detections": [{"label": "human", "x": 1, "y": 1}]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 2/8.", "pos": [1, 1]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 15}, "obs": "Loitering 15s at (1, 1).", "pos": [1, 1]}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null, "detections": [{"label": "human", "x": 1, "y": 1}]}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (1, 1).", "pos": [1, 1]}
+{"t": 30.0, "step": 6, "kind": "state", "rescued": 1, "violations": 0, "coverage": 0.016666666666666666}
+{"t": 30.0, "step": 6, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 1.0, "saved_animal": 0.0, "rescue_recall": 0.2857142857142857, "containment": 0.2857142857142857, "efficiency": 0.9, "safety": 1.0, "tool_calls": 9.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.016666666666666666, "damage_cells": 0.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 0.0, "buried_victims": 0.0, "composite": 0.485}

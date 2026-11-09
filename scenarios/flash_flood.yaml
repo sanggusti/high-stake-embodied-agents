@@ -1,0 +1,46 @@
+name: flash_flood
+kind: Flash flood
+description: >-
+  Sudden water surge through a valley settlement. Victims cling to rooftops
+  and high ground; water level rises during the episode. Hazard zones mark
+  fast-current channels.
+grid:
+  width: 12
+  height: 10
+victims:
+  categories:
+    human:
+      min: 3
+      max: 5
+      mobility: static
+    child:
+      min: 1
+      max: 2
+      mobility: static
+    animal:
+      min: 0
+      max: 2
+      mobility: static
+hazards:
+  - {x: 5, y: 4, radius: 2.5, label: current}
+  - {x: 9, y: 7, radius: 1.5, label: current}
+weather:
+  - storm
+  - rain-heavy
+  - rain-light
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: medium
+  victim_mobility: static
+  hazard_drift: true
+dynamics:
+  water:
+    origin: south
+    rate_num: 1
+    rate_den: 3
+    current: [0, -1]
+    drift_every: 3

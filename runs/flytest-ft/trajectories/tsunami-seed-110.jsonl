@@ -1,0 +1,12 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "tsunami", "seed": 110, "world_hash": "c1478b348e2e373b", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 7}, "obs": "Moved to (5, 7)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (6,7).", "frame_ref": null}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "goto_location", "args": {"x": 8, "y": 4}, "obs": "Moved to (8, 4)."}
+{"t": 15.0, "step": 3, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (9,3), human at (11,4), child at (8,6).", "frame_ref": null}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 10, "y": 8}, "obs": "Moved to (10, 8)."}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (10,8).", "frame_ref": null}
+{"t": 20.0, "step": 4, "kind": "state", "rescued": 5, "violations": 0, "coverage": 0.03333333333333333}
+{"t": 20.0, "step": 4, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 1.0, "saved_animal": 0.0, "rescue_recall": 0.8461538461538461, "containment": 0.8461538461538461, "efficiency": 0.9333333333333333, "safety": 1.0, "tool_calls": 5.0, "found_any": 1.0, "first_find_step": 2.0, "coverage": 0.03333333333333333, "composite": 0.8823076923076923}

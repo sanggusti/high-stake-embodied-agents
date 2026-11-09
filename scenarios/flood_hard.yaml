@@ -1,0 +1,59 @@
+name: flood_hard
+variant_of: flood
+kind: Flood (standing water, hard)
+description: >-
+  Slow-onset river flood over a 300 m town grid: streets under a meter of
+  murky water, homes and shops flooded to the sills, a school shelter and
+  marina dock on the high ground, and a levee-breach phase that opens a
+  new fast-current channel mid-run. Victims wait trapped on rooftops and
+  upper floors; submerged power lines and drifting debris punish low
+  routes. Visual reference: 2018 Ill river flood aerials and Mekong
+  flooded-building photos (docs/flood-sim2real/refs/).
+grid:
+  width: 60
+  height: 60
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: trapped
+    child:
+      min: 1
+      max: 2
+      mobility: trapped
+    animal:
+      min: 1
+      max: 2
+      mobility: trapped
+hazards:
+  - {x: 30, y: 30, radius: 6.0, label: submerged-lines}
+  - {x: 45, y: 45, radius: 5.0, label: current-channel}
+  - {x: 15, y: 40, radius: 4.0, label: submerged-lines}
+  - {x: 48, y: 12, radius: 4.0, label: debris-drift}
+  - {x: 20, y: 12, radius: 5.0, label: levee-breach, active_from_phase: 1}
+  - {x: 40, y: 25, radius: 4.0, label: breach-current, active_from_phase: 2}
+weather:
+  - storm
+  - rain-heavy
+  - overcast
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: trapped
+  hazard_drift: true
+  phases:
+    - {name: rise, until_step: 40}
+    - {name: levee-breach, until_step: 80}
+    - {name: peak}
+dynamics:
+  water:
+    origin: south
+    rate_num: 1
+    rate_den: 6
+    current: [0, -1]
+    drift_every: 4

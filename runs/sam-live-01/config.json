@@ -1,0 +1,23 @@
+{
+  "run_id": "sam-live-01",
+  "task": "routes_sam_live",
+  "model": "sam-3.1+scripted",
+  "scenario": "flood",
+  "seeds": [
+    1
+  ],
+  "limits": {},
+  "started_at": "2026-11-02T12:14:52.091212+00:00",
+  "finished_at": "2026-11-02T12:14:52.092076+00:00",
+  "git_sha": "79655f0874bf3668fe8204b103c2ffab77f4ce85",
+  "eval_logs": [
+    "logs/2026-11-02T12-12-37-00-00_routes-sam-live_PvMpRz8ri9RQKstz8ft6SZ.eval"
+  ],
+  "notes": [
+    "live wiring proof: 3 scans x 7 concepts all zero on mock render (honest degradation)",
+    "~$0.05 audited"
+  ],
+  "evidence": {
+    "l1_eval_log": "logs/2026-11-02T12-12-37-00-00_routes-sam-live_PvMpRz8ri9RQKstz8ft6SZ.eval"
+  }
+}

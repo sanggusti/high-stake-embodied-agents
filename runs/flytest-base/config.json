@@ -1,0 +1,28 @@
+{
+  "run_id": "flytest-base",
+  "task": "flywheel_test",
+  "model": "openai-api/modal/Qwen/Qwen2.5-7B-Instruct",
+  "scenario": "forest_fire+tsunami",
+  "seeds": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110
+  ],
+  "limits": {},
+  "started_at": "2026-10-29T08:58:01.383842+00:00",
+  "finished_at": "2026-10-29T08:58:01.385063+00:00",
+  "git_sha": "1769dee621ae6a2a2c613caef4826e75bc4e4c35",
+  "eval_logs": [
+    ".inspect-logs/2026-10-28T08-59-18-00-00_flywheel-test_KhoF9nTusdRnB3gtTffS6F.eval"
+  ],
+  "notes": [
+    "phase D base held-out"
+  ]
+}

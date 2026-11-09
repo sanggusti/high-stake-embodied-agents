@@ -1,0 +1,15 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 2, "world_hash": "fdedd7a107263862", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (1,1).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (0, 0)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 1}, "obs": "Moved to (1, 1)."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (1, 1)."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Refused: not airborne."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 1 total found.", "frame_ref": null}
+{"t": 25.0, "step": 5, "kind": "state", "rescued": 1, "violations": 0, "coverage": 0.02}
+{"t": 25.0, "step": 5, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.5, "saved_animal": 0.0, "rescue_recall": 0.25, "containment": 0.25, "efficiency": 0.9166666666666666, "safety": 1.0, "tool_calls": 8.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.02, "composite": 0.4625}

@@ -1,0 +1,46 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "landslide", "seed": 1, "world_hash": "451dd26ef123258c", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 10.0}, "obs": "Takeoff to 10.0 m.", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0).", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-landslide-step-2-1", "detections": []}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "pos": [0, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (0, 0).", "pos": [0, 0]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 6}, "obs": "Moved to (5, 6).", "pos": [5, 6]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-landslide-step-4-2", "detections": []}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "pos": [5, 6]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (5, 6).", "pos": [5, 6]}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null, "detections": []}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 9, "y": 9}, "obs": "Moved to (9, 9).", "pos": [9, 9]}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (7,10).", "frame_ref": null, "detections": [{"label": "animal", "x": 7, "y": 10}]}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-landslide-step-6-3", "detections": [{"label": "animal", "x": 7, "y": 10}]}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8.", "pos": [9, 9]}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (9, 9).", "pos": [9, 9]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 4}, "obs": "Moved to (4, 4).", "pos": [4, 4]}
+{"t": 40.0, "step": 8, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (6,3).", "frame_ref": null, "detections": [{"label": "animal", "x": 6, "y": 3}]}
+{"t": 40.0, "step": 8, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 4/8.", "frame_ref": "snapshot-ep-landslide-step-8-4", "detections": [{"label": "animal", "x": 6, "y": 3}]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 4/8.", "pos": [4, 4]}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (4, 4).", "pos": [4, 4]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 8}, "obs": "Moved to (2, 8).", "pos": [2, 8]}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "novelty", "summary": "New detections: child at (1,7).", "frame_ref": null, "detections": [{"label": "child", "x": 1, "y": 7}]}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 5/8.", "frame_ref": "snapshot-ep-landslide-step-10-5", "detections": [{"label": "child", "x": 1, "y": 7}]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 5/8.", "pos": [2, 8]}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (2, 8).", "pos": [2, 8]}
+{"t": 55.0, "step": 11, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 3 total found.", "frame_ref": null, "detections": [{"label": "child", "x": 1, "y": 7}]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "goto_location", "args": {"x": 7, "y": 2}, "obs": "Moved to (7, 2).", "pos": [7, 2]}
+{"t": 60.0, "step": 12, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (9,1).", "frame_ref": null, "detections": [{"label": "human", "x": 9, "y": 1}, {"label": "animal", "x": 6, "y": 3}]}
+{"t": 60.0, "step": 12, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 2 in view (0 new). Snapshot budget 6/8.", "frame_ref": "snapshot-ep-landslide-step-12-6", "detections": [{"label": "human", "x": 9, "y": 1}, {"label": "animal", "x": 6, "y": 3}]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 2 in view (0 new). Snapshot budget 6/8.", "pos": [7, 2]}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (7, 2).", "pos": [7, 2]}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 11}, "obs": "Moved to (0, 11).", "pos": [0, 11]}
+{"t": 70.0, "step": 14, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 7/8.", "frame_ref": "snapshot-ep-landslide-step-14-7", "detections": []}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 7/8.", "pos": [0, 11]}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (0, 11).", "pos": [0, 11]}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "goto_location", "args": {"x": 8, "y": 5}, "obs": "Moved to (8, 5).", "pos": [8, 5]}
+{"t": 80.0, "step": 16, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 4 total found.", "frame_ref": null, "detections": [{"label": "animal", "x": 6, "y": 3}]}
+{"t": 80.0, "step": 16, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8.", "frame_ref": "snapshot-ep-landslide-step-16-8", "detections": [{"label": "animal", "x": 6, "y": 3}]}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8.", "pos": [8, 5]}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "loiter", "args": {"seconds": 30}, "obs": "Loitering 30s at (8, 5).", "pos": [8, 5]}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (8, 5).", "pos": [8, 5]}
+{"t": 90.0, "step": 18, "kind": "state", "rescued": 4, "violations": 0, "coverage": 0.06666666666666667}
+{"t": 90.0, "step": 18, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 1.0, "saved_animal": 1.0, "rescue_recall": 1.0, "containment": 1.0, "efficiency": 0.7, "safety": 1.0, "tool_calls": 27.0, "found_any": 1.0, "first_find_step": 6.0, "coverage": 0.06666666666666667, "damage_cells": 3.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 3.0, "buried_victims": 0.0, "composite": 0.955}

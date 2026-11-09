@@ -1,0 +1,1 @@
+{"at": "2026-10-28T04:18:07.011562+00:00", "kind": "transcript", "lines": ["dmb> arm", "> arm {}\nArmed.", "dmb> takeoff 10", "> takeoff {'altitude_m': 10.0}\nTakeoff to 10.0 m.\n[edge:novelty] New detections: animal at (2,1).", "dmb> goto 2 1", "> goto {'x': 2, 'y': 1}\nMoved to (2, 1).", "dmb> scan", "dmb> land", "> land {}\nLanded at (2, 1).", "dmb> submit"]}

@@ -1,0 +1,52 @@
+name: earthquake_hard
+variant_of: earthquake
+kind: Earthquake (urban rubble, hard)
+description: >-
+  M7+ strike-slip rupture through a dense 300 m town grid: collapsed homes
+  and an industrial block in the downtown core, a collapsed fire-station
+  landmark, rubble-choked streets, and a relief camp on the outskirts.
+  Victims are trapped under rubble at fixed locations. Aftershock phases
+  activate new unstable-structure zones mid-run, so early routes decay.
+  Visual reference: 2011 Japan tsunami/earthquake rubble streets and
+  collapsed-building aerials (docs/quake-slide-sim2real/refs/).
+grid:
+  width: 60
+  height: 60
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: trapped
+    child:
+      min: 1
+      max: 2
+      mobility: trapped
+    animal:
+      min: 1
+      max: 2
+      mobility: trapped
+hazards:
+  - {x: 30, y: 30, radius: 6.0, label: collapsed-core}
+  - {x: 45, y: 15, radius: 5.0, label: collapsed-industrial}
+  - {x: 48, y: 42, radius: 4.0, label: unstable-residential}
+  - {x: 15, y: 40, radius: 4.0, label: collapsed-station}
+  - {x: 20, y: 15, radius: 5.0, label: aftershock-rift, active_from_phase: 1}
+  - {x: 40, y: 48, radius: 4.0, label: aftershock-collapse, active_from_phase: 2}
+weather:
+  - dust
+  - haze
+  - clear
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: trapped
+  hazard_drift: true
+  phases:
+    - {name: main-shock, until_step: 40}
+    - {name: aftershock-1, until_step: 80}
+    - {name: aftershock-2}

@@ -1,0 +1,21 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 13, "world_hash": "24d0127b4f4c4b02", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (0, 0)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 5}, "obs": "Moved to (5, 5)."}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-forest_fire-step-4-2"}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 9, "y": 9}, "obs": "Moved to (9, 9)."}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-forest_fire-step-6-3"}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (9, 9)."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(9,9) alt=30.0m airborne=True battery=93.0% steps=7/60 violations=0"}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "return_to_launch", "args": {}, "obs": "Returned to launch and landed."}
+{"t": 40.0, "step": 8, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.03}
+{"t": 40.0, "step": 8, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 0.8666666666666667, "safety": 1.0, "tool_calls": 13.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.03, "composite": 0.28}

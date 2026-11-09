@@ -1,0 +1,14 @@
+{
+  "saved_child": 1.0,
+  "saved_human": 0.0,
+  "saved_animal": 0.3333333333333333,
+  "rescue_recall": 0.1111111111111111,
+  "containment": 0.1111111111111111,
+  "efficiency": 0.95,
+  "safety": 1.0,
+  "tool_calls": 5.0,
+  "found_any": 1.0,
+  "first_find_step": 1.0,
+  "coverage": 0.02,
+  "composite": 0.37027777777777776
+}

@@ -1,0 +1,5 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "tsunami", "seed": 101, "world_hash": "e5f7b0742ddbd606", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.008333333333333333}
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.0, "saved_animal": 1.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 1.0, "safety": 1.0, "tool_calls": 1.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.008333333333333333, "composite": 0.3}

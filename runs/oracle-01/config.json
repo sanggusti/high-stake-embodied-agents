@@ -1,0 +1,24 @@
+{
+  "run_id": "oracle-01",
+  "task": "routes_oracle",
+  "model": "oracle+scripted",
+  "scenario": "flood",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "limits": {},
+  "started_at": "2026-11-02T12:16:55.690398+00:00",
+  "finished_at": "2026-11-02T12:16:55.691432+00:00",
+  "git_sha": "79655f0874bf3668fe8204b103c2ffab77f4ce85",
+  "eval_logs": [
+    "logs/2026-11-02T12-16-46-00-00_routes-oracle_5vKuscwZhsM3fasGwLtP2w.eval"
+  ],
+  "notes": [
+    "perception ceiling: perfect seg-maps, real planner+metrics"
+  ],
+  "evidence": {
+    "l1_eval_log": "logs/2026-11-02T12-16-46-00-00_routes-oracle_5vKuscwZhsM3fasGwLtP2w.eval"
+  }
+}

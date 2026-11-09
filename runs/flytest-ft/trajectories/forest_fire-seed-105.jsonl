@@ -1,0 +1,13 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 105, "world_hash": "d481bd86f3ea5d3d", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=0.0m airborne=False battery=100.0% steps=0/60 violations=0"}
+{"t": 0.0, "step": 0, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-0-1"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8."}
+{"t": 0.0, "step": 0, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.01}
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 1.0, "safety": 1.0, "tool_calls": 8.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.01, "composite": 0.3}

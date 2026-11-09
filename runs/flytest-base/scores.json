@@ -1,0 +1,424 @@
+{
+  "samples": [
+    {
+      "sample_id": "forest_fire-seed-101",
+      "scenario": "forest_fire",
+      "seed": 101,
+      "world_hash": "bf55a384f28b66d4",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.5,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.6,
+        "containment": 0.4,
+        "efficiency": 0.8166666666666667,
+        "safety": 1.0,
+        "tool_calls": 19.0,
+        "found_any": 1.0,
+        "first_find_step": 5.0,
+        "coverage": 0.04,
+        "composite": 0.6525
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-102",
+      "scenario": "forest_fire",
+      "seed": 102,
+      "world_hash": "459ba0d509cf4b44",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.5,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.6666666666666666,
+        "containment": 0.3333333333333333,
+        "efficiency": 0.7333333333333334,
+        "safety": 0.5,
+        "tool_calls": 24.0,
+        "found_any": 1.0,
+        "first_find_step": 6.0,
+        "coverage": 0.06,
+        "composite": 0.585
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-103",
+      "scenario": "forest_fire",
+      "seed": 103,
+      "world_hash": "2fb90b2762f048b5",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.25,
+        "saved_animal": 0.5,
+        "rescue_recall": 0.3,
+        "containment": 0.22499999999999998,
+        "efficiency": 0.8333333333333334,
+        "safety": 0.75,
+        "tool_calls": 15.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.04,
+        "composite": 0.4325
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-104",
+      "scenario": "forest_fire",
+      "seed": 104,
+      "world_hash": "954f7cfc2528763e",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.0,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.42857142857142855,
+        "containment": 0.42857142857142855,
+        "efficiency": 0.9166666666666666,
+        "safety": 1.0,
+        "tool_calls": 8.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.01,
+        "composite": 0.5875
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-105",
+      "scenario": "forest_fire",
+      "seed": 105,
+      "world_hash": "d481bd86f3ea5d3d",
+      "scores": {
+        "saved_child": 0.0,
+        "saved_human": 0.25,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.25,
+        "containment": 0.25,
+        "efficiency": 0.8166666666666667,
+        "safety": 1.0,
+        "tool_calls": 20.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.08,
+        "composite": 0.4475
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-106",
+      "scenario": "forest_fire",
+      "seed": 106,
+      "world_hash": "a2a77a9c509b163a",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.25,
+        "saved_animal": 0.5,
+        "rescue_recall": 0.3,
+        "containment": 0.0,
+        "efficiency": 0.7166666666666667,
+        "safety": 0.0,
+        "tool_calls": 22.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.12,
+        "composite": 0.2575
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-107",
+      "scenario": "forest_fire",
+      "seed": 107,
+      "world_hash": "31b1a60db2ce4ddc",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 1.0,
+        "saved_animal": 0.3333333333333333,
+        "rescue_recall": 0.8,
+        "containment": 0.4,
+        "efficiency": 0.8166666666666667,
+        "safety": 0.5,
+        "tool_calls": 16.0,
+        "found_any": 1.0,
+        "first_find_step": 2.0,
+        "coverage": 0.05,
+        "composite": 0.6775
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-108",
+      "scenario": "forest_fire",
+      "seed": 108,
+      "world_hash": "2f7ede59d3314c35",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 1.0,
+        "saved_animal": 1.0,
+        "rescue_recall": 1.0,
+        "containment": 1.0,
+        "efficiency": 0.8,
+        "safety": 1.0,
+        "tool_calls": 18.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.05,
+        "composite": 0.97
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-109",
+      "scenario": "forest_fire",
+      "seed": 109,
+      "world_hash": "f6aa93760fccaf35",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.3333333333333333,
+        "saved_animal": 0.3333333333333333,
+        "rescue_recall": 0.3333333333333333,
+        "containment": 0.3333333333333333,
+        "efficiency": 0.9,
+        "safety": 1.0,
+        "tool_calls": 8.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.03,
+        "composite": 0.5183333333333333
+      },
+      "error": null
+    },
+    {
+      "sample_id": "forest_fire-seed-110",
+      "scenario": "forest_fire",
+      "seed": 110,
+      "world_hash": "875a561e6da971bd",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.3333333333333333,
+        "saved_animal": 0.3333333333333333,
+        "rescue_recall": 0.3333333333333333,
+        "containment": 0.3333333333333333,
+        "efficiency": 0.75,
+        "safety": 1.0,
+        "tool_calls": 28.0,
+        "found_any": 1.0,
+        "first_find_step": 5.0,
+        "coverage": 0.12,
+        "composite": 0.49583333333333335
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-101",
+      "scenario": "tsunami",
+      "seed": 101,
+      "world_hash": "e5f7b0742ddbd606",
+      "scores": {
+        "saved_child": 0.5,
+        "saved_human": 1.0,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.8125,
+        "containment": 0.140625,
+        "efficiency": 0.75,
+        "safety": 0.25,
+        "tool_calls": 19.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.058333333333333334,
+        "composite": 0.584375
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-102",
+      "scenario": "tsunami",
+      "seed": 102,
+      "world_hash": "3d7b43151fb7dc3e",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 1.0,
+        "saved_animal": 0.5,
+        "rescue_recall": 0.9090909090909091,
+        "containment": 0.2727272727272727,
+        "efficiency": 0.8,
+        "safety": 0.5,
+        "tool_calls": 18.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.041666666666666664,
+        "composite": 0.704090909090909
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-103",
+      "scenario": "tsunami",
+      "seed": 103,
+      "world_hash": "5dd6fbe4cc75596c",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.6,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.6923076923076923,
+        "containment": 0.6923076923076923,
+        "efficiency": 0.8,
+        "safety": 1.0,
+        "tool_calls": 18.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.041666666666666664,
+        "composite": 0.7546153846153846
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-104",
+      "scenario": "tsunami",
+      "seed": 104,
+      "world_hash": "f3771f43bb08eda7",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.6666666666666666,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.7777777777777778,
+        "containment": 0.7777777777777778,
+        "efficiency": 0.7833333333333333,
+        "safety": 1.0,
+        "tool_calls": 23.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.075,
+        "composite": 0.8119444444444445
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-105",
+      "scenario": "tsunami",
+      "seed": 105,
+      "world_hash": "92db15c5546c6461",
+      "scores": {
+        "saved_child": 0.5,
+        "saved_human": 0.4,
+        "saved_animal": 0.0,
+        "rescue_recall": 0.4117647058823529,
+        "containment": 0.4117647058823529,
+        "efficiency": 0.85,
+        "safety": 1.0,
+        "tool_calls": 16.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.041666666666666664,
+        "composite": 0.565735294117647
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-106",
+      "scenario": "tsunami",
+      "seed": 106,
+      "world_hash": "0c20c070a2fce39f",
+      "scores": {
+        "saved_child": 0.5,
+        "saved_human": 0.4,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.5,
+        "containment": 0.375,
+        "efficiency": 0.8,
+        "safety": 0.75,
+        "tool_calls": 18.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.041666666666666664,
+        "composite": 0.5575
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-107",
+      "scenario": "tsunami",
+      "seed": 107,
+      "world_hash": "c2fa6c64d4a53d3e",
+      "scores": {
+        "saved_child": 0.0,
+        "saved_human": 0.3333333333333333,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.2222222222222222,
+        "containment": 0.2222222222222222,
+        "efficiency": 0.8666666666666667,
+        "safety": 1.0,
+        "tool_calls": 11.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.025,
+        "composite": 0.4355555555555556
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-108",
+      "scenario": "tsunami",
+      "seed": 108,
+      "world_hash": "9a5d8ea3bdc5e98e",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.0,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.5,
+        "containment": 0.5,
+        "efficiency": 0.8,
+        "safety": 1.0,
+        "tool_calls": 22.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.075,
+        "composite": 0.62
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-109",
+      "scenario": "tsunami",
+      "seed": 109,
+      "world_hash": "f9c87dbfb430b8fe",
+      "scores": {
+        "saved_child": 0.5,
+        "saved_human": 0.25,
+        "saved_animal": 1.0,
+        "rescue_recall": 0.35714285714285715,
+        "containment": 0.35714285714285715,
+        "efficiency": 0.7666666666666666,
+        "safety": 1.0,
+        "tool_calls": 23.0,
+        "found_any": 1.0,
+        "first_find_step": 1.0,
+        "coverage": 0.08333333333333333,
+        "composite": 0.515
+      },
+      "error": null
+    },
+    {
+      "sample_id": "tsunami-seed-110",
+      "scenario": "tsunami",
+      "seed": 110,
+      "world_hash": "c1478b348e2e373b",
+      "scores": {
+        "saved_child": 1.0,
+        "saved_human": 0.5,
+        "saved_animal": 0.5,
+        "rescue_recall": 0.6153846153846154,
+        "containment": 0.0,
+        "efficiency": 0.7333333333333334,
+        "safety": 0.0,
+        "tool_calls": 24.0,
+        "found_any": 1.0,
+        "first_find_step": 4.0,
+        "coverage": 0.058333333333333334,
+        "composite": 0.4176923076923077
+      },
+      "error": null
+    }
+  ]
+}

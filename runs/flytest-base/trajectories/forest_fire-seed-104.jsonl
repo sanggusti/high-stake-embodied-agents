@@ -1,0 +1,15 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 104, "world_hash": "954f7cfc2528763e", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (2,0), animal at (2,1), animal at (2,1).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 3 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 3 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (0, 0)."}
+{"t": 15.0, "step": 3, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 3 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-forest_fire-step-3-2"}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 3 in view (0 new). Snapshot budget 2/8."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (0, 0)."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (0, 0)."}
+{"t": 25.0, "step": 5, "kind": "state", "rescued": 3, "violations": 0, "coverage": 0.01}
+{"t": 25.0, "step": 5, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.0, "saved_animal": 1.0, "rescue_recall": 0.42857142857142855, "containment": 0.42857142857142855, "efficiency": 0.9166666666666666, "safety": 1.0, "tool_calls": 8.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.01, "composite": 0.5875}

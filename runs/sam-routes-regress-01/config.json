@@ -1,0 +1,23 @@
+{
+  "run_id": "sam-routes-regress-01",
+  "task": "forest_fire",
+  "model": "mockllm/model",
+  "scenario": "forest_fire",
+  "seeds": [
+    1
+  ],
+  "limits": {},
+  "started_at": "2026-11-02T07:48:18.731447+00:00",
+  "finished_at": "2026-11-02T07:48:18.732146+00:00",
+  "git_sha": "e9017e12ea0f3959648e5888e24bf9784005255d",
+  "eval_logs": [
+    "logs/2026-11-02T07-45-39-00-00_forest-fire_XSttjoYwRAPNMwKUiLRZL9.eval"
+  ],
+  "notes": [
+    "post-change regression: stub perception default, route tool unregistered",
+    "120 passed 4 skipped on same tree"
+  ],
+  "evidence": {
+    "l1_eval_log": "logs/2026-11-02T07-45-39-00-00_forest-fire_XSttjoYwRAPNMwKUiLRZL9.eval"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "run_id": "recon-baseten-01",
+  "task": "recon_advisor",
+  "model": "muse-spark-open-1026",
+  "scenario": "multi",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "limits": {},
+  "started_at": "2026-11-02T12:16:25.940851+00:00",
+  "finished_at": "2026-11-02T12:16:25.941546+00:00",
+  "git_sha": "79655f0874bf3668fe8204b103c2ffab77f4ce85",
+  "eval_logs": [
+    "logs/2026-11-02T12-14-53-00-00_recon-advisor_aLY9VdUbqvf7Ykacz6eaMk.eval"
+  ],
+  "notes": [
+    "provider: baseten inference.baseten.co/v1, slug meta-models/muse-spark-open-1026 (tier unlisted)",
+    "3 oracle-survey vignettes, waypoint-chain protocol"
+  ],
+  "evidence": {
+    "l1_eval_log": "logs/2026-11-02T12-14-53-00-00_recon-advisor_aLY9VdUbqvf7Ykacz6eaMk.eval"
+  }
+}

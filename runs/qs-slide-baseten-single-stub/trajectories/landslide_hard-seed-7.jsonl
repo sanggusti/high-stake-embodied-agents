@@ -1,0 +1,35 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "landslide_hard", "seed": 7, "world_hash": "47ef981361c64420", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 0}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 15.0, "drone_idx": 0}, "obs": "Takeoff to 15.0 m.", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(0,0) alt=15.0m airborne=True battery=99.0% steps=1/60 violations=0", "pos": [0, 0]}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-landslide_hard-step-1-1", "detections": []}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 12, "y": 12, "drone_idx": 0}, "obs": "Moved to (12, 12).", "pos": [12, 12]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (12, 12).", "pos": [12, 12]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(12,12) alt=15.0m airborne=True battery=97.0% steps=3/60 violations=0", "pos": [12, 12]}
+{"t": 15.0, "step": 3, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-landslide_hard-step-3-2", "detections": []}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "pos": [12, 12]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 12, "y": 32, "drone_idx": 0}, "obs": "Moved to (12, 32).", "pos": [12, 32]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (12, 32).", "pos": [12, 32]}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null, "detections": []}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-landslide_hard-step-5-3", "detections": []}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "pos": [12, 32]}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 12, "y": 52, "drone_idx": 0}, "obs": "Moved to (12, 52).", "pos": [12, 52]}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (12, 52).", "pos": [12, 52]}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(12,52) alt=15.0m airborne=True battery=93.0% steps=7/60 violations=0", "pos": [12, 52]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 24, "y": 32, "drone_idx": 0}, "obs": "Moved to (24, 32).", "pos": [24, 32]}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (24, 32).", "pos": [24, 32]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "goto_location", "args": {"x": 24, "y": 12, "drone_idx": 0}, "obs": "Moved to (24, 12). WARNING: hazard zone.", "pos": [24, 12]}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null, "detections": []}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "goto_location", "args": {"x": 18, "y": 12, "drone_idx": 0}, "obs": "Moved to (18, 12).", "pos": [18, 12]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (18, 12).", "pos": [18, 12]}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "goto_location", "args": {"x": 20, "y": 12, "drone_idx": 0}, "obs": "Moved to (20, 12). WARNING: hazard zone.", "pos": [20, 12]}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(20,12) alt=15.0m airborne=True battery=87.0% steps=13/60 violations=2", "pos": [20, 12]}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "goto_location", "args": {"x": 18, "y": 20, "drone_idx": 0}, "obs": "Moved to (18, 20).", "pos": [18, 20]}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (18, 20).", "pos": [18, 20]}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null, "detections": []}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "goto_location", "args": {"x": 18, "y": 30, "drone_idx": 0}, "obs": "Moved to (18, 30).", "pos": [18, 30]}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (18, 30).", "pos": [18, 30]}
+{"t": 85.0, "step": 17, "kind": "state", "rescued": 0, "violations": 2, "coverage": 0.0032552083333333335}
+{"t": 85.0, "step": 17, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 0.0, "safety": 0.5, "tool_calls": 25.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.0032552083333333335, "damage_cells": 12.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 12.0, "buried_victims": 4.0, "routes_requested": 0.0, "routes_reachable_rate": 0.0, "route_safety": 0.0, "route_excess_length": 0.0, "spl_like": 0.0, "composite": 0.075}

@@ -1,0 +1,51 @@
+name: tsunami
+kind: Tsunami (coastal surge)
+description: >-
+  Offshore quake sends a surge onto a coastal strip. Water first recedes
+  (warning phase), then the wave arrives with a debris field. Victims await
+  on high ground and rooftops; some drift with the current. Hazard zones
+  mark the surge channel and debris field.
+grid:
+  width: 12
+  height: 10
+victims:
+  categories:
+    human:
+      min: 3
+      max: 5
+      mobility: static
+    child:
+      min: 1
+      max: 2
+      mobility: static
+    animal:
+      min: 0
+      max: 2
+      mobility: mobile
+hazards:
+  - {x: 6, y: 2, radius: 3.0, label: surge-channel, active_from_phase: 1}
+  - {x: 9, y: 6, radius: 1.5, label: debris-field, active_from_phase: 2}
+weather:
+  - overcast
+  - storm
+  - clear
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: medium
+  victim_mobility: mixed
+  hazard_drift: true
+  phases:
+    - {name: recede-warning, until_step: 20}
+    - {name: wave-arrival, until_step: 40}
+    - {name: debris, until_step: 60}
+dynamics:
+  water:
+    origin: south
+    rate_num: 1
+    rate_den: 4
+    current: [0, -1]
+    drift_every: 3

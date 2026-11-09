@@ -1,0 +1,14 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "landslide_hard", "seed": 7, "world_hash": "47ef981361c64420", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 0}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 1}, "obs": "Armed.", "pos": [47, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 5.0, "drone_idx": 0}, "obs": "Takeoff to 5.0 m.", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 5.0, "drone_idx": 1}, "obs": "Takeoff to 5.0 m.", "pos": [47, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "goto_location", "args": {"x": 10, "y": 10, "drone_idx": 0}, "obs": "Moved to (10, 10).", "pos": [10, 10]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 30, "y": 10, "drone_idx": 1}, "obs": "Moved to (30, 10). WARNING: hazard zone.", "pos": [30, 10]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(10,10) alt=5.0m airborne=True battery=96.0% steps=4/60 violations=1 fleet: #1@(30,10)^ batt=97.0%", "pos": [10, 10]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 1}, "obs": "drone=1 pos=(30,10) alt=5.0m airborne=True battery=97.0% steps=4/60 violations=1 fleet: #0@(10,10)^ batt=96.0%", "pos": [30, 10]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "land", "args": {"drone_idx": 0}, "obs": "Landed at (10, 10).", "pos": [10, 10]}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "land", "args": {"drone_idx": 1}, "obs": "Landed at (30, 10).", "pos": [30, 10]}
+{"t": 30.0, "step": 6, "kind": "state", "rescued": 0, "violations": 1, "coverage": 0.0013020833333333333}
+{"t": 30.0, "step": 6, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 0.0, "safety": 0.75, "tool_calls": 10.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.0013020833333333333, "damage_cells": 0.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 0.0, "buried_victims": 4.0, "routes_requested": 0.0, "routes_reachable_rate": 0.0, "route_safety": 0.0, "route_excess_length": 0.0, "spl_like": 0.0, "composite": 0.11249999999999999}

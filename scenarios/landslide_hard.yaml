@@ -1,0 +1,62 @@
+name: landslide_hard
+variant_of: landslide
+kind: Landslide (slope debris, hard)
+description: >-
+  Monsoon-triggered slope failure over a 240x320 m hillside road: an exposed
+  rock head-scarp at the crest, a widening mud-and-boulder debris flow down
+  the fall line, buried cars and at-risk homes at the toe, and stranded
+  livestock on the intact flank. Victims are buried along the debris path;
+  the slip face stays active and the flow extends under rain. Visual
+  reference: 2021 Atami debris-flow aerials and North Tapanuli road-block
+  slides (docs/quake-slide-sim2real/refs/).
+grid:
+  width: 48
+  height: 64
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: buried
+    child:
+      min: 0
+      max: 1
+      mobility: buried
+    animal:
+      min: 2
+      max: 3
+      mobility: static
+hazards:
+  - {x: 24, y: 10, radius: 6.0, label: head-scarp}
+  - {x: 24, y: 26, radius: 5.0, label: slip-face}
+  - {x: 22, y: 44, radius: 6.0, label: debris-toe}
+  - {x: 20, y: 56, radius: 5.0, label: road-block}
+weather:
+  - rain-heavy
+  - overcast
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: buried
+  hazard_drift: true
+dynamics:
+  terrain:
+    candidates:
+      - {x: 24, y: 8, slope: 1.6}
+      - {x: 22, y: 6, slope: 1.3}
+      - {x: 26, y: 10, slope: 1.2}
+      - {x: 24, y: 16, slope: 1.1}
+      - {x: 22, y: 24, slope: 1.0}
+    sat_rate: 0.05
+    rain_multiplier: 2.0
+    raining: true
+    threshold: 1.0
+    debris_dir: [0, 1]
+    debris_len: 12
+    weather_modifiers:
+      rain-heavy: {raining: true}
+      overcast: {raining: false}

@@ -1,0 +1,34 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "tsunami", "seed": 104, "world_hash": "f3771f43bb08eda7", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (0,2), child at (2,1).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=30.0m airborne=True battery=98.0% steps=2/60 violations=0"}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=30.0m airborne=True battery=97.0% steps=3/60 violations=0"}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(0,0) alt=30.0m airborne=True battery=96.0% steps=4/60 violations=0"}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 2 in view, 2 total found.", "frame_ref": null}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 2 in view, 2 total found.", "frame_ref": null}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 2 in view, 2 total found.", "frame_ref": null}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0). [phase: wave-arrival]"}
+{"t": 100.0, "step": 20, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 2 in view, 2 total found.", "frame_ref": null}
+{"t": 105.0, "step": 21, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 105.0, "step": 21, "kind": "state", "rescued": 2, "violations": 0, "coverage": 0.008333333333333333}
+{"t": 105.0, "step": 21, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.3333333333333333, "saved_animal": 1.0, "rescue_recall": 0.5555555555555556, "containment": 0.5555555555555556, "efficiency": 0.65, "safety": 1.0, "tool_calls": 25.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.008333333333333333, "composite": 0.6363888888888889}

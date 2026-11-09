@@ -1,0 +1,7 @@
+latitude,longitude,brightness,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_t31,frp,daynight,type
+0.0001,0.0001,300.0,0.5,0.5,2019-09-20,0311,SNPP,VIIRS,n,2,290.0,10.0,D,0
+0.0001,0.0002,310.0,0.5,0.5,2019-09-20,0312,SNPP,VIIRS,n,2,291.0,20.0,D,0
+0.0001,0.0010,290.0,0.5,0.5,2019-09-21,0311,SNPP,VIIRS,n,2,289.0,5.0,D,0
+0.0001,0.0001,295.0,0.5,0.5,2019-09-21,0315,SNPP,VIIRS,n,2,289.5,7.0,D,0
+bad-row,0.0001,300.0,0.5,0.5,2019-09-20,0311,SNPP,VIIRS,n,2,290.0,9.0,D,0
+5.0000,5.0000,300.0,0.5,0.5,2019-09-20,0311,SNPP,VIIRS,n,2,290.0,9.0,D,0

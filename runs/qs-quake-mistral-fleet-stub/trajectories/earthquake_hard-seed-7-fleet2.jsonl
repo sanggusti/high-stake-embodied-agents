@@ -1,0 +1,4 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "earthquake_hard", "seed": 7, "world_hash": "113bc5a84416ccf0", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.0005555555555555556}
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 0.0, "safety": 1.0, "tool_calls": 0.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.0005555555555555556, "damage_cells": 0.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 0.0, "buried_victims": 0.0, "routes_requested": 0.0, "routes_reachable_rate": 0.0, "route_safety": 0.0, "route_excess_length": 0.0, "spl_like": 0.0, "composite": 0.15}

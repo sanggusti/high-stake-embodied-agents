@@ -1,0 +1,43 @@
+# Sourced spec: matches Track 1 exactly (entrypoint.sh runs
+# sim_vehicle.py -v ArduCopter -f gazebo-iris + iris_runway.sdf).
+name: quad_iris_class
+vehicle_class: multicopter
+provenance:
+  params: https://github.com/ArduPilot/ardupilot/blob/Copter-4.6.3/Tools/autotest/default_params/gazebo-iris.parm
+  model: https://github.com/ArduPilot/ardupilot_gazebo/blob/80dc9664/models/iris_with_gimbal/model.sdf
+  world: https://github.com/ArduPilot/ardupilot_gazebo/blob/80dc9664/worlds/iris_runway.sdf
+  docs: https://ardupilot.org/copter/docs/parameters.html
+# Sensors: SITL provides gps/baro/mag/imu by default; +rangefinder from the
+# parm file (RNGFND1_TYPE 1); +gimbal camera from iris_with_gimbal (nest
+# gimbal_small_3d). No optical flow in the parm file: non_gps_nav is false.
+sensors:
+  - gps
+  - barometer
+  - magnetometer
+  - imu
+  - rangefinder
+  - gimbal-camera
+capabilities:
+  guided_takeoff: true # verified live: test_sitl_integration scripted flight
+  guided_goto: true # verified live: SET_POSITION_TARGET_GLOBAL_INT, mask 3576
+  non_gps_nav: false # no OPTOFLOW params in gazebo-iris.parm
+  nav_mesh_planning: false # no nav mesh in the stack
+  rtl: true # verified live: RTL lands at launch
+  loiter: true # ArduCopter LOITER mode; used by loiter tool
+  auto_mission: true # ArduCopter AUTO supported (unused by bench tools)
+  max_speed_ms: 10.0 # WPNAV_SPEED default 1000 cm/s (copter params doc)
+  flight_time_min: null # not stated in ArduPilot sources; unmodelled
+  mass_kg: 1.5 # iris_with_standoffs base_link inertial (model.sdf)
+  rotor_count: 4 # rotor_0..3 joints (model.sdf)
+sitl_params:
+  FRAME_CLASS: 1
+  FRAME_TYPE: 1
+  RC8_OPTION: 39
+  PLND_ENABLED: 1
+  PLND_TYPE: 3
+  SIM_SONAR_SCALE: 10
+  RNGFND1_TYPE: 1
+  RNGFND1_SCALING: 10
+  RNGFND1_PIN: 0
+  RNGFND1_MAX_CM: 5000
+gazebo_model: iris_with_gimbal

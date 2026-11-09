@@ -1,0 +1,40 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 10, "world_hash": "7292e03eace4a32b", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (0,3), child at (2,0).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 2 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 2 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (0, 0)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 3}, "obs": "Moved to (0, 3)."}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (0,6), animal at (1,3).", "frame_ref": null}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 3}, "obs": "Moved to (1, 3)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 2 in view, 4 total found.", "frame_ref": null}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 3}, "obs": "Moved to (2, 3)."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 4}, "obs": "Moved to (2, 4)."}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 5}, "obs": "Moved to (2, 5)."}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 6}, "obs": "Moved to (2, 6)."}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 7}, "obs": "Moved to (2, 7). WARNING: hazard zone."}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 4 total found.", "frame_ref": null}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 8}, "obs": "Moved to (2, 8). WARNING: hazard zone."}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "goto_location", "args": {"x": 3, "y": 3}, "obs": "Moved to (3, 3)."}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "goto_location", "args": {"x": 3, "y": 4}, "obs": "Moved to (3, 4)."}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "goto_location", "args": {"x": 3, "y": 5}, "obs": "Moved to (3, 5)."}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "goto_location", "args": {"x": 3, "y": 6}, "obs": "Moved to (3, 6)."}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 4 total found.", "frame_ref": null}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "goto_location", "args": {"x": 3, "y": 7}, "obs": "Moved to (3, 7). WARNING: hazard zone."}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 3}, "obs": "Moved to (4, 3)."}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 4}, "obs": "Moved to (4, 4)."}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 5}, "obs": "Moved to (4, 5)."}
+{"t": 95.0, "step": 19, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (7,5).", "frame_ref": null}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 6}, "obs": "Moved to (4, 6)."}
+{"t": 100.0, "step": 20, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 5 total found.", "frame_ref": null}
+{"t": 105.0, "step": 21, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 7}, "obs": "Moved to (4, 7). WARNING: hazard zone."}
+{"t": 105.0, "step": 21, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (7,7).", "frame_ref": null}
+{"t": 110.0, "step": 22, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 8}, "obs": "Moved to (4, 8). WARNING: hazard zone."}
+{"t": 115.0, "step": 23, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 3}, "obs": "Moved to (5, 3)."}
+{"t": 115.0, "step": 23, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (5,0).", "frame_ref": null}
+{"t": 120.0, "step": 24, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 4}, "obs": "Moved to (5, 4)."}
+{"t": 120.0, "step": 24, "kind": "state", "rescued": 7, "violations": 5, "coverage": 0.22}
+{"t": 120.0, "step": 24, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.75, "saved_animal": 1.0, "rescue_recall": 0.8571428571428571, "containment": 0.0, "efficiency": 0.6, "safety": 0.0, "tool_calls": 26.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.22, "composite": 0.5185714285714286}

@@ -1,0 +1,16 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "flash_flood_hard", "seed": 7, "world_hash": "839eea91af3cc6df", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 0}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 1}, "obs": "Armed.", "pos": [47, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 10.0, "drone_idx": 0}, "obs": "Takeoff to 10.0 m.", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 10.0, "drone_idx": 1}, "obs": "Takeoff to 10.0 m.", "pos": [47, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "goto_location", "args": {"x": 47, "y": 0, "drone_idx": 0}, "obs": "Moved to (47, 0).", "pos": [47, 0]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 32, "drone_idx": 1}, "obs": "Moved to (0, 32).", "pos": [0, 32]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-flash_flood_hard-step-4-1", "detections": []}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "pos": [47, 0]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-flash_flood_hard-step-4-2", "detections": []}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "pos": [47, 0]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "land", "args": {"drone_idx": 0}, "obs": "Landed at (47, 0).", "pos": [47, 0]}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "land", "args": {"drone_idx": 1}, "obs": "Landed at (0, 32).", "pos": [0, 32]}
+{"t": 30.0, "step": 6, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.0009765625}
+{"t": 30.0, "step": 6, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 0.0, "safety": 1.0, "tool_calls": 10.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.0009765625, "damage_cells": 3072.0, "unburned_fraction": 1.0, "unflooded_fraction": 0.96875, "debris_cells": 0.0, "buried_victims": 0.0, "routes_requested": 0.0, "routes_reachable_rate": 0.0, "route_safety": 0.0, "route_excess_length": 0.0, "spl_like": 0.0, "composite": 0.15}

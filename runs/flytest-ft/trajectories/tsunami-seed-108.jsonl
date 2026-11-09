@@ -1,0 +1,14 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "tsunami", "seed": 108, "world_hash": "9a5d8ea3bdc5e98e", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 7}, "obs": "Moved to (5, 7)."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "goto_location", "args": {"x": 8, "y": 4}, "obs": "Moved to (8, 4)."}
+{"t": 15.0, "step": 3, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (10,6), human at (11,4).", "frame_ref": null}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 10, "y": 6}, "obs": "Moved to (10, 6)."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "goto_location", "args": {"x": 11, "y": 4}, "obs": "Moved to (11, 4)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (11,1).", "frame_ref": null}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 3 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-tsunami-step-5-1"}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 3 in view (0 new). Snapshot budget 1/8."}
+{"t": 25.0, "step": 5, "kind": "state", "rescued": 3, "violations": 0, "coverage": 0.041666666666666664}
+{"t": 25.0, "step": 5, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 1.0, "saved_animal": 1.0, "rescue_recall": 0.5, "containment": 0.5, "efficiency": 0.9166666666666666, "safety": 1.0, "tool_calls": 7.0, "found_any": 1.0, "first_find_step": 3.0, "coverage": 0.041666666666666664, "composite": 0.6375}

@@ -1,0 +1,16 @@
+{
+  "mission_score": {
+    "value": 0.6275,
+    "metadata": {
+      "saved_child": 1.0,
+      "saved_human": 0.5,
+      "saved_animal": 0.3333333333333333,
+      "rescue_recall": 0.6,
+      "containment": 0.44999999999999996,
+      "efficiency": 0.8333333333333334,
+      "safety": 0.75,
+      "tool_calls": 19.0,
+      "composite": 0.6275
+    }
+  }
+}

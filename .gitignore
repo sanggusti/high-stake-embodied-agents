@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Disaster Mitigation Bench working outputs
+runs/
+logs/
+.inspect-data/
+.inspect-logs/
+assets/models/
+assets/textures/*.jpg
+# FIRMS archive: the zip is committed; the extracted CSV (30 MB) regenerates.
+data/firm/*.csv

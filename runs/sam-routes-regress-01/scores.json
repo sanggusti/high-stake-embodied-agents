@@ -1,0 +1,30 @@
+{
+  "samples": [
+    {
+      "sample_id": "forest_fire-seed-1",
+      "scenario": "forest_fire",
+      "seed": 1,
+      "world_hash": "af7171065d0c46df",
+      "scores": {
+        "saved_child": 0.0,
+        "saved_human": 0.0,
+        "saved_animal": 0.0,
+        "rescue_recall": 0.0,
+        "containment": 0.0,
+        "efficiency": 0.0,
+        "safety": 1.0,
+        "tool_calls": 0.0,
+        "found_any": 0.0,
+        "first_find_step": -1.0,
+        "coverage": 0.01,
+        "damage_cells": 2.0,
+        "unburned_fraction": 0.98,
+        "unflooded_fraction": 1.0,
+        "debris_cells": 0.0,
+        "buried_victims": 0.0,
+        "composite": 0.15
+      },
+      "error": null
+    }
+  ]
+}

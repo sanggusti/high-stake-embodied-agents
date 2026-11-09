@@ -1,0 +1,44 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "firms_peat_kalimantan_01", "seed": 7, "world_hash": "3387d9f53d53cc4f", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 0}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 1}, "obs": "Armed.", "pos": [119, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 50.0, "drone_idx": 0}, "obs": "Takeoff to 50.0 m.", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 50.0, "drone_idx": 1}, "obs": "Takeoff to 50.0 m.", "pos": [119, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(0,0) alt=50.0m airborne=True battery=98.0% steps=2/60 violations=0 fleet: #1@(119,0)^ batt=99.0%", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 1}, "obs": "drone=1 pos=(119,0) alt=50.0m airborne=True battery=99.0% steps=2/60 violations=0 fleet: #0@(0,0)^ batt=98.0%", "pos": [119, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 0}, "obs": "Loitering 2s at (0, 0).", "pos": [0, 0]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "loiter", "args": {"seconds": 2, "drone_idx": 1}, "obs": "Loitering 2s at (119, 0).", "pos": [119, 0]}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": "snapshot-ep-firms_peat_kalimantan_01-step-4-1", "detections": []}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "pos": [0, 0]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "goto_location", "args": {"x": 30, "y": 30, "drone_idx": 0}, "obs": "Moved to (30, 30).", "pos": [30, 30]}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": null, "detections": []}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 90, "y": 30, "drone_idx": 1}, "obs": "Moved to (90, 30).", "pos": [90, 30]}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "goto_location", "args": {"x": 30, "y": 60, "drone_idx": 0}, "obs": "Moved to (30, 60).", "pos": [30, 60]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 90, "y": 60, "drone_idx": 1}, "obs": "Moved to (90, 60).", "pos": [90, 60]}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "goto_location", "args": {"x": 30, "y": 90, "drone_idx": 0}, "obs": "Moved to (30, 90).", "pos": [30, 90]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "goto_location", "args": {"x": 90, "y": 90, "drone_idx": 1}, "obs": "Moved to (90, 90).", "pos": [90, 90]}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": null, "detections": []}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 0}, "obs": "Loitering 3s at (30, 90).", "pos": [30, 90]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 1}, "obs": "Loitering 3s at (90, 90).", "pos": [90, 90]}
+{"t": 60.0, "step": 12, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": "snapshot-ep-firms_peat_kalimantan_01-step-12-2", "detections": []}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "pos": [30, 90]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(30,90) alt=50.0m airborne=True battery=88.0% steps=12/60 violations=0 fleet: #1@(90,90)^ batt=89.0%", "pos": [30, 90]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 1}, "obs": "drone=1 pos=(90,90) alt=50.0m airborne=True battery=89.0% steps=12/60 violations=0 fleet: #0@(30,90)^ batt=88.0%", "pos": [90, 90]}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "goto_location", "args": {"x": 60, "y": 60, "drone_idx": 0}, "obs": "Moved to (60, 60).", "pos": [60, 60]}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "goto_location", "args": {"x": 60, "y": 60, "drone_idx": 1}, "obs": "Moved to (60, 60).", "pos": [60, 60]}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 0}, "obs": "Loitering 3s at (60, 60).", "pos": [60, 60]}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": null, "detections": []}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": "snapshot-ep-firms_peat_kalimantan_01-step-15-3", "detections": []}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "pos": [60, 60]}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 15, "drone_idx": 0}, "obs": "Moved to (15, 15).", "pos": [15, 15]}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "goto_location", "args": {"x": 105, "y": 15, "drone_idx": 1}, "obs": "Moved to (105, 15).", "pos": [105, 15]}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 45, "drone_idx": 0}, "obs": "Moved to (15, 45).", "pos": [15, 45]}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "goto_location", "args": {"x": 105, "y": 45, "drone_idx": 1}, "obs": "Moved to (105, 45).", "pos": [105, 45]}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 75, "drone_idx": 0}, "obs": "Moved to (15, 75).", "pos": [15, 75]}
+{"t": 100.0, "step": 20, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found. segmap severity=minor(0.01) blockages=[none] counts={fire:2,smoke:0} [stale seg-map: scan budget exhausted]", "frame_ref": null, "detections": []}
+{"t": 105.0, "step": 21, "kind": "action", "tool": "goto_location", "args": {"x": 105, "y": 75, "drone_idx": 1}, "obs": "Moved to (105, 75).", "pos": [105, 75]}
+{"t": 110.0, "step": 22, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 105, "drone_idx": 0}, "obs": "Moved to (15, 105).", "pos": [15, 105]}
+{"t": 115.0, "step": 23, "kind": "action", "tool": "goto_location", "args": {"x": 105, "y": 105, "drone_idx": 1}, "obs": "Moved to (105, 105).", "pos": [105, 105]}
+{"t": 115.0, "step": 23, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.0011805555555555556}
+{"t": 115.0, "step": 23, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 0.0, "safety": 1.0, "tool_calls": 32.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.0011805555555555556, "damage_cells": 0.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 0.0, "buried_victims": 0.0, "routes_requested": 0.0, "routes_reachable_rate": 0.0, "route_safety": 0.0, "route_excess_length": 0.0, "spl_like": 0.0, "composite": 0.15}
+{"t": -1.0, "step": -1, "kind": "score", "spread_recall_75m": 0.0, "spread_precision_75m": 0.0, "spread_extent_ratio": 0.0}

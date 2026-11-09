@@ -1,0 +1,11 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "tsunami", "seed": 106, "world_hash": "0c20c070a2fce39f", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 7}, "obs": "Moved to (5, 7)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (3,7), child at (6,7), animal at (3,7), animal at (4,7).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 4 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-tsunami-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 4 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (5, 7)."}
+{"t": 15.0, "step": 3, "kind": "state", "rescued": 4, "violations": 0, "coverage": 0.016666666666666666}
+{"t": 15.0, "step": 3, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.5, "saved_human": 0.2, "saved_animal": 1.0, "rescue_recall": 0.3888888888888889, "containment": 0.3888888888888889, "efficiency": 0.95, "safety": 1.0, "tool_calls": 5.0, "found_any": 1.0, "first_find_step": 2.0, "coverage": 0.016666666666666666, "composite": 0.5647222222222222}

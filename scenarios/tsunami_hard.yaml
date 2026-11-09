@@ -1,0 +1,61 @@
+name: tsunami_hard
+variant_of: tsunami
+kind: Tsunami (coastal surge, hard)
+description: >-
+  Offshore quake sends a surge onto a 300 m coastal strip: the sea
+  first recedes off the sand flat (warning phase), then the wave
+  arrives over the beach road, pier, and harbor depot, leaving a
+  debris field across the scoured town. Victims shelter on high
+  ground and rooftops (trapped); some are adrift in the surge
+  (mobile). The debris field activates late and drifts. Visual
+  reference: 2004 Banda Aceh and 2011 Sendai aerials plus the
+  Tohoku ASTER debris scene (docs/flood-sim2real/refs/).
+grid:
+  width: 60
+  height: 60
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: trapped
+    child:
+      min: 1
+      max: 2
+      mobility: trapped
+    animal:
+      min: 1
+      max: 2
+      mobility: mobile
+hazards:
+  # Always-active zones first: the SAM proposer reads the first four.
+  - {x: 12, y: 9, radius: 4.0, label: harbor-wreck}
+  - {x: 48, y: 14, radius: 4.0, label: beach-road-wash}
+  - {x: 30, y: 36, radius: 5.0, label: backwash-pool}
+  - {x: 30, y: 14, radius: 3.0, label: pier-wreck}
+  - {x: 30, y: 10, radius: 7.0, label: surge-channel, active_from_phase: 1}
+  - {x: 30, y: 25, radius: 6.0, label: debris-field, active_from_phase: 2}
+weather:
+  - overcast
+  - storm
+  - clear
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: mixed
+  hazard_drift: true
+  phases:
+    - {name: recede-warning, until_step: 20}
+    - {name: wave-arrival, until_step: 40}
+    - {name: debris, until_step: 60}
+dynamics:
+  water:
+    origin: south
+    rate_num: 1
+    rate_den: 4
+    current: [0, -1]
+    drift_every: 3

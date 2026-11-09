@@ -1,0 +1,41 @@
+{
+  "tests_passed": 120,
+  "tests_failed": 0,
+  "tests_skipped": 4,
+  "tests_new": 31,
+  "baseline_image_requests": 35,
+  "baseline_video_frames": 90,
+  "baseline_latency_s_min": 0.69,
+  "baseline_latency_s_max": 8.57,
+  "concepts_proven": [
+    "box:rubble-field",
+    "building",
+    "car",
+    "flooded road",
+    "house",
+    "person",
+    "point:rubble+neg-road",
+    "road",
+    "smoke",
+    "tent",
+    "vehicle",
+    "water"
+  ],
+  "concepts_zero_match": [
+    "collapsed building",
+    "concrete",
+    "crowd",
+    "damaged road",
+    "debris",
+    "destroyed building",
+    "fire",
+    "flooded street",
+    "forest",
+    "pile",
+    "rubble",
+    "truck",
+    "victim"
+  ],
+  "video_ids_stable_90_frames": true,
+  "api_cost_usd": 0.105
+}

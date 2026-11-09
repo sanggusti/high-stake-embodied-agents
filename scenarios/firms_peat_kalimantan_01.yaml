@@ -1,0 +1,69 @@
+name: firms_peat_kalimantan_01
+variant_of: forest_fire
+kind: FIRMS peatland fire (sim-to-real)
+description: >-
+  Real 2019-09-13 Central Kalimantan peat fire (VIIRS): 2 ignition cells
+  from day-0 hotspots near (-2.808, 114.027), FRP-hot flaming front over
+  deep drained peat. Day-1..7 hotspot cells are the spread reference.
+  Victims are synthetic-seeded (FIRMS carries no victim data).
+grid:
+  width: 120
+  height: 120
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: static
+    child:
+      min: 0
+      max: 1
+      mobility: static
+    animal:
+      min: 1
+      max: 3
+      mobility: static
+hazards: []
+weather:
+  - drought-moderate
+  - drought-extreme
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: static
+  hazard_drift: true
+dynamics:
+  fire:
+    ignition: [{x: 50, y: 54}, {x: 58, y: 60}]
+    moisture: 0.15
+    wind_dir: [1, 0]
+    wind_speed: 4.0
+    fuel_default: 0.95
+    burn_duration: 25
+    ignition_threshold: 1.0
+    base_ros: 0.06
+    peat:
+      depth_default: 0.0
+      peat_blocks: [{x0: 0, y0: 0, x1: 119, y1: 119, depth: 0.8}]
+      smolder_ros: 0.07
+      smolder_threshold: 0.5
+      breakout_threshold: 1.75
+      drought: 1.5
+      smolder_duration_mult: 3.0
+      haze_per_burning: 0.05
+      haze_per_smoldering: 0.08
+    weather_modifiers:
+      drought-moderate: {wind_speed: 3.0, moisture: 0.25, drought: 1.2}
+      drought-extreme: {wind_speed: 6.0, moisture: 0.06, drought: 1.8}
+firms:
+  anchor: [-2.808, 114.027]
+  t0: "2019-09-13"
+  source: data/firm/fire_archive_SV-C2_836814.csv
+  window_m: 600
+  frp_mean: 45.8
+  frp_max: 89.3
+  ref_new_cells: [[55, 48]]

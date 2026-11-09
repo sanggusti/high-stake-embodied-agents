@@ -1,0 +1,26 @@
+{
+  "run_id": "sam-routes-v1",
+  "task": "sam-segmap:routes",
+  "model": "sam-3.1",
+  "scenario": "multi",
+  "seeds": [],
+  "limits": {},
+  "started_at": "2026-11-02T07:50:16.174386+00:00",
+  "finished_at": "2026-11-02T07:50:16.175211+00:00",
+  "git_sha": "e9017e12ea0f3959648e5888e24bf9784005255d",
+  "eval_logs": [],
+  "notes": [
+    "SAM 3.1 seg-maps + grounding + request_route_map tool shipped.",
+    "31 new tests (sam 14, grounding 9, segmap 8); suite 120 passed 4 skipped.",
+    "Regression eval recorded separately as sam-routes-regress-01.",
+    "Live baseline: 35 image + 90 video frames, ~$0.105 audited.",
+    "Native frames only; survey geometry assumed (see report.md limits)."
+  ],
+  "evidence": {
+    "report": "runs/sam-routes-v1/report.md",
+    "demo": "runs/sam-routes-v1/demo.txt",
+    "baseline": "runs/sam-routes-v1/baseline.json",
+    "overlays": "runs/sam-routes-v1/MASK_*.png",
+    "regression": "runs/sam-routes-regress-01/"
+  }
+}

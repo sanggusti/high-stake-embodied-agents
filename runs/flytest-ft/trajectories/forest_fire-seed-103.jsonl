@@ -1,0 +1,34 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 103, "world_hash": "2fb90b2762f048b5", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (1,2).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 2}, "obs": "Moved to (1, 2)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (1, 2)."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 2}, "obs": "Moved to (1, 2)."}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (1, 2)."}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 2}, "obs": "Moved to (1, 2)."}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (1, 2)."}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 2}, "obs": "Moved to (1, 2)."}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (1, 2)."}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 2}, "obs": "Moved to (1, 2)."}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (1, 2)."}
+{"t": 100.0, "step": 20, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null}
+{"t": 105.0, "step": 21, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 110.0, "step": 22, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 115.0, "step": 23, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 2}, "obs": "Moved to (1, 2)."}
+{"t": 120.0, "step": 24, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (1, 2)."}
+{"t": 120.0, "step": 24, "kind": "state", "rescued": 1, "violations": 0, "coverage": 0.02}
+{"t": 120.0, "step": 24, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.0, "saved_animal": 0.5, "rescue_recall": 0.1, "containment": 0.1, "efficiency": 0.6, "safety": 1.0, "tool_calls": 25.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.02, "composite": 0.31}

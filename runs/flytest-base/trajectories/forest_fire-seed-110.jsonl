@@ -1,0 +1,48 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 110, "world_hash": "875a561e6da971bd", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 0, "y": 0}, "obs": "Moved to (0, 0)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 5}, "obs": "Loitering 5s at (0, 0)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 1, "y": 0}, "obs": "Moved to (1, 0)."}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-forest_fire-step-4-2"}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "goto_location", "args": {"x": 2, "y": 0}, "obs": "Moved to (2, 0)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "novelty", "summary": "New detections: animal at (5,0).", "frame_ref": null}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-forest_fire-step-5-3"}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8."}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "goto_location", "args": {"x": 3, "y": 0}, "obs": "Moved to (3, 0)."}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 4/8.", "frame_ref": "snapshot-ep-forest_fire-step-6-4"}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 4/8."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "goto_location", "args": {"x": 4, "y": 0}, "obs": "Moved to (4, 0)."}
+{"t": 35.0, "step": 7, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 5/8.", "frame_ref": "snapshot-ep-forest_fire-step-7-5"}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 5/8."}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 0}, "obs": "Moved to (5, 0)."}
+{"t": 40.0, "step": 8, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 6/8.", "frame_ref": "snapshot-ep-forest_fire-step-8-6"}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 6/8."}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "goto_location", "args": {"x": 6, "y": 0}, "obs": "Moved to (6, 0)."}
+{"t": 45.0, "step": 9, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 7/8.", "frame_ref": "snapshot-ep-forest_fire-step-9-7"}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 7/8."}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "goto_location", "args": {"x": 7, "y": 0}, "obs": "Moved to (7, 0)."}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8.", "frame_ref": "snapshot-ep-forest_fire-step-10-8"}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8."}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "goto_location", "args": {"x": 8, "y": 0}, "obs": "Moved to (8, 0)."}
+{"t": 55.0, "step": 11, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null}
+{"t": 55.0, "step": 11, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "goto_location", "args": {"x": 9, "y": 0}, "obs": "Moved to (9, 0)."}
+{"t": 60.0, "step": 12, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (9,3).", "frame_ref": null}
+{"t": 60.0, "step": 12, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "goto_location", "args": {"x": 9, "y": 1}, "obs": "Moved to (9, 1)."}
+{"t": 65.0, "step": 13, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "goto_location", "args": {"x": 9, "y": 2}, "obs": "Moved to (9, 2)."}
+{"t": 70.0, "step": 14, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "land", "args": {}, "obs": "Landed at (9, 2)."}
+{"t": 75.0, "step": 15, "kind": "state", "rescued": 2, "violations": 0, "coverage": 0.12}
+{"t": 75.0, "step": 15, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.3333333333333333, "saved_animal": 0.3333333333333333, "rescue_recall": 0.3333333333333333, "containment": 0.3333333333333333, "efficiency": 0.75, "safety": 1.0, "tool_calls": 28.0, "found_any": 1.0, "first_find_step": 5.0, "coverage": 0.12, "composite": 0.49583333333333335}

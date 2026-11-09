@@ -1,0 +1,155 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 15, "world_hash": "083445a4b2c4c66a", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (0,2), animal at (0,2).", "frame_ref": null}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 5}, "obs": "Moved to (5, 5)."}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-2-1"}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8."}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 15.0, "step": 3, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-forest_fire-step-3-2"}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "get_telemetry", "args": {}, "obs": "pos=(5,5) alt=30.0m airborne=True battery=96.0% steps=4/60 violations=0"}
+{"t": 20.0, "step": 4, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-forest_fire-step-4-3"}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8."}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 4/8.", "frame_ref": "snapshot-ep-forest_fire-step-5-4"}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 4/8."}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 30.0, "step": 6, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 5/8.", "frame_ref": "snapshot-ep-forest_fire-step-6-5"}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 5/8."}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 35.0, "step": 7, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 6/8.", "frame_ref": "snapshot-ep-forest_fire-step-7-6"}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 6/8."}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 40.0, "step": 8, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 7/8.", "frame_ref": "snapshot-ep-forest_fire-step-8-7"}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 7/8."}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 45.0, "step": 9, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8.", "frame_ref": "snapshot-ep-forest_fire-step-9-8"}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8."}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 55.0, "step": 11, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 60.0, "step": 12, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 65.0, "step": 13, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 70.0, "step": 14, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 80.0, "step": 16, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 85.0, "step": 17, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 90.0, "step": 18, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 95.0, "step": 19, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 100.0, "step": 20, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 100.0, "step": 20, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 105.0, "step": 21, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 105.0, "step": 21, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 105.0, "step": 21, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 110.0, "step": 22, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 110.0, "step": 22, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 110.0, "step": 22, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 115.0, "step": 23, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 115.0, "step": 23, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 115.0, "step": 23, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 120.0, "step": 24, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 120.0, "step": 24, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 120.0, "step": 24, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 125.0, "step": 25, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 125.0, "step": 25, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 125.0, "step": 25, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 125.0, "step": 25, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 130.0, "step": 26, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 130.0, "step": 26, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 130.0, "step": 26, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 135.0, "step": 27, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 135.0, "step": 27, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 135.0, "step": 27, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 140.0, "step": 28, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 140.0, "step": 28, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 140.0, "step": 28, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 145.0, "step": 29, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 145.0, "step": 29, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 145.0, "step": 29, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 150.0, "step": 30, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 150.0, "step": 30, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 150.0, "step": 30, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 150.0, "step": 30, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 155.0, "step": 31, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 155.0, "step": 31, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 155.0, "step": 31, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 160.0, "step": 32, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 160.0, "step": 32, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 160.0, "step": 32, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 165.0, "step": 33, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 165.0, "step": 33, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 165.0, "step": 33, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 170.0, "step": 34, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 170.0, "step": 34, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 170.0, "step": 34, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 175.0, "step": 35, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 175.0, "step": 35, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 175.0, "step": 35, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 175.0, "step": 35, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 180.0, "step": 36, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 180.0, "step": 36, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 180.0, "step": 36, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 185.0, "step": 37, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 185.0, "step": 37, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 185.0, "step": 37, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 190.0, "step": 38, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 190.0, "step": 38, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 190.0, "step": 38, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 195.0, "step": 39, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 195.0, "step": 39, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 195.0, "step": 39, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 200.0, "step": 40, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 200.0, "step": 40, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 200.0, "step": 40, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 200.0, "step": 40, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 205.0, "step": 41, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 205.0, "step": 41, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 205.0, "step": 41, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 210.0, "step": 42, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 210.0, "step": 42, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 210.0, "step": 42, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 215.0, "step": 43, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 215.0, "step": 43, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 215.0, "step": 43, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 220.0, "step": 44, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 220.0, "step": 44, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 220.0, "step": 44, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 225.0, "step": 45, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 225.0, "step": 45, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 2 total found.", "frame_ref": null}
+{"t": 225.0, "step": 45, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 225.0, "step": 45, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 230.0, "step": 46, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 230.0, "step": 46, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 230.0, "step": 46, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 235.0, "step": 47, "kind": "action", "tool": "loiter", "args": {"seconds": 10}, "obs": "Loitering 10s at (5, 5)."}
+{"t": 235.0, "step": 47, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only.", "frame_ref": null}
+{"t": 235.0, "step": 47, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 8/8. Budget exhausted: no frame attached, report only."}
+{"t": 235.0, "step": 47, "kind": "state", "rescued": 2, "violations": 0, "coverage": 0.02}
+{"t": 235.0, "step": 47, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.5, "saved_animal": 1.0, "rescue_recall": 0.6, "containment": 0.6, "efficiency": 0.21666666666666667, "safety": 1.0, "tool_calls": 95.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.02, "composite": 0.6025}

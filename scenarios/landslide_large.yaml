@@ -1,0 +1,55 @@
+name: landslide_large
+variant_of: landslide
+kind: Landslide (slope debris, large area)
+description: >-
+  Large-area slope failure over a hillside road. Victims are buried or
+  stranded along the debris paths; ground is unstable and slides may
+  extend. Hazard zones mark the active slip faces.
+grid:
+  width: 20
+  height: 20
+victims:
+  categories:
+    human:
+      min: 3
+      max: 5
+      mobility: static
+    child:
+      min: 0
+      max: 2
+      mobility: static
+    animal:
+      min: 2
+      max: 4
+      mobility: static
+hazards:
+  - {x: 10, y: 16, radius: 2.5, label: slip-face}
+  - {x: 15, y: 6, radius: 1.5, label: slip-face}
+weather:
+  - rain-heavy
+  - overcast
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: static
+  hazard_drift: true
+dynamics:
+  terrain:
+    candidates:
+      - {x: 10, y: 15, slope: 1.5}
+      - {x: 9, y: 14, slope: 1.0}
+      - {x: 15, y: 5, slope: 1.2}
+    sat_rate: 0.05
+    rain_multiplier: 2.0
+    raining: true
+    threshold: 1.0
+    debris_dir: [0, 1]
+    debris_len: 4
+    # Weather coupling (#18): rain-heavy keeps raining; overcast dries it.
+    weather_modifiers:
+      rain-heavy: {raining: true}
+      overcast: {raining: false}

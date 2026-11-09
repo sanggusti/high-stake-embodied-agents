@@ -1,0 +1,45 @@
+name: flood
+kind: Flood (standing water)
+description: >-
+  Slow-onset river flood over flat terrain. Victims wait on upper floors and
+  levees; conditions are stable but the search area is large. Hazard zones
+  mark submerged power lines.
+grid:
+  width: 14
+  height: 10
+victims:
+  categories:
+    human:
+      min: 3
+      max: 6
+      mobility: static
+    child:
+      min: 1
+      max: 2
+      mobility: static
+    animal:
+      min: 1
+      max: 3
+      mobility: static
+hazards:
+  - {x: 6, y: 5, radius: 1.5, label: power-lines}
+weather:
+  - overcast
+  - rain-light
+  - clear
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: medium
+  victim_mobility: static
+  hazard_drift: true
+dynamics:
+  water:
+    origin: south
+    rate_num: 1
+    rate_den: 6
+    current: [0, -1]
+    drift_every: 4

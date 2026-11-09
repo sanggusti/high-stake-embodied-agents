@@ -1,0 +1,28 @@
+{
+  "samples": [
+    {
+      "sample_id": "recon-flood-seed-1",
+      "scenario": "flood",
+      "seed": 1,
+      "world_hash": "33be45439f381748",
+      "scores": {},
+      "error": null
+    },
+    {
+      "sample_id": "recon-flood-seed-3",
+      "scenario": "flood",
+      "seed": 3,
+      "world_hash": "de06963c303bbf59",
+      "scores": {},
+      "error": null
+    },
+    {
+      "sample_id": "recon-forest_fire-seed-2",
+      "scenario": "forest_fire",
+      "seed": 2,
+      "world_hash": "fdedd7a107263862",
+      "scores": {},
+      "error": null
+    }
+  ]
+}

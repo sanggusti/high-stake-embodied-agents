@@ -1,0 +1,10 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "forest_fire", "seed": 104, "world_hash": "954f7cfc2528763e", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-forest_fire-step-0-1"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8."}
+{"t": 0.0, "step": 0, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-forest_fire-step-0-2"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8."}
+{"t": 0.0, "step": 0, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-forest_fire-step-0-3"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 3/8."}
+{"t": 0.0, "step": 0, "kind": "state", "rescued": 0, "violations": 0, "coverage": 0.01}
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 1.0, "saved_human": 0.0, "saved_animal": 0.0, "rescue_recall": 0.0, "containment": 0.0, "efficiency": 1.0, "safety": 1.0, "tool_calls": 3.0, "found_any": 0.0, "first_find_step": -1.0, "coverage": 0.01, "composite": 0.3}

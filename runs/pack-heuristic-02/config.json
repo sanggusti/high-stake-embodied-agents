@@ -1,0 +1,24 @@
+{
+  "run_id": "pack-heuristic-02",
+  "task": "pack_heuristic",
+  "model": "heuristic",
+  "scenario": "pack",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "limits": {},
+  "started_at": "2026-11-02T11:49:14.441051+00:00",
+  "finished_at": "2026-11-02T11:49:14.442170+00:00",
+  "git_sha": "79655f0874bf3668fe8204b103c2ffab77f4ce85",
+  "eval_logs": [
+    "logs/2026-11-02T11-49-02-00-00_pack-heuristic_3wYJMxu8RApzLiFJbVQGTf.eval"
+  ],
+  "notes": [
+    "post-fix: pack back to 18 base samples (excludes variants)"
+  ],
+  "evidence": {
+    "l1_eval_log": "logs/2026-11-02T11-49-02-00-00_pack-heuristic_3wYJMxu8RApzLiFJbVQGTf.eval"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "run_id": "pack-random-02",
+  "task": "pack_random",
+  "model": "random",
+  "scenario": "pack",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "limits": {},
+  "started_at": "2026-11-02T11:49:15.224229+00:00",
+  "finished_at": "2026-11-02T11:49:15.225309+00:00",
+  "git_sha": "79655f0874bf3668fe8204b103c2ffab77f4ce85",
+  "eval_logs": [
+    "logs/2026-11-02T11-49-02-00-00_pack-random_JxJxDZY9wB5gpTBZXHzgHL.eval"
+  ],
+  "notes": [
+    "post-fix: pack back to 18 base samples (excludes variants)"
+  ],
+  "evidence": {
+    "l1_eval_log": "logs/2026-11-02T11-49-02-00-00_pack-random_JxJxDZY9wB5gpTBZXHzgHL.eval"
+  }
+}

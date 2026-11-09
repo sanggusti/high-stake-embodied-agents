@@ -1,0 +1,21 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "tsunami", "seed": 109, "world_hash": "f9c87dbfb430b8fe", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {}, "obs": "Armed."}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 30.0}, "obs": "Takeoff to 30.0 m."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (0,1).", "frame_ref": null}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-tsunami-step-1-1"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 1/8."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-tsunami-step-1-2"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 2/8."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-tsunami-step-1-3"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 4/8.", "frame_ref": "snapshot-ep-tsunami-step-1-4"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 4/8."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 5/8.", "frame_ref": "snapshot-ep-tsunami-step-1-5"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 5/8."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 6/8.", "frame_ref": "snapshot-ep-tsunami-step-1-6"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 6/8."}
+{"t": 5.0, "step": 1, "kind": "edge", "trigger": "on_demand", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 7/8.", "frame_ref": "snapshot-ep-tsunami-step-1-7"}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 7/8."}
+{"t": 5.0, "step": 1, "kind": "state", "rescued": 1, "violations": 0, "coverage": 0.008333333333333333}
+{"t": 5.0, "step": 1, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.25, "saved_animal": 1.0, "rescue_recall": 0.14285714285714285, "containment": 0.14285714285714285, "efficiency": 0.9833333333333333, "safety": 1.0, "tool_calls": 9.0, "found_any": 1.0, "first_find_step": 1.0, "coverage": 0.008333333333333333, "composite": 0.39749999999999996}

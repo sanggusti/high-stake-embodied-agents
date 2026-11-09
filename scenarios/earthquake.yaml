@@ -1,0 +1,38 @@
+name: earthquake
+kind: Earthquake (urban rubble)
+description: >-
+  Collapsed structures in a dense block. Victims are trapped under rubble at
+  fixed locations; some may call for help (audio cue in later backends).
+  Hazard zones mark unstable structures and aftershock risk areas.
+grid:
+  width: 10
+  height: 10
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: trapped
+    child:
+      min: 1
+      max: 2
+      mobility: trapped
+    animal:
+      min: 0
+      max: 1
+      mobility: trapped
+hazards:
+  - {x: 4, y: 4, radius: 1.5, label: unstable}
+  - {x: 8, y: 2, radius: 1.0, label: unstable}
+weather:
+  - dust
+  - clear
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: medium
+  victim_mobility: trapped
+  hazard_drift: false

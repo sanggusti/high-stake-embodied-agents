@@ -1,0 +1,42 @@
+{"t": 0.0, "step": 0, "kind": "note", "event": "episode_start", "scenario": "earthquake_hard", "seed": 7, "world_hash": "113bc5a84416ccf0", "backend": "mock"}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 0}, "obs": "Armed.", "pos": [0, 0]}
+{"t": 0.0, "step": 0, "kind": "action", "tool": "arm", "args": {"drone_idx": 1}, "obs": "Armed.", "pos": [59, 0]}
+{"t": 5.0, "step": 1, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 50.0, "drone_idx": 0}, "obs": "Takeoff to 50.0 m.", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "takeoff", "args": {"altitude_m": 50.0, "drone_idx": 1}, "obs": "Takeoff to 50.0 m.", "pos": [59, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(0,0) alt=50.0m airborne=True battery=98.0% steps=2/60 violations=0 fleet: #1@(59,0)^ batt=99.0%", "pos": [0, 0]}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 1}, "obs": "drone=1 pos=(59,0) alt=50.0m airborne=True battery=99.0% steps=2/60 violations=0 fleet: #0@(0,0)^ batt=98.0%", "pos": [59, 0]}
+{"t": 10.0, "step": 2, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "frame_ref": "snapshot-ep-earthquake_hard-step-2-1", "detections": []}
+{"t": 10.0, "step": 2, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 1/8.", "pos": [0, 0]}
+{"t": 15.0, "step": 3, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 15, "drone_idx": 0}, "obs": "Moved to (15, 15).", "pos": [15, 15]}
+{"t": 20.0, "step": 4, "kind": "action", "tool": "goto_location", "args": {"x": 45, "y": 15, "drone_idx": 1}, "obs": "Moved to (45, 15). WARNING: hazard zone.", "pos": [45, 15]}
+{"t": 25.0, "step": 5, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 0}, "obs": "Loitering 3s at (15, 15).", "pos": [15, 15]}
+{"t": 25.0, "step": 5, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null, "detections": []}
+{"t": 30.0, "step": 6, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 1}, "obs": "Loitering 3s at (45, 15).", "pos": [45, 15]}
+{"t": 35.0, "step": 7, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 30, "drone_idx": 0}, "obs": "Moved to (15, 30).", "pos": [15, 30]}
+{"t": 40.0, "step": 8, "kind": "action", "tool": "goto_location", "args": {"x": 40, "y": 30, "drone_idx": 1}, "obs": "Moved to (40, 30).", "pos": [40, 30]}
+{"t": 45.0, "step": 9, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 0}, "obs": "Loitering 3s at (15, 30).", "pos": [15, 30]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 1}, "obs": "Loitering 3s at (40, 30).", "pos": [40, 30]}
+{"t": 50.0, "step": 10, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 0 in view, 0 total found.", "frame_ref": null, "detections": []}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(15,30) alt=50.0m airborne=True battery=90.0% steps=10/60 violations=1 fleet: #1@(40,30)^ batt=91.0%", "pos": [15, 30]}
+{"t": 50.0, "step": 10, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 1}, "obs": "drone=1 pos=(40,30) alt=50.0m airborne=True battery=91.0% steps=10/60 violations=1 fleet: #0@(15,30)^ batt=90.0%", "pos": [40, 30]}
+{"t": 55.0, "step": 11, "kind": "action", "tool": "goto_location", "args": {"x": 10, "y": 45, "drone_idx": 0}, "obs": "Moved to (10, 45).", "pos": [10, 45]}
+{"t": 60.0, "step": 12, "kind": "action", "tool": "goto_location", "args": {"x": 30, "y": 30, "drone_idx": 1}, "obs": "Moved to (30, 30). WARNING: hazard zone.", "pos": [30, 30]}
+{"t": 65.0, "step": 13, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 0}, "obs": "Loitering 3s at (10, 45).", "pos": [10, 45]}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 1}, "obs": "Loitering 3s at (30, 30).", "pos": [30, 30]}
+{"t": 70.0, "step": 14, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "frame_ref": "snapshot-ep-earthquake_hard-step-14-2", "detections": []}
+{"t": 70.0, "step": 14, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 0 in view (0 new). Snapshot budget 2/8.", "pos": [10, 45]}
+{"t": 75.0, "step": 15, "kind": "action", "tool": "goto_location", "args": {"x": 5, "y": 50, "drone_idx": 0}, "obs": "Moved to (5, 50).", "pos": [5, 50]}
+{"t": 75.0, "step": 15, "kind": "edge", "trigger": "novelty", "summary": "New detections: human at (4,52).", "frame_ref": null, "detections": [{"label": "human", "x": 4, "y": 52}]}
+{"t": 80.0, "step": 16, "kind": "action", "tool": "goto_location", "args": {"x": 50, "y": 45, "drone_idx": 1}, "obs": "Moved to (50, 45). WARNING: hazard zone.", "pos": [50, 45]}
+{"t": 80.0, "step": 16, "kind": "edge", "trigger": "heartbeat", "summary": "Heartbeat: 1 in view, 1 total found.", "frame_ref": null, "detections": [{"label": "human", "x": 4, "y": 52}]}
+{"t": 85.0, "step": 17, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 0}, "obs": "Loitering 3s at (5, 50).", "pos": [5, 50]}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "loiter", "args": {"seconds": 3, "drone_idx": 1}, "obs": "Loitering 3s at (50, 45).", "pos": [50, 45]}
+{"t": 90.0, "step": 18, "kind": "edge", "trigger": "requested", "summary": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8.", "frame_ref": "snapshot-ep-earthquake_hard-step-18-3", "detections": [{"label": "human", "x": 4, "y": 52}]}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "request_edge_report", "args": {}, "obs": "On-demand scan: 1 in view (0 new). Snapshot budget 3/8.", "pos": [5, 50]}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 0}, "obs": "drone=0 pos=(5,50) alt=50.0m airborne=True battery=82.0% steps=18/60 violations=3 fleet: #1@(50,45)^ batt=83.0%", "pos": [5, 50]}
+{"t": 90.0, "step": 18, "kind": "action", "tool": "get_telemetry", "args": {"drone_idx": 1}, "obs": "drone=1 pos=(50,45) alt=50.0m airborne=True battery=83.0% steps=18/60 violations=3 fleet: #0@(5,50)^ batt=82.0%", "pos": [50, 45]}
+{"t": 95.0, "step": 19, "kind": "action", "tool": "goto_location", "args": {"x": 15, "y": 55, "drone_idx": 0}, "obs": "Moved to (15, 55).", "pos": [15, 55]}
+{"t": 100.0, "step": 20, "kind": "action", "tool": "goto_location", "args": {"x": 55, "y": 50, "drone_idx": 1}, "obs": "Moved to (55, 50).", "pos": [55, 50]}
+{"t": 100.0, "step": 20, "kind": "state", "rescued": 1, "violations": 3, "coverage": 0.0033333333333333335}
+{"t": 100.0, "step": 20, "kind": "note", "event": "episode_end"}
+{"t": -1.0, "step": -1, "kind": "score", "saved_child": 0.0, "saved_human": 0.3333333333333333, "saved_animal": 0.0, "rescue_recall": 0.2, "containment": 0.05, "efficiency": 0.6666666666666667, "safety": 0.25, "tool_calls": 31.0, "found_any": 1.0, "first_find_step": 15.0, "coverage": 0.0033333333333333335, "damage_cells": 0.0, "unburned_fraction": 1.0, "unflooded_fraction": 1.0, "debris_cells": 0.0, "buried_victims": 0.0, "routes_requested": 0.0, "routes_reachable_rate": 0.0, "route_safety": 0.0, "route_excess_length": 0.0, "spl_like": 0.2, "composite": 0.24750000000000003}

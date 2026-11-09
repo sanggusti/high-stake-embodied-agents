@@ -1,0 +1,55 @@
+name: forest_fire
+kind: Forest fire (haze)
+description: >-
+  Wildfire with heavy smoke haze reducing visibility. Victims are scattered
+  hikers and trapped wildlife near the treeline. Hazard zones mark active
+  fire fronts that the drone must not enter.
+grid:
+  width: 10
+  height: 10
+victims:
+  categories:
+    human:
+      min: 2
+      max: 4
+      mobility: static
+    child:
+      min: 0
+      max: 1
+      mobility: static
+    animal:
+      min: 1
+      max: 3
+      mobility: static
+hazards:
+  - {x: 7, y: 7, radius: 2.0, label: fire-front}
+  - {x: 3, y: 8, radius: 1.5, label: fire-front}
+weather:
+  - haze-heavy
+  - haze-moderate
+  - clear
+time_of_day:
+  - dawn
+  - day
+  - dusk
+  - night
+difficulty:
+  visibility: low
+  victim_mobility: static
+  hazard_drift: true
+dynamics:
+  fire:
+    ignition: [{x: 7, y: 7}, {x: 3, y: 8}]
+    moisture: 0.3
+    wind_dir: [1, 0]
+    wind_speed: 3.0
+    fuel_default: 0.7
+    burn_duration: 25
+    ignition_threshold: 1.0
+    base_ros: 0.06
+    # Weather coupling (#17): explicit weather overrides wind/moisture.
+    # haze-moderate reproduces the raw config; no weather key = raw config.
+    weather_modifiers:
+      haze-heavy: {wind_speed: 1.0, moisture: 0.45}
+      haze-moderate: {wind_speed: 3.0, moisture: 0.3}
+      clear: {wind_speed: 6.0, moisture: 0.15}
