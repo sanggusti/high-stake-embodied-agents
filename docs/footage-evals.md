@@ -40,9 +40,34 @@ real streamed images → multimodal prompts → routed deterministic scores.)
 - Determinism: two consecutive `build_floodnet_samples(limit=3)` builds
   produce identical ids, questions, and image data URLs.
 
-## Live VLM runs (follow-up — needs provider keys + GPU deploy)
+## Live VLM runs (2026-11-09)
 
-VLM #1 (Baseten, scope-locked slug):
+| model | scenario | n | composite | vqa | count | severity | ground |
+|---|---|---|---|---|---|---|---|
+| muse-spark-open-1026 | floodnet-vqa | 10 | 0.500±0.527 | 0.500±0.535 | 0.500±0.707 | n/a | n/a |
+| muse-spark-open-1026 | ladi-v2 | 24 | 0.875±0.338 | 1.000±0.000 | n/a | 0.750±0.452 | n/a |
+| Qwen3-VL-8B-Instruct | floodnet-vqa | 10 | 0.300±0.483 | 0.250±0.463 | 0.500±0.707 | n/a | n/a |
+| Qwen3-VL-8B-Instruct | ladi-v2 | 24 | 0.917±0.282 | 1.000±0.000 | n/a | 0.833±0.389 | n/a |
+
+Runs: `footage-floodnet-baseten-01` (10 samples, ~8.8k tokens),
+`footage-ladi-baseten-01` (24 samples = 2 images × 12 questions, ~31k
+tokens), `footage-floodnet-modal-01` (10 samples),
+`footage-ladi-modal-01` (24 samples). Manifests under `runs/`, eval
+logs under `logs/` (both gitignored per repo policy).
+
+- VLM #1: Baseten `meta-models/muse-spark-open-1026` (scope-locked
+  slug). Strong on LADI yes/no (1.000 vqa) but verbose on FloodNet
+  counting ("4 roofed structures…" despite the single-word
+  instruction), so exact-match counting misses.
+- VLM #2: Modal vLLM `Qwen/Qwen3-VL-8B-Instruct` on A10G
+  (`infra/modal/vllm_qwen3vl.py`), serverless endpoint
+  `https://sanggusti--dmb-vllm-qwen3vl-serve.us-east.modal.run`
+  (scales to zero). First deploy failed to start (see
+  [inference](inference.md) gotchas); fixed at `--max-model-len 4096`
+  + 0.95 utilization. Answers tersely (`3` vs gold `4` on the
+  hand-checked sample) — better format compliance, weaker counting.
+
+Repro — VLM #1 (Baseten, scope-locked slug):
 
 ```bash
 inspect eval evals/floodnet_vqa.py \
@@ -51,11 +76,13 @@ inspect eval evals/ladi_v2.py \
   --model openai-api/baseten/meta-models/muse-spark-open-1026
 ```
 
-VLM #2 (Modal vLLM vision; deploy first — needs an unsandboxed shell):
+Repro — VLM #2 (Modal vLLM vision; deploy needs an unsandboxed shell;
+the inspect provider requires `MODAL_API_KEY` to be set even though
+the server checks no key):
 
 ```bash
 modal deploy infra/modal/vllm_qwen3vl.py  # Qwen3-VL-8B-Instruct
-MODAL_BASE_URL=<serve-url>/v1 inspect eval evals/floodnet_vqa.py \
+MODAL_API_KEY=dummy MODAL_BASE_URL=<serve-url>/v1 inspect eval evals/floodnet_vqa.py \
   --model openai-api/modal/Qwen/Qwen3-VL-8B-Instruct
 ```
 
