@@ -106,6 +106,24 @@ Verified against the installed inspect-ai provider: model id
 - Example: `inspect eval evals/forest_fire.py --limit 1 --model
   openai-api/hf/deepseek-ai/DeepSeek-V4.1-Flash`
 
+## Command A+ (frontier anchor — deferred to Modal)
+
+- Weights: `CohereLabs/command-a-plus-05-2026` (218B MoE / 25B active,
+  Apache 2.0, **ungated**; BF16/FP8/W4A4 variants all public).
+- Context: **128K in / 64K out** (Cohere API contract; checkpoint rope
+  covers 200K).
+- API paths are DEAD (verified 2026-11-09, issue #5): the model is
+  absent from the HF router catalog (direct call → HTTP 400
+  `model_not_found`), and no `COHERE_API_KEY` is available.
+- Chosen path: **Modal 2×H100, W4A4 repo, vLLM** (Cohere-stated fit).
+  Arch `Cohere2VisionForConditionalGeneration` is in vLLM's supported
+  list with this checkpoint named; tool parser candidate is
+  `cohere_command3` (+ `cohere_melody` package) — coverage of A+'s
+  template unverified until a live deploy. Deploy parked while Modal
+  approvals are disabled; see
+  `docs/reports/issue-5-command-a-plus-serving.md` for the full verdict.
+- Status: **not yet serving** — no smoke eval; cost-per-eval unknown.
+
 ## Verification ladder
 
 1. `inspect eval evals/smoke_inference.py --model mockllm/model` — harness.
