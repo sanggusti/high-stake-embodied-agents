@@ -20,6 +20,7 @@ advisors** in simulated 3D disaster environments.
 | [watcher](watcher.md) | Scenario watcher: observability & replay |
 | [metrics](metrics.md) | Score vector, weights, and metric roadmap |
 | [inference](inference.md) | Baseten + Modal model routing through inspect-ai |
+| [models](models.md) | Newest open models to benchmark/finetune/evaluate |
 | [tracking](tracking.md) | Run registry, eval logs, reproducibility contract |
 | [flywheel](flywheel.md) | Phase D data loop: export, finetune, delta, artifacts |
 | [human-evals](human-evals.md) | Operator-in-the-loop baselines and grading |
