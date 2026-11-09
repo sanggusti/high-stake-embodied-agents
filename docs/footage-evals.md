@@ -8,7 +8,7 @@ full vector in metadata — see [metrics](metrics.md)).
 
 | Corpus | HF id | Revision | Split | License |
 |---|---|---|---|---|
-| FloodNet-VQA | `ljx620/FloodNet-VQA` | `ec9277af` | validation | untagged on card (annotations derive from FloodNet CDLA-Permissive); eval use only |
+| FloodNet-VQA | `ljx620/FloodNet-VQA` | `ec9277af` | validation | untagged on card (annotations derive from FloodNet CDLA-Permissive); training clarified by #7 (QA text + refs only, gated research-only) |
 | LADI v2 | `MITLL/LADI-v2-dataset` | `5f2dbfe8` | test | CC-BY-4.0 (official MITLL upload) |
 
 Notes: `torchgeo/floodnet` carries images/seg only (no VQA pairs);
