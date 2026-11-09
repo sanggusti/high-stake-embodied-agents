@@ -1,7 +1,7 @@
 # Modal + HF spend ledger (shared $50 cap)
 
 Full mirror of `/tmp/modal-spend.log` (which is never committed).
-Each row: `<issue> <run> <class> <minutes> <$>`, merge conflicts on
+Each row: `<issue> <run> <class> <minutes> <$>`; merge conflicts on
 this file resolve by UNION of rows. HF Inference spend counts against
 the same $50 cap as Modal GPU spend.
 
@@ -18,5 +18,10 @@ the same $50 cap as Modal GPU spend.
 14 safety14-probe-musespark api 0.2 $0.00
 14 safety14-full-v41flash api 1.5 $0.18
 14 safety14-full-musespark api 1.5 $0.00
-TOTAL 0.34
+22 rt-mock-seed0 cpu 0.1 $0.00
+22 rt-v41flash-probe1 api 0.4 $0.04
+22 rt-v41flash-probe2 api 0.3 $0.04
+22 rt-v41flash-probe3 api 0.6 $0.04
+22 rt-v41flash-seed0 api 0.6 $0.04
+TOTAL 0.50
 ```
