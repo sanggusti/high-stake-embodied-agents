@@ -8,5 +8,6 @@ the same $50 cap as Modal GPU spend.
 ```
 6 hf-smoke-v41flash api 0.03 $0.00
 6 hf-ff1-v41flash api 2.0 $0.08
+7 curate-v2 cpu 45 $0.00
 TOTAL 0.08
 ```

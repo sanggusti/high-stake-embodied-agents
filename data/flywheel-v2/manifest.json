@@ -1,0 +1,163 @@
+{
+  "issue": 7,
+  "split": "train",
+  "code_commit": "997da7a5f8c50bb33a6058c60461e232f9c272b6",
+  "lib_versions": {
+    "datasets": "5.1.0",
+    "huggingface_hub": "2.4.0",
+    "inspect_ai": "0.3.280"
+  },
+  "export_command": "python -m hsea.data.curate_v2 --out data/flywheel-v2 --split train",
+  "hf_dataset": "sanggusti/dmb-flywheel-v2",
+  "sources": {
+    "floodnet-vqa": {
+      "license": "CDLA-Permissive-1.0 (base FloodNet; ljx620 mirror card untagged)",
+      "clearance": "cleared (QA text + image refs only, no pixels; gated research-only (#7).)",
+      "hf_dataset": "ljx620/FloodNet-VQA",
+      "revision": "ec9277afd48ffb27b945eac3c6fb8d8aa77f8cfd",
+      "split": "train",
+      "cap": 1000,
+      "stats": {
+        "streamed": 1000,
+        "kept": 1000
+      }
+    },
+    "ladi-v2": {
+      "license": "CC-BY-4.0",
+      "clearance": "cleared (Official MITLL upload (#24 \u00a71 row 7 covers LADI terms).)",
+      "hf_dataset": "MITLL/LADI-v2-dataset",
+      "revision": "5f2dbfe8c466d32edafd1bab847ec5252309acdb",
+      "split": "train",
+      "cap_images": 200,
+      "stats": {
+        "images": 200,
+        "kept": 2400
+      }
+    },
+    "disasterm3": {
+      "license": "CC-BY-NC-SA-4.0",
+      "clearance": "cleared (NC/SA research-only, non-commercial, share-alike (#24 \u00a72).)",
+      "hf_dataset": "Kingdrone-Junjue/DisasterM3",
+      "revision": "1da6da73fad6bd100454c099edd0cee972823810",
+      "file": "DisasterM3_Instruct/train_release.json",
+      "cap": 3000,
+      "stats": {
+        "rows_total": 92968,
+        "kept": 3000,
+        "excluded_referring": 37204,
+        "per_task": {
+          "Building Damage Counting": 375,
+          "Disaster Bearing Bodies Recognition": 375,
+          "Disaster Scene Recognition": 375,
+          "Disaster Type Recognition": 375,
+          "Road Damage Counting": 375,
+          "disaster caption": 375,
+          "disaster restoration advice": 375,
+          "relational reasoning": 375
+        }
+      }
+    },
+    "crisitext": {
+      "license": "CC-BY-4.0",
+      "clearance": "cleared (Open; FEMA/GTD situations only, synthetic rows filtered.)",
+      "hf_dataset": "LanD-FBK/crisitext",
+      "revision": "33c5545cd298527ae362cdd34a289486f6656dd6",
+      "split": "train",
+      "cap_situations": 300,
+      "stats": {
+        "situations": 300,
+        "kept": 2022,
+        "skipped_synthetic": 0
+      }
+    },
+    "humaid": {
+      "license": "CC-BY-NC-SA-4.0",
+      "clearance": "cleared (NC research-only; labels-only, no tweet text (Twitter ToS).)",
+      "hf_dataset": "QCRI/HumAID-all",
+      "revision": "93470f414471ae7464f4080b8a5a2b4f0f3226f5",
+      "split": "train",
+      "cap": 4000,
+      "stats": {
+        "streamed": 4000
+      }
+    },
+    "crisismmd": {
+      "license": "CC-BY-NC-SA-4.0",
+      "clearance": "cleared (NC research-only; labels-only, no tweet text/images.)",
+      "hf_dataset": "QCRI/CrisisMMD",
+      "revision": "10a5626ba112ab9c50369c473a2062bcf205d708",
+      "split": "train",
+      "cap": 3000,
+      "stats": {
+        "tweets_seen": 11584,
+        "joined": 8409,
+        "dropped": 3175,
+        "cap": 3000
+      }
+    },
+    "l2": {
+      "license": "own bench data",
+      "clearance": "cleared (inspect-ai logs + runs/ trajectories generated in-repo.)",
+      "log_glob": "logs/*.eval",
+      "v1_dir": "data/flywheel-v1",
+      "min_composite": 0.5,
+      "stats": {
+        "fresh": {
+          "logs": 157,
+          "episodes": 210,
+          "sft_pairs": 27,
+          "skipped_off_split": 0,
+          "skipped_mock_sft": 5,
+          "teachers": {
+            "mockllm/model": 26,
+            "openai-api/modal/Qwen/Qwen2.5-7B-Instruct": 31,
+            "openai-api/baseten/meta-models/muse-spark-open-1026": 31,
+            "openai-api/modal/mistralai/Mistral-7B-Instruct-v0.3": 34,
+            "openai-api/modal/Qwen/Qwen2.5-14B-Instruct-AWQ": 25,
+            "openai-api/modal/Qwen/Qwen3-VL-8B-Instruct": 4,
+            "openai-api/hf/deepseek-ai/DeepSeek-V4.1-Flash": 4,
+            "openai-api/modal/Qwen/Qwen3.8-27B-FP8": 2
+          }
+        },
+        "carry_v1": {
+          "sft_pairs": 224,
+          "episodes": 40,
+          "teacher": "Qwen/Qwen2.5-7B-Instruct",
+          "commit": "393a158a91506d5572dfdb7b950cd1af482d6901"
+        }
+      }
+    }
+  },
+  "totals": {
+    "sft": 8673,
+    "dpo": 7000,
+    "rlvr": 250
+  },
+  "dpo_counts": {
+    "humaid": {
+      "records": 4000,
+      "pairs": 4000
+    },
+    "crisismmd": {
+      "records": 3000,
+      "pairs": 3000
+    }
+  },
+  "files": {
+    "sft.jsonl": "5b944648ad57ef0483988aa2811d7b0db881e2e8aa81352313f486daf91e6424",
+    "dpo.jsonl": "a322461981f872989522d76bd7cfde971bc12d5561ed255b7d2837d92d136f59",
+    "rlvr.jsonl": "7a9f6ad838e16e8035be06e1ee9202702c28381059bd868d673baab23d215096"
+  },
+  "clearance": {
+    "asserted": [
+      "floodnet-vqa",
+      "ladi-v2",
+      "disasterm3",
+      "crisitext",
+      "humaid",
+      "crisismmd",
+      "l2"
+    ],
+    "table": "hsea/data/clearance.py (#24 terms)"
+  }
+}
