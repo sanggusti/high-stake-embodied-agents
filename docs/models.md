@@ -12,7 +12,7 @@ Serving constraint: **the Baseten key is scope-locked to muse-spark-open-1026
 ONLY** — no new Baseten slugs. Model breadth must come from Modal-hosted
 vLLM, scripted baselines, or a *new* provider segment (e.g. HF Inference).
 
-Hard requirement (Lexsi AI Safety hackathon entry): must use **Cohere
+Project direction: build on **Cohere
 open-weights models + Hugging Face datasets/models**. Cohere coverage is
 mandatory, and every shortlist pick below has an HF repo.
 
@@ -64,7 +64,7 @@ vendor API; edge = laptop/on-device class).
   HF repo `CohereLabs/c4ai-command-a-03-2025` (gated behind access request).
 - **Aya Vision 8B/32B** (CohereLabs, CC-BY-NC, 16K ctx, 23 languages) is
   Cohere's open VLM: image captioning, VQA. Non-commercial only — fine for
-  a research bench/hackathon, not for product. 8B fits Modal vLLM easily.
+  a research bench, not for product. 8B fits Modal vLLM easily.
   No newer Aya-Vision generation found (2025 vintage).
 - **Tiny Aya** (announced Feb 17, 2026, India AI Summit; on HF + Cohere
   Platform): 3.35B family, 70+ languages, 8K ctx, CC-BY-NC, runs on a

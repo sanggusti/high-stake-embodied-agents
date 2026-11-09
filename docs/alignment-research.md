@@ -182,7 +182,7 @@ flowchart LR
 
 ## 5. Lexsi-lib mapping
 
-**Stack at a glance** (rules/tracks: https://hackathon.lexsi.ai/; stats:
+**Stack at a glance** (stats:
 https://api.github.com/orgs/Lexsi-Labs/repos?per_page=100):
 
 | Repo | What it is | PyPI (seen) | License | Maturity |
@@ -201,17 +201,17 @@ AgentTune https://raw.githubusercontent.com/Lexsi-Labs/AgentTune/main/README.md;
 AuditKIT https://raw.githubusercontent.com/Lexsi-Labs/AuditKIT/main/README.md;
 CircuitKIT https://raw.githubusercontent.com/Lexsi-Labs/CircuitKIT/main/README.md.
 
-**Recommended HSEA chain (Track 2).** Minimum viable (3 repos): CuratorKIT → SafeTune → AuditKIT.
+**Recommended HSEA chain.** Minimum viable (3 repos): CuratorKIT → SafeTune → AuditKIT.
 Preferred (4 repos): CuratorKIT → AlignTune → SafeTune → AuditKIT. Add CircuitKIT as stretch
 (refusal circuit / abstention probes) and AgentTune only if training tool-calling retrieval agents
-(Track 3 repo — confirm cross-track use in Discord first; rules say "repos from their track").
+(confirm cross-use with the maintainers first).
 Concrete steps: (1) Curate grounded QA + preference + adversarial/refusal sets with provenance → public HF
 dataset. (2) Baseline plain-SFT (AlignTune, TRL backend — avoids AGPL) vs SafeTune `SafeGradTrainer`
 harden on same data. (3) SafeTune `evaluate` both (HarmBench + custom ops eval + over-refusal set);
 `recover`/`steer` on drift; check each method's Faithful badge first. (4) AuditKIT before/after on ≥2
 metric families with sha256 fingerprints → HF Article write-up.
 
-**Cohere + HF constraints** (https://hackathon.lexsi.ai/). Core model must be one of 7 dense Cohere Labs
+**Cohere + HF stack.** HSEA builds on Cohere Labs open-weights
 LLMs (all CC-BY-NC-4.0, all HF-gated `gated:auto`); verified via
 https://huggingface.co/api/models/CohereLabs/&lt;model&gt;:
 
@@ -228,11 +228,11 @@ https://huggingface.co/api/models/CohereLabs/&lt;model&gt;:
 Variant roles/params/context per https://arxiv.org/html/2603.11510 and
 https://docs.cohere.com/docs/tiny-aya (HF cards gated, card text [UNVERIFIED]).
 Everything created must be public/ungated on HF (models, adapters, logs, datasets + collections),
-plus public demo and write-up with >1 before-and-after metric. Submission due end of day Nov 14 (AoE).
-Traps: LSAL org-acknowledgement §1A ([UNVERIFIED] whether hackathon teams count — ask now);
+plus public demo and write-up with >1 before-and-after metric.
+Traps: LSAL org-acknowledgement §1A ([UNVERIFIED] whether research teams count — check with Lexsi);
 AlignTune `unsloth` backend + CuratorKIT `pdf` extra (MinerU) are AGPL; Python split (SafeTune/AgentTune
 need 3.12; CircuitKIT pins transformer-lens 3.8.0 + transformers 5, import-order constrained) — use one
-3.12 env, pin exact versions; "except Track 3" repo-rule wording [UNVERIFIED] — follow 2+ regardless.
+3.12 env, pin exact versions.
 
 ## 6. Gaps + ordered next steps
 
@@ -255,8 +255,8 @@ FIXED to arXiv:2309.07875. Remaining:
 - Methods gaps: Kadavath-2022 calibration via secondary summary (primary not re-checked);
   DPO/KTO OOD ranking via secondary review (primary not checked); corrigibility survey is a
   non-peer-reviewed preprint; DPO/KTO-vs-PPO/ORPO claim [UNVERIFIED].
-- Lexsi gaps: LSAL §1A applicability to hackathon teams [UNVERIFIED]; "except Track 3" meaning
-  [UNVERIFIED]; Aya Expanse context lengths [UNVERIFIED]; Tiny Aya card text (gated);
+- Lexsi gaps: LSAL §1A applicability to research teams [UNVERIFIED];
+  Aya Expanse context lengths [UNVERIFIED]; Tiny Aya card text (gated);
   SafeTune EMNLP-2026 proceedings listing not checked.
 - DORA residue: v1.1-vs-v1.0 field-for-field JSON match [UNVERIFIED] (gated, not downloaded);
   "Top 0.4%" selectivity only on author page (oral itself verified); leaderboard checkpoint
@@ -276,7 +276,7 @@ FIXED to arXiv:2309.07875. Remaining:
    SafeTune audit+repair with AgentHarm gate; AgentTune RLVR/GRPO safety-procedure rewards with
    SafeAgentBench + escalation-curve gate; re-run full stack after every stage.
 6. Red-team own checkpoints (GCG/PAIR + retrieval-injection + tool-use misuse) and write the mini
-   safety case; publish HF artifacts + multi-metric write-up before Nov 14 AoE.
+   safety case; publish HF artifacts + multi-metric write-up.
 
 ## 7. Sources
 
@@ -294,7 +294,7 @@ FIXED to arXiv:2309.07875. Remaining:
   AgentHarm https://arxiv.org/html/2410.09024v3 · SafeAgentBench https://arxiv.org/html/2412.13178v5 ·
   abstention https://arxiv.org/html/2407.18418v3 · debate https://pdf.stafforini.com/irving-2018-ai-safety-via.pdf ·
   interruptibility https://laurent-orseau.com/work · SafeTune lib https://safetune.lexsi.ai/
-- Lexsi: hackathon https://hackathon.lexsi.ai/ ·
+- Lexsi libs (READMEs):
   AlignTune https://raw.githubusercontent.com/Lexsi-Labs/aligntune/main/README.md ·
   CuratorKIT https://raw.githubusercontent.com/Lexsi-Labs/CuratorKIT/main/README.md ·
   SafeTune https://raw.githubusercontent.com/Lexsi-Labs/SafeTune/main/README.md ·

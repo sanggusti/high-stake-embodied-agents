@@ -1,7 +1,7 @@
 # High-stakes Embodied Agents (HSEA)
 
 Safety-graded finetuning loop for embodied disaster-response agents —
-Lexsi AI Safety hackathon entry. Seeded from the disaster-mitigation
+Research project. Seeded from the disaster-mitigation
 bench (Inspect-ai harness + Modal serving + HF datasets); the sim tracks
 (Gazebo/SITL, Colosseum/Unreal) stayed behind.
 
