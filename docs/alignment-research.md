@@ -88,6 +88,11 @@ landslide/explosion/heat-island come from other sources (https://arxiv.org/html/
 **Access/licenses.** Gated HF `Kingdrone-Junjue/DORA`, ~17.5 GB; code Apache-2.0; annotations
 CC BY-NC-SA 4.0; overall non-commercial, humanitarian/research + eval only
 (https://huggingface.co/datasets/Kingdrone-Junjue/DORA, https://github.com/Junjue-Wang/DORA).
+Access probe 2026-11-09 (#23): `gated:auto` (Name/Affiliation/Email/Country + 2 NC/ethics
+checkboxes, auto-granted after the account owner submits the form); token-auth fetches of
+`manifest.json` and `tasks/*.json` return 403 "not in the authorized list", so the subset
+repro is a principled no-go until the user accepts on the dataset page; card metadata, file
+listing, README and LICENSE are public. No borrow-vs-diverge change.
 
 ### Borrow (directly applicable)
 
