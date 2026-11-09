@@ -39,6 +39,15 @@ ROUTE_KEYS = (
     "spl_like",
 )
 
+FOOTAGE_KEYS = (
+    "vqa_accuracy",
+    "counting_acc",
+    "counting_mae",
+    "severity_f1",
+    "grounding_acc",
+    "footage_composite",
+)
+
 
 def record_run(
     run_id: str,
@@ -50,6 +59,7 @@ def record_run(
     notes: list[str] | None = None,
     l2_dir: str | Path | None = None,
     l3_dir: str | Path | None = None,
+    scorer_name: str = "mission_score",
 ) -> dict:
     from inspect_ai.log import read_eval_log  # noqa: PLC0415
 
@@ -62,7 +72,7 @@ def record_run(
         seed = meta.get("seed")
         if isinstance(seed, int) and seed not in seeds:
             seeds.append(seed)
-        score = (sample.scores or {}).get("mission_score")
+        score = (sample.scores or {}).get(scorer_name)
         samples.append(
             {
                 "sample_id": sample.id,
@@ -126,7 +136,7 @@ def _load_rows(runs_dir: Path) -> list[dict]:
                     "sample_id": sample.get("sample_id"),
                     **{
                         k: (sample.get("scores") or {}).get(k)
-                        for k in (*VECTOR_KEYS, *ROUTE_KEYS)
+                        for k in (*VECTOR_KEYS, *ROUTE_KEYS, *FOOTAGE_KEYS)
                     },
                 }
             )
@@ -145,20 +155,33 @@ def _mean_std(values: list[float]) -> str:
 DISPLAY_KEYS = ("composite", "rescue_recall", "containment", "efficiency", "safety")
 DISPLAY_HEADERS = ("composite", "recall", "contain", "effic", "safety")
 
+FOOTAGE_DISPLAY_KEYS = (
+    "footage_composite",
+    "vqa_accuracy",
+    "counting_acc",
+    "severity_f1",
+    "grounding_acc",
+)
+FOOTAGE_DISPLAY_HEADERS = ("composite", "vqa", "count", "severity", "ground")
 
-def render_markdown(rows: list[dict]) -> str:
+
+def render_markdown(rows: list[dict], table: str = "mission") -> str:
+    if table == "footage":
+        keys, headers = FOOTAGE_DISPLAY_KEYS, FOOTAGE_DISPLAY_HEADERS
+    else:
+        keys, headers = DISPLAY_KEYS, DISPLAY_HEADERS
     groups: dict[tuple[str, str], list[dict]] = {}
     for row in rows:
         groups.setdefault((row["model"], row["scenario"]), []).append(row)
     lines = [
-        "| model | scenario | n | " + " | ".join(DISPLAY_HEADERS) + " |",
+        "| model | scenario | n | " + " | ".join(headers) + " |",
         "|---|---|---|---|---|---|---|---|",
     ]
     for (model, scenario), group in sorted(groups.items()):
         short = model.split("/")[-1]
         cells = [short, scenario, str(len(group))]
-        for key in DISPLAY_KEYS:
-            cells.append(_mean_std([r[key] for r in group]))
+        for key in keys:
+            cells.append(_mean_std([r.get(key) for r in group]))
         lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"
 
@@ -227,9 +250,11 @@ def main() -> None:
     record.add_argument("--note", action="append", default=[])
     record.add_argument("--l2-dir", default=None)
     record.add_argument("--l3-dir", default=None)
+    record.add_argument("--scorer-name", default="mission_score")
     table = sub.add_parser("table", help="Render markdown + CSV from the registry.")
     table.add_argument("--runs", default="runs")
     table.add_argument("--out", required=True)
+    table.add_argument("--table", choices=["mission", "footage"], default="mission")
     table.add_argument("--csv", default=None)
     table.add_argument("--run", action="append", default=[], help="Only include these run ids (repeatable).")
     uplift = sub.add_parser("uplift", help="Paired sam-minus-base delta table.")
@@ -243,6 +268,7 @@ def main() -> None:
                 record_run(
                     args.run_id, args.task, args.model, args.scenario,
                     args.log, args.runs, args.note, args.l2_dir, args.l3_dir,
+                    args.scorer_name,
                 ),
                 indent=2,
             )
@@ -253,7 +279,7 @@ def main() -> None:
         rows = _load_rows(Path(args.runs))
         if args.run:
             rows = [r for r in rows if r["run_id"] in set(args.run)]
-        Path(args.out).write_text(render_markdown(rows))
+        Path(args.out).write_text(render_markdown(rows, table=args.table))
         print(f"{len(rows)} samples -> {args.out}")
         if args.csv:
             Path(args.csv).write_text(render_csv(rows))

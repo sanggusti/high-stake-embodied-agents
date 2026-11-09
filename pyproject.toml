@@ -5,6 +5,8 @@ description = "Safety-graded finetuning loop for embodied disaster-response agen
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+  "datasets>=3",
+  "huggingface_hub>=0.30",
   "inspect-ai>=0.3",
   "meta-sam-parser>=0.0.6",
   "openai>=1",
