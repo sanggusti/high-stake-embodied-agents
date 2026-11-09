@@ -1,0 +1,12 @@
+# Pinned Lexsi training libs (issue #26) — ONE Python 3.12 env.
+# Versions verified live on PyPI 2026-11-09; match docs/alignment-research.md §5.
+# AGPL guardrails: do NOT add `aligntune[unsloth]` (Unsloth is AGPL) or
+# `curatorkit[pdf]` (MinerU is AGPL-3.0). Use AlignTune TRL backend + non-PDF ingest.
+# NOTE: `hsea` itself is intentionally NOT pinned here; this env installs the
+# Lexsi libs only (`pip install -e .` is an optional second step for repo code).
+aligntune==0.1.32
+curatorkit==0.1.23
+safetune==0.1.13
+agenttune==1.1.3
+auditkit==1.1.6
+circuitkit==0.2.1
