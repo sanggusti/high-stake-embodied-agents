@@ -9,8 +9,8 @@ interface with the same triggers/budget as the rule stub.
 
 Two evidence-backed limits (see docs/sam-segmap.md):
 - SAM segments photorealistic native frames only. MockBridge map renders
-  return zero matches, so this layer is effective on gazebo-sitl /
-  Colosseum captures and degrades to empty reports on mock.
+  return zero matches, so this layer needs survey-render frames (see
+  render_frames) and degrades to empty reports without them.
 - Amorphous damage nouns ("rubble", "debris", "pile", "collapsed
   building") return zero as concepts. Rubble is delineated via
   point/box prompts (`rubble_point_prompt`) seeded from road-mask gaps or

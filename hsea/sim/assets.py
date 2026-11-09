@@ -1,10 +1,9 @@
 """Drone specification assets.
 
 Vehicle capabilities (frame, endurance, sensors, autonomy skills) are
-versioned YAML assets under ``assets/drones/``. Values flagged
-``provenance: placeholder`` must be replaced by specs pulled from ArduPilot
-sources (frame parameter files, ardupilot_gazebo models) in the assets
-workstream; see docs/assets.md.
+versioned YAML assets under ``assets/drones/``. Shipped specs are sourced
+from ArduPilot parameter files and vehicle models; values flagged
+``provenance: placeholder`` must be replaced before missions use them.
 """
 
 from __future__ import annotations
@@ -47,10 +46,6 @@ class DroneSpec:
     @property
     def sitl_params(self) -> dict:
         return dict(self.raw.get("sitl_params", {}))
-
-    @property
-    def gazebo_model(self) -> str | None:
-        return self.raw.get("gazebo_model")
 
     def supports(self, capability: str) -> bool:
         return bool(self.capabilities.get(capability, False))

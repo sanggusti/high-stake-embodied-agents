@@ -1,7 +1,7 @@
 [project]
-name = "disaster-mitigation-bench"
+name = "high-stakes-embodied-agents"
 version = "0.1.0"
-description = "Benchmarking language models as drone navigators and reconnaissance advisors in simulated 3D disaster environments."
+description = "Safety-graded finetuning loop for embodied disaster-response agents (Inspect-ai + Modal + Hugging Face)."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -14,7 +14,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-sim = ["pymavlink>=2.4"]
 dev = ["pytest>=8"]
 
 [build-system]

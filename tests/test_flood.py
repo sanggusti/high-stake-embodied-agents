@@ -1,7 +1,6 @@
-"""Flood harder envs: concepts, survey frames, proposers, builders."""
+"""Flood harder envs: concepts, survey frames, proposers."""
 
-import pathlib
-import xml.etree.ElementTree as ET
+import pytest
 
 from hsea.perception.render_frames import frames_roots, survey_frame
 from hsea.perception.sam import concepts_for_scenario, hazard_point_proposer
@@ -19,6 +18,8 @@ def test_hard_concepts_include_water():
 def test_frames_roots_cover_flood():
     roots = frames_roots()
     assert any(r.name == "renders" and r.parent.name == "flood-sim2real" for r in roots)
+    if survey_frame("flood_hard", 7) is None:
+        pytest.skip("survey corpus not mounted (HSEA_RENDER_FRAMES_DIR)")
     flood = survey_frame("flood_hard", 7)
     flash = survey_frame("flash_flood_hard", 7)
     tsunami = survey_frame("tsunami_hard", 7)
@@ -30,6 +31,8 @@ def test_frames_roots_cover_flood():
 
 
 def _bridged(scenario):
+    if survey_frame(scenario, 7) is None:
+        pytest.skip("survey corpus not mounted (HSEA_RENDER_FRAMES_DIR)")
     md = dict(build_samples(scenario, seeds=[7])[0].metadata)
     bridge = MockBridge.from_metadata(md)
     assert bridge.capture_frame("test") is not None
@@ -47,47 +50,3 @@ def test_water_proposer_seeds_in_frame_points():
         for _, (u, v) in pts:
             assert 0 <= u < cam.width and 0 <= v < cam.height
         bridge.close()
-
-
-def test_build_flood_world(tmp_path):
-    from assets.structures.build_flood import build
-
-    stats = build("flood_hard", 7, tmp_path)
-    ET.fromstring((tmp_path / "world.sdf").read_text())
-    assert stats["includes"] > 100
-    assert stats["victim_actors"] == 4
-    tex = tmp_path / "models" / "ground_tex" / "materials" / "textures"
-    assert (tex / "asphalt_02.jpg").exists()
-    school_sdf = (tmp_path / "models" / "school" / "model.sdf").read_text()
-    assert "albedo_map" in school_sdf
-    randy_sdf = (tmp_path / "models" / "rescue-randy-sitting" / "model.sdf").read_text()
-    assert "fuel.ignitionrobotics.org" not in randy_sdf
-    assert not (tmp_path / "models" / "wam-v").exists()  # pinned as-is
-    assert (tmp_path / "models" / "flood-rain" / "model.sdf").exists()
-
-
-def test_build_flash_world(tmp_path):
-    from assets.structures.build_flood import build
-
-    stats = build("flash_flood_hard", 7, tmp_path)
-    ET.fromstring((tmp_path / "world.sdf").read_text())
-    assert stats["includes"] > 80
-    assert stats["victim_actors"] == 5
-    tex = tmp_path / "models" / "ground_tex" / "materials" / "textures"
-    assert (tex / "sand_01.jpg").exists()
-    bridge_sdf = (tmp_path / "models" / "truss-bridge" / "model.sdf").read_text()
-    assert "albedo_map" in bridge_sdf
-
-
-def test_build_tsunami_world(tmp_path):
-    from assets.structures.build_flood import build
-
-    stats = build("tsunami_hard", 7, tmp_path)
-    ET.fromstring((tmp_path / "world.sdf").read_text())
-    assert stats["includes"] > 50
-    assert stats["victim_actors"] == 4
-    world = (tmp_path / "world.sdf").read_text()
-    assert "model://coast-water" not in world  # retired: giant + blue
-    assert "model://pier" in world and "model://dock" in world
-    pier_sdf = (tmp_path / "models" / "pier" / "model.sdf").read_text()
-    assert "albedo_map" in pier_sdf

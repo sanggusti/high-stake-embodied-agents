@@ -2,8 +2,8 @@
 
 Run the same rollout on two backends and compare navigation verdicts.
 Fidelity bar (not equality): same found-set, recall within tolerance,
-same safety outcome. Used for mock-vs-SITL today and mock-vs-Colosseum
-once Track 2 is live (#6).
+same safety outcome. (Kept for future backend A/B work; the sim
+backends stayed in the bench repo, so only mock runs today.)
 """
 
 from __future__ import annotations

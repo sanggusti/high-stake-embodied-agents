@@ -8,7 +8,7 @@ the seg-map digest line in edge reports.
 ## Pipeline
 
 ```
-native frame (Gazebo / Colosseum capture_frame)
+native frame (survey render, or a calibrated capture_frame)
   -> build_seg_map: one request per scenario concept (road, water, ...)
   -> parse boxes+masks, decode rasters (meta_sam_parser)
   -> rasterize to a 64x64 frame grid
@@ -49,7 +49,7 @@ road-mask gaps or operator clicks (wiring is later work).
 
 - Native photorealistic frames only. MockBridge map renders return zero
   matches, so `SAMEdgePerception` degrades to empty reports on mock —
-  route-map evals must run on gazebo-sitl/colosseum.
+  route-map evals need the survey-render corpus (`HSEA_RENDER_FRAMES_DIR`).
 - Victim grounding needs a pixel→grid camera model (`grounding`
   callable); until it lands, `person` detections are reported only when
   a grounding is injected. Severity/blockages need no grounding.
@@ -81,7 +81,7 @@ Gates: #45 keyframes green, #48 footage flowing, camera FOV/pose logged
 for calibration, scan budget set. Same seeds both arms:
 
 ```bash
-HSEA_SIM_BACKEND=gazebo-sitl <log-vars> \
+HSEA_RENDER_FRAMES_DIR=<corpus> HSEA_EDGE_PERCEPTION=stub <log-vars> \
   .venv/bin/inspect eval evals/forest_fire.py --model <id> --limit N
 # rerun with HSEA_EDGE_PERCEPTION=sam, then:
 .venv/bin/python -m hsea.aggregate record --run-id <stub> ... --log <stub.eval>

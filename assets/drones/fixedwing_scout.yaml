@@ -44,4 +44,3 @@ sitl_params:
   INS_GYR_CAL: 0
   ARSPD_TYPE: 0
   BATT_MONITOR: 4
-gazebo_model: zephyr_with_ardupilot

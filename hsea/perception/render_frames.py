@@ -1,14 +1,18 @@
 """Pre-rendered survey frames: the sim-to-real frame bridge for SAM.
 
 SAM 3.1 returns zero matches on MockBridge 2D map renders (prior
-finding), but prompted delineation works on the Gazebo survey renders
-(firebed/smoke masks verified 2026-11-04). This module serves those
-pre-rendered frames -- with their exact survey camera geometry -- to
-SAM scans on firms scenarios, so the SAM-vs-stub comparison measures
-segmentation on real 3D renders instead of SAM-blind map art.
+finding), but prompted delineation works on pre-rendered 3D survey
+frames (firebed/smoke masks verified 2026-11-04). This module serves
+those frames -- with their exact survey camera geometry -- to SAM
+scans, so the SAM-vs-stub comparison measures segmentation on 3D
+renders instead of SAM-blind map art. The corpus is NOT shipped with
+this repo (left behind with the sim); mount it via
+HSEA_RENDER_FRAMES_DIR. Without it every lookup returns None and
+callers fall back to map renders.
 
-Layout under the frames roots (default docs/firms-sim2real/renders/
-then docs/quake-slide-sim2real/renders/, override HSEA_RENDER_FRAMES_DIR):
+Layout under the frames roots (default docs/firms-sim2real/renders/,
+docs/quake-slide-sim2real/renders/, docs/flood-sim2real/renders/,
+override HSEA_RENDER_FRAMES_DIR):
   survey-<scenario>-<seed>-nadir.png   the Map POV frame
   survey-<scenario>-<seed>-nadir.json  camera sidecar (see below)
 

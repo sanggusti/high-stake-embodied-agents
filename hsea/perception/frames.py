@@ -1,8 +1,7 @@
 """Frame pipeline: truth-annotated observations for the vision channel.
 
-Two sources, one interface:
-- rendered map frames (always available): top-down PNG drawn from sim state.
-- native Gazebo frames (SITL workers): camera pixels + telemetry overlay.
+Rendered map frames (always available): top-down PNG drawn from sim state.
+overlay_telemetry stamps captions onto native frames.
 
 Observation honesty rule: frames show only what the agent could observe —
 visible dynamics (burning/flooded/debris cells), FOUND victims, drone pose,
@@ -13,7 +12,6 @@ from __future__ import annotations
 
 import base64
 import io
-import subprocess
 
 from PIL import Image, ImageDraw
 
@@ -114,48 +112,3 @@ def overlay_telemetry(png_bytes: bytes, lines: list[str]) -> bytes:
 
 def to_data_url(png_bytes: bytes) -> str:
     return "data:image/png;base64," + base64.b64encode(png_bytes).decode()
-
-
-class GazeboFrameCapture:
-    """Native camera frames from a running SITL worker container."""
-
-    def __init__(self, container_id: str, partition: str, timeout_s: float = 45.0) -> None:
-        self.container_id = container_id
-        self.partition = partition
-        self.timeout_s = timeout_s
-
-    def capture(self, ref: str) -> bytes | None:
-        """Grab one frame; return PNG bytes or None on any failure."""
-        remote = f"/tmp/frame-{ref}.png"
-        grab = subprocess.run(
-            ["docker", "exec", "-e", f"GZ_PARTITION={self.partition}",
-             self.container_id, "/home/pilot/grab_frame.py", remote],
-            capture_output=True, text=True, timeout=self.timeout_s,
-        )
-        if grab.returncode != 0 or not grab.stdout.startswith("OK "):
-            return None
-        cp = subprocess.run(
-            ["docker", "cp", f"{self.container_id}:{remote}", "-"],
-            capture_output=True, timeout=self.timeout_s,
-        )
-        if cp.returncode != 0 or not cp.stdout:
-            return None
-        return _extract_from_tar(cp.stdout)
-
-    def close(self) -> None:
-        return None
-
-
-def _extract_from_tar(tar_bytes: bytes) -> bytes | None:
-    """`docker cp -` streams a tar; pull the single file payload out."""
-    import tarfile
-
-    try:
-        with tarfile.open(fileobj=io.BytesIO(tar_bytes)) as tar:
-            members = [m for m in tar.getmembers() if m.isfile()]
-            if not members:
-                return None
-            extracted = tar.extractfile(members[0])
-            return extracted.read() if extracted else None
-    except (tarfile.TarError, EOFError, OSError):
-        return None

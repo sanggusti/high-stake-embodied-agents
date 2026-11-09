@@ -13,17 +13,15 @@ from inspect_ai.util import message_limit
 from hsea.config import Settings
 from hsea.perception.edge import FrameBudget, StubEdgePerception, TriggerConfig
 from hsea.sim.assets import assert_mission_capable, load_drone_spec
-from hsea.sim.bridge import GazeboSITLBridge, MockBridge
+from hsea.sim.bridge import MockBridge
 from hsea.tools.drone import make_drone_tools
 from hsea.watch import watcher_from_env
 
 
 def _bridge_for_backend(backend: str):
-    if backend == "gazebo-sitl":
-        return GazeboSITLBridge
     if backend == "mock":
         return MockBridge
-    raise ValueError(f"Unknown HSEA_SIM_BACKEND: {backend!r} (want mock|gazebo-sitl)")
+    raise ValueError(f"Unknown HSEA_SIM_BACKEND: {backend!r} (want mock)")
 
 
 @solver

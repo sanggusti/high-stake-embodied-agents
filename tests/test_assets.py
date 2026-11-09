@@ -13,7 +13,7 @@ def test_specs_are_sourced_not_placeholders():
         assert {"params", "model", "docs"} <= set(spec.provenance)
 
 
-def test_quad_matches_track1_reality():
+def test_quad_matches_sourced_reality():
     quad = load_drone_spec("quad_iris_class")
     assert quad.vehicle_class == "multicopter"
     assert quad.supports("guided_takeoff")
@@ -23,7 +23,6 @@ def test_quad_matches_track1_reality():
     assert "gimbal-camera" in quad.sensors
     assert quad.sitl_params["FRAME_CLASS"] == 1
     assert quad.sitl_params["FRAME_TYPE"] == 1
-    assert quad.gazebo_model == "iris_with_gimbal"
 
 
 def test_fixedwing_guided_limits():
@@ -41,19 +40,14 @@ def test_mission_capability_enforcement():
         assert_mission_capable(load_drone_spec("fixedwing_scout"))
 
 
-def test_backend_rejects_unsupported_vehicle_class():
+def test_backend_accepts_both_vehicle_classes():
     from hsea.scenarios import build_samples
-    from hsea.sim.bridge import GazeboSITLBridge, MockBridge
+    from hsea.sim.bridge import MockBridge
 
     meta = dict(build_samples("forest_fire", seeds=[1])[0].metadata)
     MockBridge().reset(meta)  # quad on mock: fine
     meta["drone_spec"] = "fixedwing_scout"
     MockBridge().reset(meta)  # mock simulates both classes: fine
-    # Uninitialised SITL instance: the check must fire before any worker
-    # starts (super().reset runs first in GazeboSITLBridge.reset).
-    bridge = GazeboSITLBridge.__new__(GazeboSITLBridge)
-    with pytest.raises(ValueError, match="cannot honour.*fixed-wing"):
-        MockBridge.reset(bridge, meta)
 
 
 def test_missing_spec_raises():

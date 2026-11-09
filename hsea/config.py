@@ -1,4 +1,4 @@
-"""Environment-driven settings for Disaster Mitigation Bench."""
+"""Environment-driven settings for High-stakes Embodied Agents."""
 
 from __future__ import annotations
 

@@ -51,7 +51,7 @@ No provider-backed run has succeeded yet. First success criteria live in #1.
 
 | Item | Spec |
 |---|---|
-| OS image | Ubuntu 22.04 arm64 (`infra/sim/Dockerfile` → `hsea/sim:track1`) |
+| OS image | Ubuntu 22.04 arm64 (`infra/sim/Dockerfile` → `dmb/sim:track1`) |
 | Renderer/sim | Gazebo Harmonic (`gz-harmonic` 8.x), headless server |
 | Plugin | `ArduPilot/ardupilot_gazebo` @ `80dc9664` |
 | ArduPilot | `Copter-4.6.3` (`92b0cd78`); `waf configure --board sitl`, `waf copter` |

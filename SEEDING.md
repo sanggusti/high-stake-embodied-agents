@@ -23,19 +23,20 @@ builders + model/texture bulk (`assets/` except drone specs), sim Docker image
 - `tests/` (24 files) + fixtures; root `.env.example`, `pyproject.toml`,
   `.gitignore`; `assets/drones/` specs.
 
-## COPIED pending ADAPT (follow-up issues)
+## ADAPTED post-seed (2026-11-09; package `dmb` -> `hsea` first)
 
-- `hsea/sim/bridge.py`: keep MockBridge/SimBridge; strip GazeboSITLBridge.
-- `hsea/sim/assets.py`: keep spec loader; drop gazebo_model refs.
-- `hsea/perception/{frames,sam,render_frames}.py`: keep map-render + Meta
-  SAM API layer; drop Gazebo capture + survey-corpus paths (or re-point).
-- `hsea/watch/l3.py`: keep runs/<id> contract; drop Gazebo record hooks.
-- Docs: compute-split, physics-assets, assets, frontier, peatforest-evals
-  (bench+sim mix; re-point slugs/app names).
-- Tests: test_sitl_units, test_assets, test_flood, test_quake_slide (split
-  Mock/concept vs Gazebo/SDF asserts).
-- Root `pyproject.toml` (drop sim extras), `README.md` (rewrite for the
-  Lexsi stack; see scaffold plan).
+- `hsea/sim/bridge.py`: MockBridge/SimBridge only (SITL + Colosseum cut).
+- `hsea/sim/assets.py` + drone specs: spec loader kept, gazebo_model cut.
+- `hsea/perception/frames.py`: map-render only (Gazebo capture cut).
+- `hsea/perception/sam.py` + `render_frames.py`: Meta SAM API layer kept;
+  survey corpus NOT shipped, mount via `HSEA_RENDER_FRAMES_DIR`.
+- `hsea/solvers/mission.py`: `mock` is the only backend.
+- Tests: `test_backends.py` (renamed, mock-only), assets/flood/quake/slide
+  keep Mock/concept asserts; SDF builder tests cut, survey tests skip
+  without a mounted corpus.
+- `pyproject.toml` (sim extra dropped), `README.md` (HSEA rewrite),
+  `.env.example` (mock-only), docs lineage-noted + runbooks retired.
+- Live external names stay `dmb-` (Modal apps/volumes/endpoints, HF repos).
 
 ## Stack mapping (planned)
 

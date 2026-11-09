@@ -30,16 +30,8 @@ Provider runs (keys required):
   --model openai-api/modal/<name> --limit 1
 ```
 
-SITL backend runs (Docker daemon required, outside any sandbox):
-
-```bash
-docker build -t hsea/sim:track1 infra/sim
-HSEA_SIM_BACKEND=gazebo-sitl \
-XDG_DATA_HOME=$PWD/.inspect-data INSPECT_LOG_DIR=./logs \
-INSPECT_TRACE_FILE=./logs/trace.log \
-  .venv/bin/inspect eval evals/forest_fire.py --model mockllm/model --limit 1
-HSEA_RUN_SITL_TESTS=1 .venv/bin/python -m pytest tests/test_sitl_integration.py -q
-```
+Sim-backend runs are retired in HSEA: `HSEA_SIM_BACKEND` takes only `mock`
+(the Gazebo/SITL + Docker workstream stayed in the bench repo).
 
 Baselines (provider-free, deterministic):
 
@@ -62,9 +54,7 @@ Human baseline mission (blind; scored + recorded like any run):
 .venv/bin/python -m hsea.watch.render runs/<id>/trajectories/<sample>.jsonl --out runs/<id>/sim/<sample>
 .venv/bin/python -m hsea.watch.compose --eval <run.eval> --sample <sample> \
   --l2 runs/<id>/trajectories --l3 runs/<id>/sim --out runs/<id>/sim/<sample>.html
-# T2 Gazebo state-log playback (inside the sim image; Mac has no host gz):
-docker run --rm -e GZ_PARTITION=replay -v $PWD/runs/<id>/sim/<sample>:/rec \
-  --entrypoint gz hsea/sim:track1 sim --playback /rec/gzlog -s
+# (T2 Gazebo state-log playback retired with the sim image.)
 ```
 
 ## Troubleshooting

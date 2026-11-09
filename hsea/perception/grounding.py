@@ -5,9 +5,8 @@ the drone pose, meets the z=0 plane, and lands in a grid cell. World frame
 matches the sim bridges: X=east, Y=north, Z=up, cell (x, y) covering
 ``[x*cell_m, (x+1)*cell_m)`` east by ``[y*cell_m, (y+1)*cell_m)`` north.
 
-No calibrated camera exists yet (no FOV/orientation is documented for the
-Gazebo gimbal or the Colosseum front camera), so callers pass explicit
-parameters. `survey_camera` is the documented ASSUMED survey stance (gimbal
+No calibrated camera exists yet (no FOV/orientation is documented for
+available airframes), so callers pass explicit parameters. `survey_camera` is the documented ASSUMED survey stance (gimbal
 commanded to nadir for route mapping); backend calibration is later work.
 """
 

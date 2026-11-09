@@ -40,4 +40,3 @@ sitl_params:
   RNGFND1_SCALING: 10
   RNGFND1_PIN: 0
   RNGFND1_MAX_CM: 5000
-gazebo_model: iris_with_gimbal

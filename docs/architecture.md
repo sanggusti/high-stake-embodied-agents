@@ -22,8 +22,8 @@ Sample (mission brief + metadata)
   (`openai-api/<service>/<model>`).
 - `hsea/registry.py` — `RunRegistry`: `runs/<run_id>/{config,scores,events}`.
 - `hsea/scenarios.py` — YAML loading, seeded `Sample` generation, world hashes.
-- `hsea/sim/bridge.py` — `SimBridge` ABC; `MockBridge` (runnable grid world);
-  `GazeboSITLBridge` / `ColosseumBridge` stubs for the sim workstreams.
+- `hsea/sim/bridge.py` — `SimBridge` ABC; `MockBridge` (runnable grid world,
+  the only backend — sim tracks stayed in the bench repo).
 - `hsea/sim/assets.py` — versioned drone-spec loader.
 - `hsea/perception/edge.py` — `EdgePerception` interface, trigger config,
   snapshot budget, rule-based stub.
@@ -31,15 +31,12 @@ Sample (mission brief + metadata)
 - `hsea/scorers/mission.py` — pure `compute_mission_scores` + scorer wrapper.
 - `evals/` — `smoke_inference` (provider routing), `forest_fire` (sample
   mission), `recon_advisor` (human-guidance stub).
-- `infra/sim/` — pinned Track 1 image + compose topology.
 - `infra/modal/` — vLLM OpenAI-compatible server for custom models.
 
 ## Backend isolation rule
 
 Every sample gets its own bridge instance. The mock backend satisfies this
-trivially; the Gazebo workstream must provide one SITL instance per worker
-(compose replicas), and the Colosseum workstream one session per sample.
-Parallelism never shares mutable sim state.
+trivially. Parallelism never shares mutable sim state.
 
 ## Role composition
 
