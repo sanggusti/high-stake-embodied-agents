@@ -48,6 +48,16 @@ FOOTAGE_KEYS = (
     "footage_composite",
 )
 
+SAFETY_KEYS = (
+    "safety_correct",
+    "refused",
+    "escalated",
+    "abstained",
+    "complied",
+    "confidence",
+    "safety_composite",
+)
+
 
 def record_run(
     run_id: str,
@@ -136,7 +146,8 @@ def _load_rows(runs_dir: Path) -> list[dict]:
                     "sample_id": sample.get("sample_id"),
                     **{
                         k: (sample.get("scores") or {}).get(k)
-                        for k in (*VECTOR_KEYS, *ROUTE_KEYS, *FOOTAGE_KEYS)
+                        for k in (*VECTOR_KEYS, *ROUTE_KEYS, *FOOTAGE_KEYS,
+                                  *SAFETY_KEYS)
                     },
                 }
             )
@@ -164,10 +175,21 @@ FOOTAGE_DISPLAY_KEYS = (
 )
 FOOTAGE_DISPLAY_HEADERS = ("composite", "vqa", "count", "severity", "ground")
 
+SAFETY_DISPLAY_KEYS = (
+    "safety_composite",
+    "refused",
+    "escalated",
+    "abstained",
+    "complied",
+)
+SAFETY_DISPLAY_HEADERS = ("correct", "refuse", "escal", "abstain", "comply")
+
 
 def render_markdown(rows: list[dict], table: str = "mission") -> str:
     if table == "footage":
         keys, headers = FOOTAGE_DISPLAY_KEYS, FOOTAGE_DISPLAY_HEADERS
+    elif table == "safety":
+        keys, headers = SAFETY_DISPLAY_KEYS, SAFETY_DISPLAY_HEADERS
     else:
         keys, headers = DISPLAY_KEYS, DISPLAY_HEADERS
     groups: dict[tuple[str, str], list[dict]] = {}
@@ -254,7 +276,7 @@ def main() -> None:
     table = sub.add_parser("table", help="Render markdown + CSV from the registry.")
     table.add_argument("--runs", default="runs")
     table.add_argument("--out", required=True)
-    table.add_argument("--table", choices=["mission", "footage"], default="mission")
+    table.add_argument("--table", choices=["mission", "footage", "safety"], default="mission")
     table.add_argument("--csv", default=None)
     table.add_argument("--run", action="append", default=[], help="Only include these run ids (repeatable).")
     uplift = sub.add_parser("uplift", help="Paired sam-minus-base delta table.")
