@@ -25,7 +25,8 @@ FLOODNET_VQA_ID = "ljx620/FloodNet-VQA"
 FLOODNET_VQA_REVISION = "ec9277afd48ffb27b945eac3c6fb8d8aa77f8cfd"
 FLOODNET_VQA_SPLIT = "validation"
 # Mirror card carries no license tag (verified 2026-11-09); annotations derive
-# from FloodNet (CDLA-Permissive-1.0). Eval use only until clarified.
+# from FloodNet (CDLA-Permissive-1.0). #7 clarifies training use: QA text +
+# image refs only, gated research-only redistribution (see data/flywheel-v2).
 
 LADI_V2_ID = "MITLL/LADI-v2-dataset"
 LADI_V2_REVISION = "5f2dbfe8c466d32edafd1bab847ec5252309acdb"
