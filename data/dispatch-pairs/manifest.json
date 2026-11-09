@@ -1,0 +1,54 @@
+{
+  "code_commit": "a677df5596b727ccee5fa2d7ebd322cf4a5ee818",
+  "split": "train",
+  "sources": {
+    "trec-is": {
+      "records": 8,
+      "pairs": 8
+    },
+    "humaid": {
+      "records": 8,
+      "pairs": 8
+    },
+    "crisismmd": {
+      "records": 8,
+      "pairs": 8
+    }
+  },
+  "pairs_total": 24,
+  "priority_counts": {
+    "P1": 11,
+    "P2": 6,
+    "P3": 7
+  },
+  "files": {
+    "dpo.jsonl": "3910da1c9dea07c08a777f577f1463bae281d2d584deba5efb917f71cfeff207"
+  },
+  "pair_hashes": {
+    "trec-is:t-01": "9ca0bcb54397f08d376153c3d95284bae45721c528f1af52bf551dbe8d2271bd",
+    "trec-is:t-02": "ac78feac246d5efe593e5fee66a97a0e2e70ec938c71df2bd84921f16452dd98",
+    "trec-is:t-03": "30f0b8e4ef8e7a4db58b9fe7eb9ebc6588f3f2b1189315da2b379cdc00d7a70f",
+    "trec-is:t-04": "2b3e9ac867f4b7cdd951933714891062ef76d47fdf75be2098956bc9d3f5c6f0",
+    "trec-is:t-05": "94ad25cfedbea130e887ef7ec633bf9b75265b4f3cc3154b82967101c90e44d3",
+    "trec-is:t-06": "18fd4ecaa400dafe45c39575eab38154d18e2b16429049bc9f1ff1ba7d3322ac",
+    "trec-is:t-07": "274bbecb18f3da786abd19cd3b8a04d4cf8709b49a985b2b2cefaafb325b4b56",
+    "trec-is:t-08": "08a291aba4eb08febc47f4d68e126e9fccacc7c9d518787e106fd0f8ce494415",
+    "humaid:h-01": "2c0d986714d97c8b86497be14d11f7136c76e775d31a24c77f25366a3adcdce7",
+    "humaid:h-02": "0e7349819ecfa17b6a759321aab7cb10a412540df756ca379b2d1f8503ddfd91",
+    "humaid:h-03": "d06f2dbf55963cce9a27c5481a021cf40cf7679ece9602e59612feeb5aa87106",
+    "humaid:h-04": "0986ac5624979eae8c88b5cef8135aeb782d1cc107d1b544558cfc014c32d85a",
+    "humaid:h-05": "d01ebdb6decd04b191041d029fa5dbc35900acc1a906c68617ee6e66a281dc70",
+    "humaid:h-06": "d19ce885c001cd771fab8eba68d7b2e6468139559563c674d7d7f6827e169aff",
+    "humaid:h-07": "9ec20aa20a2507e09b566afc8acc0efe785cff8eccf1646298447293edfb92d5",
+    "humaid:h-08": "8ffc92a56d6a2e98dcd6e651fb21090e35a895270231e64c6246dcfb527ed4b1",
+    "crisismmd:c-01": "8776eba75d5c6864fdb46b99d748e23df31ee7a2b4b86f6ab1a7db4ff4507e24",
+    "crisismmd:c-02": "9f00d07da5d9142d2b8bffb583be20bd05f3437368dd46e9b452b19a5969c580",
+    "crisismmd:c-03": "bbfcd3e0b34355b17704c68d33be6e8de5bb529511eccd18747ccf2b655f7c7e",
+    "crisismmd:c-04": "466b1e96e424acd23fffa8e574e96122e3e7417d702642a1f86c9fcc150a10fd",
+    "crisismmd:c-05": "1a91a6c6f179e7d8efa495a97ee7da6f03a7983d26536b92d58b63ee1b9ba173",
+    "crisismmd:c-06": "f4e252e8deb7e24b3b096860079c8590aa8cd99d910a08b02250507737c7358b",
+    "crisismmd:c-07": "9f77608b1654f41257008e4040df5a99ab58c9872b589ad7f77f174b848318f6",
+    "crisismmd:c-08": "d3647bb31b01a5fab473f80bfe1be5147ccdcb73b830c3bf843965e5434d311b"
+  },
+  "license_notes": "see LICENSE_NOTES.md; NC sources are research-only (#24 gates v2)"
+}
