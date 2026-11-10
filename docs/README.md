@@ -24,6 +24,7 @@ evaluated on dataset-composed footage, action, and safety tracks.
 | [models](models.md) | Newest open models to benchmark/finetune/evaluate |
 | [datasets](datasets.md) | Disaster footage + action datasets to align on |
 | [alignment-research](alignment-research.md) | DORA-inspired alignment research + playbook |
+| [alignment-methods-vlm](alignment-methods-vlm.md) | 2024-2026 VLM alignment survey for footage agents |
 | [tracking](tracking.md) | Run registry, eval logs, reproducibility contract |
 | [footage-evals](footage-evals.md) | Footage VLM eval results and repro |
 | [abstention-evals](abstention-evals.md) | Abstention and escalation threshold procedure |
