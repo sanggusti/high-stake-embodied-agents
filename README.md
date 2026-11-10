@@ -32,6 +32,8 @@ cp .env.example .env   # fill in provider keys (HSEA_ prefix)
 
 ## Docs
 
+- [docs/research-track.md](docs/research-track.md): HSEA big picture (mission, tracks, model lanes, loop, retired docs)
+- [docs/process.md](docs/process.md): Lexsi-loop operating procedure (curate, align, harden, agent, eval)
 - [docs/](docs/) — bench technical docs (lineage-noted)
 - [WORKFLOW.md](WORKFLOW.md) — Issue → PR → Merge workflow
 - [SEEDING.md](SEEDING.md) — what was seeded, adapted, left behind
