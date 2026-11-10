@@ -12,6 +12,11 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Modal-hosted Qwen3.8-27B official FP8 (issue #1; see
+#: ``infra/modal/vllm_qwen38.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_QWEN38_FP8)``.
+MODAL_QWEN38_FP8 = "Qwen/Qwen3.8-27B-FP8"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.
