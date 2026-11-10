@@ -6,8 +6,6 @@ this file resolve by UNION of rows. HF Inference spend counts against
 the same $50 cap as Modal GPU spend.
 
 ```
-
-```
 6 hf-smoke-v41flash api 0.03 $0.00
 6 hf-ff1-v41flash api 2.0 $0.08
 7 curate-v2 cpu 45 $0.00
@@ -28,21 +26,20 @@ the same $50 cap as Modal GPU spend.
 5 cmdaplus-probes api 0.1 $0.00
 23 dora-access-probe api 0.1 $0.00
 16 space-refresh cpu 0.2 $0.00
+17 runbook-docs cpu 0.1 $0.00
+25 partial-writeup cpu 0.2 $0.00
+10 st-synth-fixtures cpu 0.0 $0.00
+10 st-mock-mockllm cpu 0.1 $0.00
 1 qwen38-probes a100-80gb 12.1 $0.50
 1 qwen38-smoke a100-80gb 8.4 $0.35
 1 qwen38-ff1-hermes a100-80gb 12.0 $0.50
 1 qwen38-smoke2 a100-80gb 5.4 $0.23
 1 qwen38-ff1 a100-80gb 12.7 $0.53
 1 qwen38-video a100-80gb 4.1 $0.17
-17 runbook-docs cpu 0.1 $0.00
-25 partial-writeup cpu 0.2 $0.00
-10 st-synth-fixtures cpu 0.0 $0.00
-10 st-mock-mockllm cpu 0.1 $0.00
 41 showcase-B cpu 0.5 $0.00
 42 docs-realign cpu 0.2 $0.00
 41 showcase-A cpu 0.5 $0.00
 41 feedback cpu 0.5 $0.00
-46 align-safety-survey cpu 0.5 $0.00
 2 molmo2-a10g-probes a10g 27.0 $0.50
 2 molmo2-coldstart1 a100-80gb 5.4 $0.22
 2 molmo2-ground-tool-probes a100-80gb 9.0 $0.37
@@ -53,6 +50,7 @@ the same $50 cap as Modal GPU spend.
 2 molmo2-ff1-explore a100-80gb 0.6 $0.03
 2 molmo2-ff1-full a100-80gb 0.4 $0.02
 2 molmo2-smoke a100-80gb 0.2 $0.01
+46 align-safety-survey cpu 0.5 $0.00
 41 results-table cpu 0.5 $0.00
 48 align-pt-survey cpu 0.5 $0.00
 3 gemma4-coldstart a100-80gb 6.9 $0.29
@@ -74,5 +72,6 @@ the same $50 cap as Modal GPU spend.
 61 rt-v41flash-seed2 api 0.3 $0.01
 61 rt-v41flash-seed3 api 0.3 $0.01
 61 rt-v41flash-seed4 api 0.3 $0.01
+61 metrics-playbook cpu 0.5 $0.00
 TOTAL 6.33
 ```
