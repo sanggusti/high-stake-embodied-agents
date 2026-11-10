@@ -1,0 +1,146 @@
+{
+ "sources": {
+  "floodnet-vqa": {
+   "stage_a": [
+    "streamed",
+    1000
+   ],
+   "stage_b": [
+    "kept SFT",
+    1000
+   ],
+   "ratio": 1.0,
+   "ratio_kind": "yield",
+   "note": "first-1k stream order; QA text + image refs, no pixels"
+  },
+  "ladi-v2": {
+   "stage_a": [
+    "images",
+    200
+   ],
+   "stage_b": [
+    "kept SFT rows",
+    2400
+   ],
+   "ratio": 12.0,
+   "ratio_kind": "expansion",
+   "note": "200 images x 12 yes/no questions; refs only"
+  },
+  "disasterm3": {
+   "stage_a": [
+    "train-file rows",
+    92968
+   ],
+   "stage_b": [
+    "kept SFT",
+    3000
+   ],
+   "ratio": 0.03226916788572412,
+   "ratio_kind": "yield",
+   "note": "375 x 8 text tasks; 37,204 referring-seg rows excluded (mask outputs need vision SFT)"
+  },
+  "crisitext": {
+   "stage_a": [
+    "situations",
+    300
+   ],
+   "stage_b": [
+    "kept SFT msgs",
+    2022
+   ],
+   "ratio": 6.74,
+   "ratio_kind": "expansion",
+   "note": "FEMA/GTD only (0 synthetic skipped in cap)"
+  },
+  "humaid": {
+   "stage_a": [
+    "streamed train",
+    4000
+   ],
+   "stage_b": [
+    "kept DPO pairs",
+    4000
+   ],
+   "ratio": 1.0,
+   "ratio_kind": "yield",
+   "note": "first-4k train, labels-only"
+  },
+  "crisismmd": {
+   "stage_a": [
+    "tweets seen",
+    11584
+   ],
+   "stage_b": [
+    "kept DPO pairs",
+    3000
+   ],
+   "ratio": 0.2589779005524862,
+   "ratio_kind": "yield",
+   "note": "8,409 joined of 11,584 seen (3,175 dropped), first-3k"
+  },
+  "l2": {
+   "stage_a": [
+    "fresh episodes",
+    210
+   ],
+   "stage_b": [
+    "fresh SFT pairs",
+    27
+   ],
+   "ratio": 0.12857142857142856,
+   "ratio_kind": "yield",
+   "note": "SFT: composite >= 0.5, non-mock (5 mock turns skipped); plus 224 v1 carry pairs; RLVR keeps all 210 + 40 v1"
+  }
+ },
+ "agreement": {
+  "n_double_labeled": 20,
+  "exact_match": 1.0,
+  "kappa": 1.0,
+  "file_claim": {
+   "agreement": 1.0,
+   "kappa": 1.0,
+   "n": 20
+  },
+  "redteam_adjudication": {
+   "n_rows": 2,
+   "concordant": 2,
+   "note": "Thin but reportable: automated-conservative ASR 0.000 matches adjudicated 0.000 on both review rows; single-class, so kappa is vacuous."
+  }
+ },
+ "spend": {
+  "total_usd": 6.33,
+  "cap_usd": 50.0,
+  "headroom_usd": 43.67,
+  "by_class_usd": {
+   "api": 0.54,
+   "cpu": 0.0,
+   "a100-80gb": 5.29,
+   "a10g": 0.5
+  },
+  "per_sample_usd": {
+   "footage": 0.0,
+   "safety": 0.001217948717948718,
+   "abstention": 0.00043750000000000006,
+   "redteam": 0.0011111111111111111
+  },
+  "spend_by_track": {
+   "footage": 0.0,
+   "safety": 0.19,
+   "abstention": 0.07,
+   "redteam": 0.2
+  },
+  "sample_counts": {
+   "footage": 68,
+   "safety": 156,
+   "abstention": 160,
+   "redteam": 180
+  },
+  "note": "Track spend joins ledger eval rows (safety $0.18+$0.01 probes, abstention $0.07, redteam $0.04 seed0 + 3x$0.04 probes + 4x$0.01 RT5 seeds) over scored samples (redteam 180 = seed0 + mockllm + 4 RT5 seeds); footage eval $ is unledgered."
+ },
+ "manifest_issue": 7,
+ "trace": {
+  "manifest": "data/flywheel-v2/manifest.json",
+  "rater2": "data/abstention/rater2.json",
+  "ledger": "docs/reports/modal-spend.md"
+ }
+}
