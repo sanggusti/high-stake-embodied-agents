@@ -110,15 +110,18 @@ Stage commands and gate thresholds: [process](process.md) and
 
 Owner feedback on 2026-11-10 found showcase and eval drift from
 legacy docs: sim-era pages described tracks that no longer run and
-pulled new work toward retired setups. Retired in issue #42:
+pulled new work toward retired setups. Retired in issue #42: five
+sim-era doc stubs (exact filenames and line counts live in the
+deletion table of `docs/reports/issue-42-docs-realignment.md`), plus
+the scopes below.
 
-| Retired | Why |
+| Retired scope | Why |
 |---|---|
-| `docs/scenarios.md` | Cataloged sim scenario files; HSEA evals compose from datasets (§2) |
-| `docs/roadmap.md` | Sim-era workstream list; planning lives in GitHub issues |
-| `docs/peatforest-evals.md` | Peat sim eval page; FIRMS-pinned peat scenarios are out of scope |
-| `docs/flywheel.md` | Sim-data loop doc; the Lexsi loop in §4 replaces it |
-| `docs/action-surface.md` | ArduPilot/GUIDED tool surface; sim flight stacks stayed behind |
+| Sim scenario catalog doc | HSEA evals compose from datasets (§2) |
+| Sim-era workstream roadmap doc | Planning lives in GitHub issues |
+| Peat sim eval doc | FIRMS-pinned peat scenarios are out of scope |
+| Sim-data loop doc | The Lexsi loop in §4 replaces it |
+| ArduPilot/GUIDED tool surface doc | Sim flight stacks stayed behind |
 | Sim tracks (Gazebo/SITL, Colosseum/Unreal) | Left in the bench repo at seeding; only `mock` ships |
 | FIRMS/peatforest pointers | Peat sim scope; the datasets in §2 carry the fire signal |
 | Flywheel v1 finetuned weights | Single-teacher cloning null (see §6); weights unlinked |
