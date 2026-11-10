@@ -12,6 +12,10 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Modal-hosted Molmo2-8B (issue #2; see ``infra/modal/vllm_molmo2.py``).
+#: Full inspect-ai id is ``modal_model_id(MODAL_MOLMO2_8B)``.
+MODAL_MOLMO2_8B = "allenai/Molmo2-8B"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.

@@ -3,6 +3,7 @@
 from hsea.models import (
     BASETEN_BASE_URL,
     HF_BASE_URL,
+    MODAL_MOLMO2_8B,
     baseten_model_id,
     hf_model_id,
     modal_model_id,
@@ -19,6 +20,13 @@ def test_baseten_model_id():
 
 def test_modal_model_id():
     assert modal_model_id("qwen") == "openai-api/modal/qwen"
+
+
+def test_modal_molmo2_8b_routing():
+    assert MODAL_MOLMO2_8B == "allenai/Molmo2-8B"
+    assert modal_model_id(MODAL_MOLMO2_8B) == (
+        "openai-api/modal/allenai/Molmo2-8B"
+    )
 
 
 def test_hf_model_id():

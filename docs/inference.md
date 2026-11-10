@@ -35,7 +35,9 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_mistral.py` (Mistral-7B-v0.3, mistral parser),
   `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
   `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
-  verified 2026-11-09, see below).
+  verified 2026-11-09, see below),
+  `infra/modal/vllm_molmo2.py` (Molmo2-8B grounding VLM, nightly vLLM +
+  custom Hermes tool template, A100-80GB; issue #2, see below).
 - Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
   (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
   needed.
@@ -49,9 +51,26 @@ Verified against the installed inspect-ai provider: model id
   `https://sanggusti--dmb-vllm-mistral-serve.us-east.modal.run` (Mistral-7B),
   `https://sanggusti--dmb-vllm-qwen14b-serve.us-east.modal.run` (Qwen14B-AWQ),
   `https://sanggusti--dmb-vllm-qwen3vl-serve.us-east.modal.run`
-  (Qwen3-VL-8B-Instruct vision, 2026-11-09).
+  (Qwen3-VL-8B-Instruct vision, 2026-11-09),
+  `https://sanggusti--dmb-vllm-molmo2-serve.us-east.modal.run`
+  (Molmo2-8B, 2026-11-10; serverless, stop after use).
 - Status: **verified 2026-10-27** (smoke 1.0, forest_fire limit-1 0.627);
   Mistral + 14B tool-gated 2026-11-04 (forced tool_choice yields valid calls).
+- Molmo2-8B: **verified 2026-11-10** (issue #2): slug
+  `openai-api/modal/allenai/Molmo2-8B` (helper:
+  `hsea.models.modal_model_id(MODAL_MOLMO2_8B)`); nightly vLLM
+  `0.34.0rc1.dev127+g8afb5e9ff` (2026-11-10, pinned by wheel URL);
+  weights ~16 GB BF16 on one A100-80GB (A10G OOMs at 16384 ctx);
+  `--max-model-len 32768` (near-native 37K: native max is 36864);
+  custom Hermes tool template (stock template has no tool/system
+  support) + `--tool-call-parser hermes`; smoke 1.0 + forest_fire
+  limit-1 0.502 with land+submit loop closure (see
+  `docs/reports/issue-2-molmo2-serve.md`). Grounding caveat: Molmo2 is
+  the bench's pointing specialist (2/2 FloodNet points dead-on) but a
+  weaker autonomous searcher (~0.50 vs 0.61–0.76 baselines; tends to
+  confirmation-seek instead of submitting, and hard tool imperatives
+  in the template collapse it into refusal) — use it for
+  find-it-in-the-frame evals, not solo mission agents.
 - Gotchas observed: vLLM must be pinned (0.21.0 on CUDA 12.9; 0.32 on
   CUDA 12.4 crashes in FlashInfer JIT); tool calling needs
   `--enable-auto-tool-choice` + the matching `--tool-call-parser`; the sandbox
@@ -62,7 +81,13 @@ Verified against the installed inspect-ai provider: model id
   24 GB A10G needs `--max-model-len 4096` + `--gpu-memory-utilization
   0.95` (16384 leaves ~0.3 GB KV cache and EngineCore fails to start);
   the inspect provider requires `MODAL_API_KEY` set (any value) even
-  though the vLLM server checks no key.
+  though the vLLM server checks no key; nightly vLLM parses history
+  tool-call `arguments` to dicts before template rendering (normalize
+  string-or-dict in custom templates) and forces
+  `--disable_chunked_mm_input` for Molmo2's bidirectional mm attention
+  (set `--max-num-batched-tokens` to max-model-len); after `modal
+  deploy`, verify live behavior — one deploy served the previous
+  revision's bytes from a fresh-looking container (issue #2).
 
 ## HF Inference Providers (frontier weights)
 
