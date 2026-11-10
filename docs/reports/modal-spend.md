@@ -39,5 +39,6 @@ the same $50 cap as Modal GPU spend.
 41 showcase-B cpu 0.5 $0.00
 41 showcase-A cpu 0.5 $0.00
 42 docs-realign cpu 0.2 $0.00
+41 feedback cpu 0.5 $0.00
 TOTAL 2.78
 ```
