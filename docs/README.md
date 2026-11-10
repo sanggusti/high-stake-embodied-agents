@@ -25,9 +25,9 @@ evaluated on dataset-composed footage, action, and safety tracks.
 | [datasets](datasets.md) | Disaster footage + action datasets to align on |
 | [alignment-research](alignment-research.md) | DORA-inspired alignment research + playbook |
 | [alignment-methods](alignment-methods.md) | Unified index to the three alignment survey lanes + cross-lane ranking |
-| [alignment-methods-posttraining](alignment-methods-posttraining.md) | Post-training survey: SFT, DPO family, RLVR, agent RL (lane branch) |
-| [alignment-methods-safety](alignment-methods-safety.md) | Safety-alignment survey: 10 methods + experiments (lane branch) |
-| [alignment-methods-vlm](alignment-methods-vlm.md) | 2024-2026 VLM alignment survey for footage agents (lane branch) |
+| [alignment-methods-posttraining](alignment-methods-posttraining.md) | Post-training survey: SFT, DPO family, RLVR, agent RL |
+| [alignment-methods-safety](alignment-methods-safety.md) | Safety-alignment survey: 10 methods + experiments |
+| [alignment-methods-vlm](alignment-methods-vlm.md) | 2024-2026 VLM alignment survey for footage agents |
 | [tracking](tracking.md) | Run registry, eval logs, reproducibility contract |
 | [footage-evals](footage-evals.md) | Footage VLM eval results and repro |
 | [abstention-evals](abstention-evals.md) | Abstention and escalation threshold procedure |
