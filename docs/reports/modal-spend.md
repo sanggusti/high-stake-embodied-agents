@@ -92,5 +92,7 @@ the same $50 cap as Modal GPU spend.
 5 cmdaplus-probe-smoke-ff1a h100-2x 3.6 $0.47
 5 cmdaplus-coldstart2 h100-2x 14.2 $1.87
 5 cmdaplus-ff1 h100-2x 1.6 $0.21
-TOTAL 14.25
+62 judge-probes api 0.5 $0.00
+62 judge-pilot-62 api 6.3 $0.02
+TOTAL 14.27
 ```
