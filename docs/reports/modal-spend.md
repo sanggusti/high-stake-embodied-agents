@@ -37,6 +37,7 @@ the same $50 cap as Modal GPU spend.
 1 qwen38-ff1 a100-80gb 12.7 $0.53
 1 qwen38-video a100-80gb 4.1 $0.17
 41 showcase-B cpu 0.5 $0.00
+41 showcase-A cpu 0.5 $0.00
 42 docs-realign cpu 0.2 $0.00
 TOTAL 2.78
 ```
