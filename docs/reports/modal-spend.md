@@ -62,5 +62,11 @@ the same $50 cap as Modal GPU spend.
 3 qwen3vl-ff1-xml a100-80gb 0.4 $0.02
 3 qwen3vl-hermes-coldstart a100-80gb 3.2 $0.13
 3 qwen3vl-ff1 a100-80gb 0.9 $0.04
+46 align-safety-survey cpu 0.5 $0.00
+50 align-vlm-survey cpu 0.5 $0.00
+51 align-index-synth cpu 0.5 $0.00
+57 findings-narrative cpu 0.5 $0.00
+59 tech-details cpu 0.5 $0.00
+61 metrics-playbook cpu 0.5 $0.00
 TOTAL 6.29
 ```
