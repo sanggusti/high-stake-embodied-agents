@@ -1,0 +1,38 @@
+{
+  "issue": 74,
+  "seed": 74,
+  "flywheel_revision": "07c4e27919e8ddabbb358dda3c54ea24a6e7dd66",
+  "flywheel_sha256": {
+    "sft.jsonl": "5b944648ad57ef0483988aa2811d7b0db881e2e8aa81352313f486daf91e6424",
+    "dpo.jsonl": "a322461981f872989522d76bd7cfde971bc12d5561ed255b7d2837d92d136f59"
+  },
+  "base_model": "CohereLabs/aya-expanse-8b",
+  "base_revision": "5062468bf9bc0c6035fd64e06274333ec127d980",
+  "sft": {
+    "flywheel": 8673,
+    "safety": 78,
+    "abstention": 80,
+    "total": 8831
+  },
+  "dpo": {
+    "flywheel": 7000,
+    "safety": 78,
+    "total": 7078
+  },
+  "clearance": {
+    "flywheel_sources": [
+      "crisismmd",
+      "crisitext",
+      "disasterm3",
+      "floodnet-vqa",
+      "humaid",
+      "l2",
+      "ladi-v2"
+    ]
+  },
+  "held_out": [
+    "data/redteam/attacks.jsonl",
+    "data/dispatch-pairs/dpo.jsonl"
+  ],
+  "overlap_disclosure": "safety (78) and abstention (80) rows are trained on for contract teaching; safety and abstention eval lanes overlap training and are reported as contract checks, while red-team, footage, and dispatch-pair lanes are held out."
+}
