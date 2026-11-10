@@ -33,6 +33,7 @@ cp .env.example .env   # fill in provider keys (HSEA_ prefix)
 ## Docs
 
 - [docs/](docs/) — bench technical docs (lineage-noted)
+- [docs/training-runbook.md](docs/training-runbook.md) — curate → tune → eval → publish runbook (+ [cards](docs/cards/))
 - [WORKFLOW.md](WORKFLOW.md) — Issue → PR → Merge workflow
 - [SEEDING.md](SEEDING.md) — what was seeded, adapted, left behind
 - Demo: [High-stakes Embodied Agents](https://huggingface.co/spaces/sanggusti/high-stakes-embodied-agents) (HF Space, private)

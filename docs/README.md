@@ -27,6 +27,8 @@ advisors** in simulated 3D disaster environments.
 | [flywheel](flywheel.md) | Phase D data loop: export, finetune, delta, artifacts |
 | [human-evals](human-evals.md) | Operator-in-the-loop baselines and grading |
 | [runbooks](runbooks.md) | Setup, daily commands, troubleshooting |
+| [training-runbook](training-runbook.md) | Curate → tune → eval → publish loop (Lexsi stack) |
+| [cards](cards/) | Dataset/model card templates + per-release cards |
 | [roadmap](roadmap.md) | Workstreams and their GitHub issues |
 
 Conventions: `hsea/` is the Python package, `evals/` holds inspect-ai tasks,
