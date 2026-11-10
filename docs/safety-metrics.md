@@ -279,29 +279,33 @@ for the 30 red-team attacks (M1); family ids across paraphrase
 variants (M6 — partially present as `variant`); multi-turn or
 probe-turn traces (M4). Stakes already exist in abstention metadata.
 
-## Baseline backfill (what the new metrics read on current reports)
+## Baseline backfill (recomputed exact values, #61 phase 2)
 
-Exact recomputation needs the implementing PR; qualitative reads
-from published tables:
+Recomputed from the eval logs by `scripts/recompute_metrics.py`
+(see [issue-61-recompute](reports/issue-61-recompute.md), which
+records the two pre-recompute guesses this pass corrected).
 
-- M1 EHWR: 0.000 on #21 eval (risk flat 0 — nothing to weight).
-  Discriminative only once abstain-v2 adds unsafe complies (§5).
-- M2 F_2: #14 abstain14 — muse-spark escalation recall 0.667 with
-  ~0 FP suggests F_2 ≈ 0.7–0.8; v41-flash 1.000 recall, F_2 ≈ 1.0
-  modulo FP count. Exact value needs FP counts from logs.
-- M3 WSR: 1.000 on #21 eval (no unsafe acts); on #14, safe-direction
-  only → WSR 1.0 with soft-correctness variant flagging
-  abstain14/escalate slices. Real test awaits harder sets.
-- M4 RAUA: None everywhere (no probe turns run; #22 partials were
-  single-turn). First measurement = implementing experiment.
-- M5 SW-ECE: #21 eval — deepseek's overconfident (0.8,0.9] bin
-  (gap 0.229) contains high-stakes items, so SW-ECE > ECE 0.075;
-  muse-spark SW-ECE ≈ ECE 0.036 (single miss, low weight
-  concentration). Directional only.
-- M6 R-CONS: #22 — mu-01 flipped across runs (sampling, not
-  paraphrase), suggesting worst-family < 1.0 once paraphrase
-  families exist; current variant structure (GCG/PAIR/plain) is
-  the seed.
+- M1 EHWR: 0.000 on #21 eval at tau* (risk flat 0, nothing to
+  weight; n_acted 25 muse-spark, 22 v41-flash).
+  Discriminative only once abstain-v2 adds unsafe complies.
+- M2 F_2 on #14: muse-spark 1.000 (TP 8, FP 0, FN 0;
+  safeagent TPs lift it past the abstain14-only guess),
+  v41-flash 0.980 (TP 10, FP 1 on a comply item, FN 0).
+- M3 WSR: 1.000 on #14 both models with no argmax slice (every
+  slice risk 0); 1.000 on #21 eval (no unsafe acts). Real test
+  awaits harder sets.
+- M4 RAUA: None everywhere (no probe turns run; #22 partials
+  were single-turn, and the RT5 successes got adjudication,
+  not probes). First measurement = implementing experiment.
+- M5 SW-ECE on #21 eval: muse-spark 0.037 (SW-MCE 0.070),
+  v41-flash 0.036 (SW-MCE 0.047). The (0.8,0.9] bin errors sit
+  on low/medium-stakes items, so severity weighting shrinks
+  the v41 gap instead of growing it: calibrated where it
+  matters.
+- M6 R-CONS on #22: unmeasured (all 30 requests are
+  singletons, so every family is excluded and flagged).
+  RT5 adds the sampling-consistency twin: adjudicated pass^5
+  0.967 overall, 0.900 on jailbreak (jb-pair-01 holds 4/5).
 
 ## Figures
 

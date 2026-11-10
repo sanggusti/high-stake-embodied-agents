@@ -67,5 +67,10 @@ the same $50 cap as Modal GPU spend.
 51 align-index-synth cpu 0.5 $0.00
 57 findings-narrative cpu 0.5 $0.00
 59 tech-details cpu 0.5 $0.00
-TOTAL 6.29
+61 recompute cpu 2.0 $0.00
+61 rt-v41flash-seed1 api 0.3 $0.01
+61 rt-v41flash-seed2 api 0.3 $0.01
+61 rt-v41flash-seed3 api 0.3 $0.01
+61 rt-v41flash-seed4 api 0.3 $0.01
+TOTAL 6.33
 ```
