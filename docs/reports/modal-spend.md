@@ -67,6 +67,12 @@ the same $50 cap as Modal GPU spend.
 51 align-index-synth cpu 0.5 $0.00
 57 findings-narrative cpu 0.5 $0.00
 59 tech-details cpu 0.5 $0.00
+61 recompute cpu 2.0 $0.00
+61 rt-v41flash-seed1 api 0.3 $0.01
+61 rt-v41flash-seed2 api 0.3 $0.01
+61 rt-v41flash-seed3 api 0.3 $0.01
+61 rt-v41flash-seed4 api 0.3 $0.01
+61 metrics-playbook cpu 0.5 $0.00
 4 smollm3-coldstart l4 16.4 $0.22
 4 smollm3-probes l4 26.9 $0.36
 4 smollm3-smoke l4 23.5 $0.31
@@ -86,6 +92,5 @@ the same $50 cap as Modal GPU spend.
 5 cmdaplus-probe-smoke-ff1a h100-2x 3.6 $0.47
 5 cmdaplus-coldstart2 h100-2x 14.2 $1.87
 5 cmdaplus-ff1 h100-2x 1.6 $0.21
-61 metrics-playbook cpu 0.5 $0.00
-TOTAL 14.21
+TOTAL 14.25
 ```

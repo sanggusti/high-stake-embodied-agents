@@ -1,0 +1,646 @@
+{
+ "corpora": {
+  "floodnet-vqa": {
+   "models": {
+    "musespark": {
+     "n": 10,
+     "composite": {
+      "rate": 0.5,
+      "k": 5.0,
+      "n": 10.0,
+      "wilson_lo": 0.23659309051256405,
+      "wilson_hi": 0.763406909487436
+     },
+     "kinds": {
+      "vqa": {
+       "rate": 0.5,
+       "k": 4.0,
+       "n": 8.0,
+       "wilson_lo": 0.21521606221387762,
+       "wilson_hi": 0.7847839377861223
+      },
+      "counting": {
+       "rate": 0.5,
+       "k": 1.0,
+       "n": 2.0,
+       "wilson_lo": 0.09453120573423074,
+       "wilson_hi": 0.9054687942657693
+      }
+     }
+    },
+    "qwen3vl": {
+     "n": 10,
+     "composite": {
+      "rate": 0.3,
+      "k": 3.0,
+      "n": 10.0,
+      "wilson_lo": 0.10779126740630107,
+      "wilson_hi": 0.6032218525388545
+     },
+     "kinds": {
+      "vqa": {
+       "rate": 0.25,
+       "k": 2.0,
+       "n": 8.0,
+       "wilson_lo": 0.07147921275210911,
+       "wilson_hi": 0.590724569689831
+      },
+      "counting": {
+       "rate": 0.5,
+       "k": 1.0,
+       "n": 2.0,
+       "wilson_lo": 0.09453120573423074,
+       "wilson_hi": 0.9054687942657693
+      }
+     }
+    },
+    "mockllm": {
+     "n": 2,
+     "composite": {
+      "rate": 0.0,
+      "k": 0.0,
+      "n": 2.0,
+      "wilson_lo": 0.0,
+      "wilson_hi": 0.6576197724933468
+     },
+     "kinds": {
+      "vqa": {
+       "rate": 0.0,
+       "k": 0.0,
+       "n": 1.0,
+       "wilson_lo": 0.0,
+       "wilson_hi": 0.7934506856227624
+      },
+      "counting": {
+       "rate": 0.0,
+       "k": 0.0,
+       "n": 1.0,
+       "wilson_lo": 0.0,
+       "wilson_hi": 0.7934506856227624
+      }
+     }
+    }
+   },
+   "paired_musespark_minus_qwen": {
+    "delta": 0.2,
+    "lo": 0.0,
+    "hi": 0.5,
+    "n": 10.0,
+    "n01": 0.0,
+    "n10": 2.0,
+    "p_value": 0.5
+   },
+   "paired_ids": [
+    "floodnet-validation-0000-q11",
+    "floodnet-validation-0001-q12",
+    "floodnet-validation-0002-q13",
+    "floodnet-validation-0003-q14",
+    "floodnet-validation-0004-q15",
+    "floodnet-validation-0005-q16",
+    "floodnet-validation-0006-q17",
+    "floodnet-validation-0007-q18",
+    "floodnet-validation-0008-q43",
+    "floodnet-validation-0009-q44"
+   ]
+  },
+  "ladi-v2": {
+   "models": {
+    "musespark": {
+     "n": 24,
+     "composite": {
+      "rate": 0.875,
+      "k": 21.0,
+      "n": 24.0,
+      "wilson_lo": 0.6899611872949993,
+      "wilson_hi": 0.9565566591987655
+     },
+     "kinds": {
+      "vqa": {
+       "rate": 1.0,
+       "k": 12.0,
+       "n": 12.0,
+       "wilson_lo": 0.7575059933447593,
+       "wilson_hi": 1.0
+      },
+      "severity": {
+       "rate": 0.75,
+       "k": 9.0,
+       "n": 12.0,
+       "wilson_lo": 0.4676946650664344,
+       "wilson_hi": 0.9110583316059453
+      }
+     }
+    },
+    "qwen3vl": {
+     "n": 24,
+     "composite": {
+      "rate": 0.9166666666666666,
+      "k": 22.0,
+      "n": 24.0,
+      "wilson_lo": 0.741511978067893,
+      "wilson_hi": 0.9768411847029564
+     },
+     "kinds": {
+      "vqa": {
+       "rate": 1.0,
+       "k": 12.0,
+       "n": 12.0,
+       "wilson_lo": 0.7575059933447593,
+       "wilson_hi": 1.0
+      },
+      "severity": {
+       "rate": 0.8333333333333334,
+       "k": 10.0,
+       "n": 12.0,
+       "wilson_lo": 0.5519691377470268,
+       "wilson_hi": 0.953034857816146
+      }
+     }
+    },
+    "mockllm": {
+     "n": 3,
+     "composite": {
+      "rate": 0.0,
+      "k": 0.0,
+      "n": 3.0,
+      "wilson_lo": 0.0,
+      "wilson_hi": 0.5614970317550454
+     },
+     "kinds": {
+      "vqa": {
+       "rate": 0.0,
+       "k": 0.0,
+       "n": 2.0,
+       "wilson_lo": 0.0,
+       "wilson_hi": 0.6576197724933468
+      },
+      "severity": {
+       "rate": 0.0,
+       "k": 0.0,
+       "n": 1.0,
+       "wilson_lo": 0.0,
+       "wilson_hi": 0.7934506856227624
+      }
+     }
+    }
+   },
+   "paired_musespark_minus_qwen": {
+    "delta": -0.041666666666666664,
+    "lo": -0.16666666666666666,
+    "hi": 0.08333333333333333,
+    "n": 24.0,
+    "n01": 2.0,
+    "n10": 1.0,
+    "p_value": 1.0
+   },
+   "paired_ids": [
+    "ladi-test-0000-bridges_any",
+    "ladi-test-0000-buildings_affected_or_greater",
+    "ladi-test-0000-buildings_any",
+    "ladi-test-0000-buildings_minor_or_greater",
+    "ladi-test-0000-debris_any",
+    "ladi-test-0000-flooding_any",
+    "ladi-test-0000-flooding_structures",
+    "ladi-test-0000-roads_any",
+    "ladi-test-0000-roads_damage",
+    "ladi-test-0000-trees_any",
+    "ladi-test-0000-trees_damage",
+    "ladi-test-0000-water_any",
+    "ladi-test-0001-bridges_any",
+    "ladi-test-0001-buildings_affected_or_greater",
+    "ladi-test-0001-buildings_any",
+    "ladi-test-0001-buildings_minor_or_greater",
+    "ladi-test-0001-debris_any",
+    "ladi-test-0001-flooding_any",
+    "ladi-test-0001-flooding_structures",
+    "ladi-test-0001-roads_any",
+    "ladi-test-0001-roads_damage",
+    "ladi-test-0001-trees_any",
+    "ladi-test-0001-trees_damage",
+    "ladi-test-0001-water_any"
+   ]
+  }
+ },
+ "trace": {
+  "floodnet-vqa": {
+   "musespark": "2026-11-09T12-54-34-00-00_floodnet-vqa_VJtwMHzZkg3cgsksqiyhsN.eval",
+   "qwen3vl": "2026-11-09T13-55-37-00-00_floodnet-vqa_SBB6UyhZUsba8rpAg6ZCjz.eval",
+   "mockllm": "2026-11-09T12-29-59-00-00_floodnet-vqa_hpqCCu8qVJft7FUq9EGwnR.eval"
+  },
+  "ladi-v2": {
+   "musespark": "2026-11-09T12-55-04-00-00_ladi-v2_iFkjvdUJSMxAeXjqUrtSo4.eval",
+   "qwen3vl": "2026-11-09T13-56-15-00-00_ladi-v2_kDnU62h5JbrwcCAnEV4EBj.eval",
+   "mockllm": "2026-11-09T12-30-31-00-00_ladi-v2_NWP5f8Hhs57LUZTpZpsxM5.eval"
+  }
+ },
+ "fine_slices": {
+  "floodnet_question_type": {
+   "Building_Condition_Recognition": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 0.5,
+     "k": 1.0,
+     "n": 2.0,
+     "wilson_lo": 0.09453120573423074,
+     "wilson_hi": 0.9054687942657693
+    }
+   },
+   "Complex_Counting": {
+    "musespark": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 1.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.7934506856227624
+    },
+    "qwen3vl": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 1.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.7934506856227624
+    }
+   },
+   "Density_Estimation": {
+    "musespark": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 1.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.7934506856227624
+    },
+    "qwen3vl": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 1.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.7934506856227624
+    }
+   },
+   "Entire_Image_Condition_Recognition": {
+    "musespark": {
+     "rate": 0.5,
+     "k": 1.0,
+     "n": 2.0,
+     "wilson_lo": 0.09453120573423074,
+     "wilson_hi": 0.9054687942657693
+    },
+    "qwen3vl": {
+     "rate": 0.5,
+     "k": 1.0,
+     "n": 2.0,
+     "wilson_lo": 0.09453120573423074,
+     "wilson_hi": 0.9054687942657693
+    }
+   },
+   "Risk_Assessment": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 1.0,
+     "n": 1.0,
+     "wilson_lo": 0.2065493143772375,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 1.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.7934506856227624
+    }
+   },
+   "Road_Condition_Recognition": {
+    "musespark": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 2.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.6576197724933468
+    },
+    "qwen3vl": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 2.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.6576197724933468
+    }
+   },
+   "Simple_Counting": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 1.0,
+     "n": 1.0,
+     "wilson_lo": 0.2065493143772375,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 1.0,
+     "n": 1.0,
+     "wilson_lo": 0.2065493143772375,
+     "wilson_hi": 1.0
+    }
+   }
+  },
+  "ladi_column": {
+   "bridges_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "buildings_affected_or_greater": {
+    "musespark": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 2.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.6576197724933468
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "buildings_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "buildings_minor_or_greater": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "debris_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "flooding_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "flooding_structures": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "roads_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "roads_damage": {
+    "musespark": {
+     "rate": 0.5,
+     "k": 1.0,
+     "n": 2.0,
+     "wilson_lo": 0.09453120573423074,
+     "wilson_hi": 0.9054687942657693
+    },
+    "qwen3vl": {
+     "rate": 0.0,
+     "k": 0.0,
+     "n": 2.0,
+     "wilson_lo": 0.0,
+     "wilson_hi": 0.6576197724933468
+    }
+   },
+   "trees_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "trees_damage": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   },
+   "water_any": {
+    "musespark": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    },
+    "qwen3vl": {
+     "rate": 1.0,
+     "k": 2.0,
+     "n": 2.0,
+     "wilson_lo": 0.3423802275066532,
+     "wilson_hi": 1.0
+    }
+   }
+  }
+ },
+ "counting_diagnosis": {
+  "musespark": {
+   "n": 2,
+   "points": [
+    {
+     "id": "floodnet-validation-0000-q11",
+     "mae": null,
+     "output_tokens": 642.0,
+     "correct": false,
+     "format_ok": false
+    },
+    {
+     "id": "floodnet-validation-0005-q16",
+     "mae": 0.0,
+     "output_tokens": 1797.0,
+     "correct": true,
+     "format_ok": true
+    }
+   ],
+   "table_2x2": {
+    "correct/format-ok": 1,
+    "correct/format-bad": 0,
+    "wrong/format-ok": 0,
+    "wrong/format-bad": 1
+   }
+  },
+  "qwen3vl": {
+   "n": 2,
+   "points": [
+    {
+     "id": "floodnet-validation-0000-q11",
+     "mae": 1.0,
+     "output_tokens": 2.0,
+     "correct": false,
+     "format_ok": true
+    },
+    {
+     "id": "floodnet-validation-0005-q16",
+     "mae": 0.0,
+     "output_tokens": 2.0,
+     "correct": true,
+     "format_ok": true
+    }
+   ],
+   "table_2x2": {
+    "correct/format-ok": 1,
+    "correct/format-bad": 0,
+    "wrong/format-ok": 1,
+    "wrong/format-bad": 0
+   }
+  }
+ },
+ "yes_rate": {
+  "musespark": {
+   "n": 24,
+   "yes_rate": {
+    "rate": 0.5,
+    "k": 12.0,
+    "n": 24.0,
+    "wilson_lo": 0.3142742581957336,
+    "wilson_hi": 0.6857257418042664
+   },
+   "confusion_all": {
+    "gold-True/pred-True": 12,
+    "gold-True/pred-False": 2,
+    "gold-False/pred-True": 0,
+    "gold-False/pred-False": 10
+   },
+   "severity_confusion": {
+    "gold-True/pred-True": 6,
+    "gold-True/pred-False": 2,
+    "gold-False/pred-True": 0,
+    "gold-False/pred-False": 4
+   },
+   "severity_n": 12
+  },
+  "qwen3vl": {
+   "n": 24,
+   "yes_rate": {
+    "rate": 0.6666666666666666,
+    "k": 16.0,
+    "n": 24.0,
+    "wilson_lo": 0.46706316838131734,
+    "wilson_hi": 0.8202780967270222
+   },
+   "confusion_all": {
+    "gold-True/pred-True": 14,
+    "gold-True/pred-False": 0,
+    "gold-False/pred-True": 2,
+    "gold-False/pred-False": 8
+   },
+   "severity_confusion": {
+    "gold-True/pred-True": 8,
+    "gold-True/pred-False": 0,
+    "gold-False/pred-True": 2,
+    "gold-False/pred-False": 2
+   },
+   "severity_n": 12
+  }
+ }
+}

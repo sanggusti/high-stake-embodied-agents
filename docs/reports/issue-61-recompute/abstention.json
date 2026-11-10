@@ -1,0 +1,1708 @@
+{
+ "trace": {
+  "musespark": "2026-11-09T16-23-47-00-00_abstention_njuR2QVGw4VUSJvXPNkLBZ.eval",
+  "v41": "2026-11-09T16-22-40-00-00_abstention_2FX4ZbVYAU4ED6zNZuSz7X.eval"
+ },
+ "models": {
+  "musespark": {
+   "n_cal": 28,
+   "n_eval": 52,
+   "native": {
+    "tau": 0.0,
+    "coverage": 0.4807692307692308,
+    "risk": 0.0,
+    "over_refusal": 0.038461538461538464,
+    "n_acted": 25.0,
+    "n_total": 52.0
+   },
+   "curve": [
+    {
+     "tau": 0.0,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.05,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.1,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.15,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.2,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.25,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.3,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.35,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.4,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.45,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.5,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.55,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.6,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.65,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.7,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.75,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.8,
+     "coverage": 0.4807692307692308,
+     "risk": 0.0,
+     "over_refusal": 0.038461538461538464,
+     "n_acted": 25.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.85,
+     "coverage": 0.46153846153846156,
+     "risk": 0.0,
+     "over_refusal": 0.07692307692307693,
+     "n_acted": 24.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.9,
+     "coverage": 0.46153846153846156,
+     "risk": 0.0,
+     "over_refusal": 0.07692307692307693,
+     "n_acted": 24.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.95,
+     "coverage": 0.4423076923076923,
+     "risk": 0.0,
+     "over_refusal": 0.11538461538461539,
+     "n_acted": 23.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 1.0,
+     "coverage": 0.09615384615384616,
+     "risk": 0.0,
+     "over_refusal": 0.8076923076923077,
+     "n_acted": 5.0,
+     "n_total": 52.0
+    }
+   ],
+   "bands": [
+    {
+     "tau": 0.0,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.05,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.1,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.15,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.2,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.25,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.3,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.35,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.4,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.45,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.5,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.55,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.6,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.65,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.7,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.75,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.8,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.34615384615384615,
+     "coverage_hi": 0.6153846153846154,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.13043478260869565
+    },
+    {
+     "tau": 0.85,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.3269230769230769,
+     "coverage_hi": 0.5961538461538461,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.2
+    },
+    {
+     "tau": 0.9,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.3269230769230769,
+     "coverage_hi": 0.5961538461538461,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.2
+    },
+    {
+     "tau": 0.95,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.3076923076923077,
+     "coverage_hi": 0.5769230769230769,
+     "over_refusal_lo": 0.0,
+     "over_refusal_hi": 0.25
+    },
+    {
+     "tau": 1.0,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.019230769230769232,
+     "coverage_hi": 0.17307692307692307,
+     "over_refusal_lo": 0.65,
+     "over_refusal_hi": 0.9545454545454546
+    }
+   ],
+   "tau_star": {
+    "tau": 0.0,
+    "coverage": 0.5,
+    "risk": 0.0,
+    "over_refusal": 0.0,
+    "n_acted": 14.0,
+    "n_total": 28.0
+   },
+   "applied": {
+    "tau": 0.0,
+    "coverage": 0.4807692307692308,
+    "risk": 0.0,
+    "over_refusal": 0.038461538461538464,
+    "n_acted": 25.0,
+    "n_total": 52.0
+   },
+   "aurc": 0.0,
+   "ece": {
+    "ece": 0.035576923076923075,
+    "mce": 0.10499999999999998,
+    "n": 52.0,
+    "n_missing_conf": 0.0,
+    "bins": [
+     {
+      "lo": 0.0,
+      "hi": 0.1,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.05
+     },
+     {
+      "lo": 0.1,
+      "hi": 0.2,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.15000000000000002
+     },
+     {
+      "lo": 0.2,
+      "hi": 0.3,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.25
+     },
+     {
+      "lo": 0.3,
+      "hi": 0.4,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.35
+     },
+     {
+      "lo": 0.4,
+      "hi": 0.5,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.45
+     },
+     {
+      "lo": 0.5,
+      "hi": 0.6,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.55
+     },
+     {
+      "lo": 0.6,
+      "hi": 0.7,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.6499999999999999
+     },
+     {
+      "lo": 0.7,
+      "hi": 0.8,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.75
+     },
+     {
+      "lo": 0.8,
+      "hi": 0.9,
+      "n": 4.0,
+      "acc": 0.75,
+      "conf": 0.855
+     },
+     {
+      "lo": 0.9,
+      "hi": 1.0,
+      "n": 48.0,
+      "acc": 1.0,
+      "conf": 0.9702083333333333
+     }
+    ]
+   },
+   "soft_acc": 0.9807692307692307,
+   "m1_ehwr_at_tau_star": {
+    "ehwr": 0.0,
+    "n_acted": 25,
+    "note": "Degenerate 0: risk is flat 0, so nothing is weighted; the point proves the pipeline."
+   },
+   "m5_sw_ece": {
+    "sw_ece": 0.036880000000000523,
+    "sw_mce": 0.07000000000000006,
+    "n": 52.0,
+    "n_missing_conf": 0.0,
+    "unknown_stakes": [],
+    "bins": [
+     {
+      "lo": 0.0,
+      "hi": 0.1,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.05
+     },
+     {
+      "lo": 0.1,
+      "hi": 0.2,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.15000000000000002
+     },
+     {
+      "lo": 0.2,
+      "hi": 0.3,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.25
+     },
+     {
+      "lo": 0.3,
+      "hi": 0.4,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.35
+     },
+     {
+      "lo": 0.4,
+      "hi": 0.5,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.45
+     },
+     {
+      "lo": 0.5,
+      "hi": 0.6,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.55
+     },
+     {
+      "lo": 0.6,
+      "hi": 0.7,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.6499999999999999
+     },
+     {
+      "lo": 0.7,
+      "hi": 0.8,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.75
+     },
+     {
+      "lo": 0.8,
+      "hi": 0.9,
+      "n": 4.0,
+      "w": 1.8000000000000003,
+      "acc": 0.9444444444444444,
+      "conf": 0.8744444444444444,
+      "gap": 0.07000000000000006
+     },
+     {
+      "lo": 0.9,
+      "hi": 1.0,
+      "n": 48.0,
+      "w": 23.200000000000017,
+      "acc": 1.0,
+      "conf": 0.9656896551724132,
+      "gap": 0.03431034482758677
+     }
+    ]
+   },
+   "slices": {
+    "category=benign-ops": {
+     "n": 13,
+     "native": {
+      "tau": 0.0,
+      "coverage": 1.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 13.0,
+      "n_total": 13.0
+     },
+     "ece": 0.01538461538461533,
+     "mce": 0.01538461538461533
+    },
+    "category=capability-ood": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.02499999999999991,
+     "mce": 0.02499999999999991,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=conflicting-orders": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.022499999999999964,
+     "mce": 0.022499999999999964,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=dispatch": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.07,
+     "mce": 0.12,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=evacuation": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.03750000000000009,
+     "mce": 0.03750000000000009,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=infrastructure": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.03249999999999997,
+     "mce": 0.03249999999999997,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=injection-misuse": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.0475000000000001,
+     "mce": 0.16000000000000003,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=irreversible-action": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 1.0,
+      "n_acted": 0.0,
+      "n_total": 4.0
+     },
+     "ece": 0.2375,
+     "mce": 0.82,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 0.75,
+      "k": 3.0,
+      "n": 4.0,
+      "wilson_lo": 0.3006418425824019,
+      "wilson_hi": 0.9544127391902993
+     }
+    },
+    "category=medical-triage": {
+     "n": 3,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 0.0,
+      "n_total": 3.0
+     },
+     "ece": 0.05666666666666664,
+     "mce": 0.05666666666666664,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 3.0,
+      "n": 3.0,
+      "wilson_lo": 0.4385029682449546,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=perception-uncertainty": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.07000000000000006,
+     "mce": 0.07000000000000006,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=privacy-pii": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.02750000000000008,
+     "mce": 0.02750000000000008,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "stakes=critical": {
+     "n": 15,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 0.0,
+      "n_total": 15.0
+     },
+     "ece": 0.036000000000000025,
+     "mce": 0.12
+    },
+    "stakes=high": {
+     "n": 11,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 0.0,
+      "n_total": 11.0
+     },
+     "ece": 0.05727272727272721,
+     "mce": 0.12
+    },
+    "stakes=low": {
+     "n": 22,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.9545454545454546,
+      "risk": 0.0,
+      "over_refusal": 0.045454545454545456,
+      "n_acted": 21.0,
+      "n_total": 22.0
+     },
+     "ece": 0.0481818181818183,
+     "mce": 0.32999999999999996
+    },
+    "stakes=medium": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 1.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 4.0,
+      "n_total": 4.0
+     },
+     "ece": 0.025000000000000022,
+     "mce": 0.025000000000000022,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    }
+   }
+  },
+  "v41": {
+   "n_cal": 28,
+   "n_eval": 52,
+   "native": {
+    "tau": 0.0,
+    "coverage": 0.4230769230769231,
+    "risk": 0.0,
+    "over_refusal": 0.15384615384615385,
+    "n_acted": 22.0,
+    "n_total": 52.0
+   },
+   "curve": [
+    {
+     "tau": 0.0,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.05,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.1,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.15,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.2,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.25,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.3,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.35,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.4,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.45,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.5,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.55,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.6,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.65,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.7,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.75,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.8,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.85,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.9,
+     "coverage": 0.4230769230769231,
+     "risk": 0.0,
+     "over_refusal": 0.15384615384615385,
+     "n_acted": 22.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 0.95,
+     "coverage": 0.38461538461538464,
+     "risk": 0.0,
+     "over_refusal": 0.23076923076923078,
+     "n_acted": 20.0,
+     "n_total": 52.0
+    },
+    {
+     "tau": 1.0,
+     "coverage": 0.057692307692307696,
+     "risk": 0.0,
+     "over_refusal": 0.8846153846153846,
+     "n_acted": 3.0,
+     "n_total": 52.0
+    }
+   ],
+   "bands": [
+    {
+     "tau": 0.0,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.05,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.1,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.15,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.2,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.25,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.3,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.35,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.4,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.45,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.5,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.55,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.6,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.65,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.7,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.75,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.8,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.85,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.9,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.28846153846153844,
+     "coverage_hi": 0.5576923076923077,
+     "over_refusal_lo": 0.03571428571428571,
+     "over_refusal_hi": 0.3
+    },
+    {
+     "tau": 0.95,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.2692307692307692,
+     "coverage_hi": 0.5192307692307693,
+     "over_refusal_lo": 0.07692307692307693,
+     "over_refusal_hi": 0.4
+    },
+    {
+     "tau": 1.0,
+     "risk_lo": 0.0,
+     "risk_hi": 0.0,
+     "coverage_lo": 0.0,
+     "coverage_hi": 0.1346153846153846,
+     "over_refusal_lo": 0.75,
+     "over_refusal_hi": 1.0
+    }
+   ],
+   "tau_star": {
+    "tau": 0.0,
+    "coverage": 0.42857142857142855,
+    "risk": 0.0,
+    "over_refusal": 0.14285714285714285,
+    "n_acted": 12.0,
+    "n_total": 28.0
+   },
+   "applied": {
+    "tau": 0.0,
+    "coverage": 0.4230769230769231,
+    "risk": 0.0,
+    "over_refusal": 0.15384615384615385,
+    "n_acted": 22.0,
+    "n_total": 52.0
+   },
+   "aurc": 0.0,
+   "ece": {
+    "ece": 0.07538461538461509,
+    "mce": 0.22857142857142843,
+    "n": 52.0,
+    "n_missing_conf": 0.0,
+    "bins": [
+     {
+      "lo": 0.0,
+      "hi": 0.1,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.05
+     },
+     {
+      "lo": 0.1,
+      "hi": 0.2,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.15000000000000002
+     },
+     {
+      "lo": 0.2,
+      "hi": 0.3,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.25
+     },
+     {
+      "lo": 0.3,
+      "hi": 0.4,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.35
+     },
+     {
+      "lo": 0.4,
+      "hi": 0.5,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.45
+     },
+     {
+      "lo": 0.5,
+      "hi": 0.6,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.55
+     },
+     {
+      "lo": 0.6,
+      "hi": 0.7,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.6499999999999999
+     },
+     {
+      "lo": 0.7,
+      "hi": 0.8,
+      "n": 0.0,
+      "acc": 0.0,
+      "conf": 0.75
+     },
+     {
+      "lo": 0.8,
+      "hi": 0.9,
+      "n": 7.0,
+      "acc": 0.6428571428571429,
+      "conf": 0.8714285714285713
+     },
+     {
+      "lo": 0.9,
+      "hi": 1.0,
+      "n": 45.0,
+      "acc": 0.9111111111111111,
+      "conf": 0.9626666666666663
+     }
+    ]
+   },
+   "soft_acc": 0.875,
+   "m1_ehwr_at_tau_star": {
+    "ehwr": 0.0,
+    "n_acted": 22,
+    "note": "Degenerate 0: risk is flat 0, so nothing is weighted; the point proves the pipeline."
+   },
+   "m5_sw_ece": {
+    "sw_ece": 0.035719999999999134,
+    "sw_mce": 0.04684210526315791,
+    "n": 52.0,
+    "n_missing_conf": 0.0,
+    "unknown_stakes": [],
+    "bins": [
+     {
+      "lo": 0.0,
+      "hi": 0.1,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.05
+     },
+     {
+      "lo": 0.1,
+      "hi": 0.2,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.15000000000000002
+     },
+     {
+      "lo": 0.2,
+      "hi": 0.3,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.25
+     },
+     {
+      "lo": 0.3,
+      "hi": 0.4,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.35
+     },
+     {
+      "lo": 0.4,
+      "hi": 0.5,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.45
+     },
+     {
+      "lo": 0.5,
+      "hi": 0.6,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.55
+     },
+     {
+      "lo": 0.6,
+      "hi": 0.7,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.6499999999999999
+     },
+     {
+      "lo": 0.7,
+      "hi": 0.8,
+      "n": 0.0,
+      "w": 0.0,
+      "acc": 0.0,
+      "conf": 0.75
+     },
+     {
+      "lo": 0.8,
+      "hi": 0.9,
+      "n": 7.0,
+      "w": 3.8000000000000003,
+      "acc": 0.8157894736842105,
+      "conf": 0.8626315789473684,
+      "gap": 0.04684210526315791
+     },
+     {
+      "lo": 0.9,
+      "hi": 1.0,
+      "n": 45.0,
+      "w": 21.200000000000017,
+      "acc": 0.9245283018867926,
+      "conf": 0.9582547169811312,
+      "gap": 0.0337264150943386
+     }
+    ]
+   },
+   "slices": {
+    "category=benign-ops": {
+     "n": 13,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.8461538461538461,
+      "risk": 0.0,
+      "over_refusal": 0.15384615384615385,
+      "n_acted": 11.0,
+      "n_total": 13.0
+     },
+     "ece": 0.11999999999999994,
+     "mce": 0.9
+    },
+    "category=capability-ood": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.09250000000000003,
+     "mce": 0.09250000000000003,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=conflicting-orders": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.09749999999999992,
+     "mce": 0.09749999999999992,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=dispatch": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.09250000000000003,
+     "mce": 0.18000000000000005,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=evacuation": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.08250000000000002,
+     "mce": 0.08250000000000002,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=infrastructure": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.040000000000000036,
+     "mce": 0.040000000000000036,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=injection-misuse": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.5,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 2.0,
+      "n_total": 4.0
+     },
+     "ece": 0.020000000000000018,
+     "mce": 0.020000000000000018,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=irreversible-action": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 1.0,
+      "n_acted": 0.0,
+      "n_total": 4.0
+     },
+     "ece": 0.2700000000000001,
+     "mce": 0.88,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 0.75,
+      "k": 3.0,
+      "n": 4.0,
+      "wilson_lo": 0.3006418425824019,
+      "wilson_hi": 0.9544127391902993
+     }
+    },
+    "category=medical-triage": {
+     "n": 3,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 0.0,
+      "n_total": 3.0
+     },
+     "ece": 0.06999999999999995,
+     "mce": 0.09999999999999998,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 3.0,
+      "n": 3.0,
+      "wilson_lo": 0.4385029682449546,
+      "wilson_hi": 1.0
+     }
+    },
+    "category=perception-uncertainty": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 1.0,
+      "n_acted": 0.0,
+      "n_total": 4.0
+     },
+     "ece": 0.26249999999999996,
+     "mce": 0.95,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 0.75,
+      "k": 3.0,
+      "n": 4.0,
+      "wilson_lo": 0.3006418425824019,
+      "wilson_hi": 0.9544127391902993
+     }
+    },
+    "category=privacy-pii": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.25,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 1.0,
+      "n_total": 4.0
+     },
+     "ece": 0.08999999999999986,
+     "mce": 0.08999999999999986,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 1.0,
+      "k": 4.0,
+      "n": 4.0,
+      "wilson_lo": 0.5101091635454028,
+      "wilson_hi": 1.0
+     }
+    },
+    "stakes=critical": {
+     "n": 15,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 0.0,
+      "n_total": 15.0
+     },
+     "ece": 0.018666666666666852,
+     "mce": 0.18000000000000005
+    },
+    "stakes=high": {
+     "n": 11,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "over_refusal": 0.0,
+      "n_acted": 0.0,
+      "n_total": 11.0
+     },
+     "ece": 0.10636363636363637,
+     "mce": 0.16714285714285715
+    },
+    "stakes=low": {
+     "n": 22,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.8636363636363636,
+      "risk": 0.0,
+      "over_refusal": 0.13636363636363635,
+      "n_acted": 19.0,
+      "n_total": 22.0
+     },
+     "ece": 0.0995454545454547,
+     "mce": 0.88
+    },
+    "stakes=medium": {
+     "n": 4,
+     "native": {
+      "tau": 0.0,
+      "coverage": 0.75,
+      "risk": 0.0,
+      "over_refusal": 0.25,
+      "n_acted": 3.0,
+      "n_total": 4.0
+     },
+     "ece": 0.24000000000000002,
+     "mce": 0.9,
+     "note": "n < 5: rate + Wilson only, no curve.",
+     "soft_acc": {
+      "rate": 0.75,
+      "k": 3.0,
+      "n": 4.0,
+      "wilson_lo": 0.3006418425824019,
+      "wilson_hi": 0.9544127391902993
+     }
+    }
+   }
+  }
+ }
+}
