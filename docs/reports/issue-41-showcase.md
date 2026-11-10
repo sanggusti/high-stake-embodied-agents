@@ -1,26 +1,53 @@
-# Issue #41 — Space showcase redesign (Agent A report)
+# Issue #41 — Space showcase redesign (Emberline), parts 1+2 (A+B)
 
-Branch: `issue-41`. Date: 2026-11-10. Agent A scope (plan §E): Space
-`theme.css`, `assets/*`, `app.py` header/hero/stat-strip/how-it-works/
-honesty/footer + Overview + Findings tabs + `css=` + `fmt3()` + chart
-recolor, README showcase §, UPDATE_WORKFLOW asset-budget + screenshot
-steps. Interactive-examples and Inference-demo blocks untouched (Agent B).
-Plan: [issue #41 plan comment](https://github.com/sanggusti/expert-spork/issues/41#issuecomment-6759520015) (§A–§G).
+Branch: `issue-41`. Date: 2026-11-10. Plan: [issue #41 plan comment](https://github.com/sanggusti/expert-spork/issues/41#issuecomment-6759520015) (§A–§G).
+Part 1 (Agent A): Space `theme.css`, `assets/*`, `app.py` header/hero/stat-strip/how-it-works/honesty/footer + Overview + Findings tabs + `css=` + `fmt3()` + chart recolor, README showcase §, UPDATE_WORKFLOW asset-budget + screenshot steps.
+Part 2 (Agent B): `video_replay.py` + Tab 3 Radio/gallery/replay + `SAMPLE_FORMAT.md` contract + docs touch-ups + verification + live screenshots.
+Render-QA (A, on top of B): single-panel stat strip, adaptive header, clean hero art.
 
 ## Space commits
 
 - `050f93d` (baseline) → `075f9e4` (#41-A part 1: Emberline first pass) →
-  `66528d6` (#41-B part 2: Agent B step-replay, landed in parallel on the
-  part-1 snapshot) → **`86ed7f8`** (#41-A render-QA fixes, current HEAD).
+  `66528d6` (#41-B part 2: Agent B step-replay, built on the part-1 snapshot) →
+  **`86ed7f8`** (#41-A render-QA fixes, current HEAD).
 - Agent A rebased the render-QA fixes onto `66528d6` (clean, no overlap:
   B touched the `video_replay` import + Tab 3 only) and pushed `86ed7f8`.
-- Live state at push: `runtime` RUNNING @ `86ed7f8`; `/config` HTTP 200,
-  117,660 bytes, Gradio 6.31.0, tabs exactly
-  `Overview` / `Findings` / `Interactive examples` / `Inference demo`;
-  theme hooks present in live config (`showcase-header`, `showcase-links`,
-  `showcase-hero`, `honesty-box`, `showcase-footer`, `.hero-art`,
-  `.section-card`, `.safety-emblem`, `.loop-diagram`, plus Agent B's
-  `.replay-slot`; `#stat-strip`/`.stat-card` are inner HTML by design).
+  Agent B verified Tab 3/replay intact post-rebase (py_compile green,
+  determinism PASS, live `/config` replay components present).
+- Live state (`86ed7f8` RUNNING): `/config` HTTP 200, 117,660 bytes,
+  Gradio 6.31.0, tabs exactly `Overview` / `Findings` /
+  `Interactive examples` / `Inference demo`; theme hooks present
+  (`showcase-header`, `showcase-links`, `showcase-hero`, `honesty-box`,
+  `showcase-footer`, `.hero-art`, `.section-card`, `.safety-emblem`,
+  `.loop-diagram`, plus B's `.replay-slot`/`.empty-slot`; `#stat-strip`/
+  `.stat-card` are inner HTML by design); Timer ×1, Radio `Mode`
+  (Run gallery / Step replay), Slider `Step` 0..21, empty-state copy present.
+  (Earlier B check on `66528d6`: 121,834 bytes, same components; QA shrank
+  config via single-panel strip.) Hardware `cpu-basic` (runtime API
+  `current`/`requested`); variables `{}` (no Space secrets).
+
+## Agent B scope (§E, Tab 3 only; zero new binaries)
+
+- `video_replay.py` (new, dependency-free): `load_steps`
+  (`trajectory_excerpt.jsonl` → `{t, step, kind, summary}` + passthrough),
+  pure `get_step` (index+clamp), `cumulative_counts`, `format_step_card`
+  (kind-colored note/action/edge, inline styles only),
+  `format_cumulative_line`, `format_precomputed_panel` (VQA chip + running,
+  or grid verbatim ≤400ch), `find_visual_samples` + `load_visual_steps`
+  (#40 contract).
+- `app.py` Tab 3 only (+1 import): `Radio` gallery/replay + visibility
+  toggle, gallery meta +3 lines (license/provenance ≤200ch, eval log,
+  detail k=v), #40 placeholder note, replay stepper (`Slider` 0..21 +
+  Prev/Next + Play/Pause via `gr.Timer(0.6)` + step card + cumulative +
+  precomputed panel), visual slot (§B1 empty-state; Gallery when `frames/`
+  lands). Other tabs untouched (diff-verified); labels frozen;
+  `theme.css`/`requirements.txt` untouched by B.
+- `samples/SAMPLE_FORMAT.md`: §"Step-replay contract" appendix
+  (`frames/` + `steps.jsonl` schema, budgets, license rules).
+- `README.md`/`UPDATE_WORKFLOW.md`: replay touch-ups only.
+
+Content = §B exact copy; text-mode over
+`samples/hf-forestfire-v41flash/trajectory_excerpt.jsonl` (22 lines).
 
 ## Number-trace table (plan §B4 — every showcased number)
 
@@ -45,8 +72,19 @@ Full eval-log pins (the plan's `…`-shorthand expanded from
 
 Discipline (plan §B4, verified in `app.py`): no LADI counts (21/24,
 22/24) and no Qwen 3/10 printed anywhere; `findings.json` `0.58`
-displays as `0.580` via `fmt3()` (JSON bytes unchanged); no new
-displayed numbers beyond this table.
+displays as `0.580` via `fmt3()` (JSON bytes unchanged).
+
+New rows (part-2 Tab 3 numbers; Agent A files add none beyond §B4):
+
+| ID | Number as shown | Source |
+|---|---|---|
+| R1 | 22 lines, Slider 0..21, Step i/21, tool calls 0..11, finds 0..3, transcript coords/obs verbatim | Space `samples/hf-forestfire-v41flash/trajectory_excerpt.jsonl` (22 lines); excerpt of S1 run `hf-ff1-v41flash` (full 53 events, 27 calls per `excerpt_end`). Excerpt counts are the visible subset; full totals trace to S1 eval. |
+| R2 | `detail`: rescue_recall=1.0, containment=0.35, efficiency=0.666…, safety=0.5 (hf-forestfire); metric string (footage); — (sim-era) | Space `samples/*/meta.json` `score_detail` (harvested from eval logs). Recall = S1; containment/efficiency/safety from S1 `mission_score` vector (same S1 eval log). |
+| R3 | Visual empty-state: 27 calls, first find at step 3, 6/6 rescue (§B1 verbatim) | 27 + 6/6 trace to S1. "Step 3" is §B1/meta-notes verbatim; excerpt first shows novelty at t=11 (Step 11/21). Both displayed honestly; discrepancy noted. |
+
+`renders_source`/`eval_log` are provenance IDs (traces themselves).
+Doc policy thresholds (<50 KB, ≤250 KB, ≤400ch, ≥0.5) come from plan
+§§C/D, not results.
 
 ## Assets shipped (Space `assets/`)
 
@@ -63,15 +101,15 @@ Bench source pin: `origin/main` `7f46a1ca9e4a32d1350268fdae40320295327a57`.
 | `loop.svg` | hand-authored flywheel diagram (~40 lines) | vector | 1,660 |
 | `PROVENANCE.md` | per-file source + SHA-256 + prompts | — | — |
 
-Every binary <50,000 bytes; new-binary total 218,940 bytes ≤ 300 KB.
-Full SHA-256 + prompts in Space `assets/PROVENANCE.md`. Bench-only
-overflow (NOT shipped, kept lean): `issue-16-space-refresh.png`,
-`issue-22-redteam-asr-severity.png`,
+Every binary <50,000 bytes; new-binary total 218,940 bytes ≤ 300 KB
+(part 2 adds zero binaries). Full SHA-256 + prompts in Space
+`assets/PROVENANCE.md`. Bench-only overflow (NOT shipped):
+`issue-16-space-refresh.png`, `issue-22-redteam-asr-severity.png`,
 `issue-21-abstention-calibration.png`.
 
-## Screenshots (local Gradio 6.31.0 render = live version)
+## Screenshots (before/after local + live interactive)
 
-Rendered from local `demo.launch()` at Space commit `86ed7f8`
+Before/after (Agent A): local `demo.launch()` at Space `86ed7f8`
 (post-rebase tree) + baseline `050f93d`, `?__theme=light`, Overview tab.
 
 | | 1440px desktop | 390px narrow |
@@ -79,21 +117,36 @@ Rendered from local `demo.launch()` at Space commit `86ed7f8`
 | before (`050f93d`) | ![before desktop](issue-41-showcase-before-1440.png) | ![before narrow](issue-41-showcase-before-390.png) |
 | after (`86ed7f8`) | ![after desktop](issue-41-showcase-after-1440.png) | ![after narrow](issue-41-showcase-after-390.png) |
 
-Render notes:
+Render notes (A): hero legible, strip 6-across → single column,
+art hidden on narrow (copy-first), no added overflow. Dark-theme QA
+readable (adaptive header; light shots are reference). Narrow
+right-edge clipping identical in before/after: pre-existing Gradio
+tab-bar behavior (4 frozen labels ≈ 550px min-width; Gradio-internal,
+out of scope), not a regression. Findings-tab shots not taken
+(headless cannot click tabs in that harness); verified via DOM + `/config`.
 
-- Hero legible, stat strip 6-across on desktop → single column on
-  narrow, hero art hidden on narrow (copy-first), no added overflow.
-- Dark-viewer-theme QA (default headless render): readable — white
-  cards + dark hero on dark chrome, adaptive header. Not committed;
-  light shots above are the reference pair.
-- Narrow shows page-level right-edge clipping IDENTICALLY in before
-  and after shots: pre-existing Gradio tab-bar behavior (4 frozen
-  labels ≈ 550px min-width; Gradio-internal, out of scope per the
-  no-internal-selectors rule), not an Agent A regression. All Agent A
-  content stacks/wraps (verified: CTAs wrap, strip stacks, traces use
-  `overflow-wrap:anywhere`, art hides).
-- Findings-tab shots not taken (headless screenshots cannot click
-  tabs); gallery/accordion/callout verified via DOM build + `/config`.
+Live interactive (Agent B): Space `86ed7f8`, authenticated session,
+Gradio 6.31.0, Chromium headless (Playwright, `?__theme=light`).
+Tab clicks at desktop width only (narrow tab bar overflows; narrow
+shots via resize-after-navigate). All 6 committed next to this report.
+
+| File | Viewport | Tab / mode | Notes |
+|---|---|---|---|
+| `issue-41-overview-1440.png` | 1440px | Overview | Hero legible, 6-card strip, no overflow |
+| `issue-41-overview-390.png` | 390px | Overview | Copy-first, strip stacked, no overflow |
+| `issue-41-gallery-1440.png` | 1440px | Interactive / Run gallery | Radio, dropdown, 3 imgs, enriched meta + #40 note |
+| `issue-41-gallery-390.png` | 390px | Interactive / Run gallery | Narrow gallery, no overflow |
+| `issue-41-replay-1440.png` | 1440px | Interactive / Step replay | Slider 0..21, Prev/Next/Play/Pause, Step 0/21 card, cumulative, precomputed panel, §B1 empty-state |
+| `issue-41-replay-390.png` | 390px | Interactive / Step replay | Controls stack vertically, no overflow |
+
+Gallery-vs-replay is the meaningful before/after within Tab 3 (Radio
+toggle). Verified pixels: replay "Step 0/21 · note", cumulative "0 · 0",
+empty-state "27 tool calls, first find at step 3, full 6/6 rescue"
+verbatim. Tooling: `playwright` + `chromium` to `/tmp/ms-playwright`
+(`PLAYWRIGHT_BROWSERS_PATH`); Chromium launch needed one-time
+unsandboxed approval (managed macOS sandbox blocks Mach ports); live
+auth via `Authorization: Bearer` header (token from bench `.env`,
+never printed).
 
 ## Render-QA deviations from plan (all deliberate, all documented)
 
@@ -121,50 +174,63 @@ Render notes:
    exact null callout + v2 strip (same facts, plan copy). `key_points`
    kept visible. No `findings.json` byte changed.
 
-## Validation checklist §F2 (status at Agent A handoff)
+## Replay determinism (PASS — resolves TODO(B)#1)
+
+Re-ran on Space HEAD `86ed7f8` (Tab 3 unchanged by the rebase).
+Bench-side (`.venv` python, Space root):
+
+```
+replay determinism PASS: 22 steps, clamp edges -1/N+1 OK
+purity PASS: all 0..21 stable across repeated calls
+cumulative at 0: tool calls so far: 0 · finds so far: 0
+cumulative at 21: tool calls so far: 11 · finds so far: 3
+```
+
+`get_step` purity + clamp edges (−1→0, N+1→N) verified.
+`gr.Timer(0.6, active=False)` + `.tick` + `gr.Timer(active=…)` toggle
+verified on Gradio 6.31.0 (`Timer: True`). Live `/config` confirms
+Timer ×1, Slider 0..21 on `86ed7f8`.
+
+## Validation checklist §F2 (full sign-off, A+B)
 
 - [x] `python -m py_compile app.py video_replay.py` green (Space root,
-  post-rebase tree `86ed7f8`).
+  `86ed7f8`).
 - [x] JSON validity: `findings.json` + all 4 `samples/*/meta.json`
   load; gallery lists 4 titles; `.get` fallback on missing `eval_log`
   (no `KeyError`).
 - [x] Media: every binary <50,000 bytes + new-binary total 218,940 B
   ≤ 300 KB (assert snippet); `PIL.Image.verify()` on each shipped
-  image.
+  image; part 2 adds zero binaries.
 - [x] `grep -n "@spaces"` → docstring-only (3 hits, module docstring);
-  `requirements.txt` byte-identical to baseline (2 deps).
+  hardware `cpu-basic` (runtime API); `requirements.txt` byte-identical
+  to baseline (2 deps).
 - [x] Billing: token-path grep → docstring + code-comment hits only;
-  no Space secrets added (nothing to screenshot — no Settings change).
+  `resolve_viewer_token` untouched; no Space secrets added (variables
+  `{}` via API; no Settings change).
 - [x] Authenticated `/config`: HTTP 200, 117,660 bytes, Gradio 6.31.0,
-  exact 4 labels (RUNNING @ `86ed7f8`, checked 2026-11-10).
-- [x] Links: 3 HF URLs 200 signed-out; bench repo 404 signed-out /
-  200 authed (repo is PRIVATE — expected); no
-  collection/VIDI/writeup links in Agent A files (`VIDI` appears once
-  in `video_replay.py` as the plan-mandated empty-state copy
-  "VIDI is blocked" — correct, not a link).
-- [x] Numbers audit (Agent A files): every displayed numeral ↔ §B4
-  row above; `0.580` formatting check passes; LADI-count rule holds.
-- [ ] TODO(B): replay determinism `get_step` purity test PASS line
-  (Agent B owns `video_replay.py`; rerun after the `86ed7f8` rebase).
-- [x] Screenshots: before/after desktop (1440) + narrow (390) above,
-  committed next to this report.
+  exact 4 labels (RUNNING @ `86ed7f8`).
+- [x] Links: 3 HF URLs 200 signed-out (dataset ×2, weights); bench repo
+  404 signed-out / 200 authed (PRIVATE — expected); Space 401
+  signed-out / 200 authed (private — expected); no
+  collection/writeup links; `VIDI` appears twice, both plan-mandated
+  "blocked" notices (empty-state copy + contract, not links). Live
+  config also contains Gradio-default `bus.png` placeholders for
+  initially-empty Images (Gradio-injected, not displayed links).
+- [x] Numbers audit: every displayed numeral ↔ §B4 or R1–R3 above;
+  `0.580` formatting check passes; LADI-count rule holds (resolves
+  TODO(B)#2).
+- [x] Replay determinism PASS (purity + clamp edges, re-ran on
+  `86ed7f8`; resolves TODO(B)#1).
+- [x] Screenshots: before/after local (A) + live interactive 1440/390
+  (B, 6 files), all committed next to this report (resolves TODO(B)#3).
 - [x] `README.md` + `UPDATE_WORKFLOW.md` updated (showcase §, asset
-  budget §7, screenshot §8); `assets/PROVENANCE.md` complete.
-  (`samples/SAMPLE_FORMAT.md` replay appendix is Agent B's.)
-
-## TODO(B) — Agent B finish list
-
-1. Re-run the `get_step` purity test on Space HEAD `86ed7f8` and post
-   the PASS line here (Tab 3 code unchanged by the rebase, but the
-   check must be posted against the final HEAD).
-2. Final numbers audit over Tab 3 replay copy (step counts, cumulative
-   lines) — add §B4-style rows here if any new numeral appears.
-3. Optional: live-Space authenticated screenshots (this report's shots
-   are local renders at the live Gradio version).
+  budget, replay §, screenshot §); `samples/SAMPLE_FORMAT.md` replay
+  appendix (B); `assets/PROVENANCE.md` complete.
 
 ## Spend
 
-$0.00 expected and actual: no Modal/GPU, no HF Inference calls, no
-deploys. Ledger row `41 showcase-A cpu 0.5 $0.00` in
-`/tmp/modal-spend.log` + `docs/reports/modal-spend.md` (TOTAL stays
-$0.50).
+$0.00 for #41 (no Modal/GPU, no HF Inference calls, no deploys).
+Ledger rows `41 showcase-A cpu 0.5 $0.00` + `41 showcase-B cpu 0.5 $0.00`;
+branch `docs/reports/modal-spend.md` union TOTAL $2.78 (includes
+parallel issue-1 GPU spend, not #41 spend). Full pytest: 244 passed,
+7 skipped (`.venv` python, `issue-41` worktree).
