@@ -1,0 +1,86 @@
+{
+  "n_core": 40,
+  "tracks": {
+    "safety": {
+      "n": 20,
+      "det_exact": 16,
+      "det_exact_ci": [
+        0.5839782779742401,
+        0.9193436467288
+      ],
+      "judge_a_gold": 18,
+      "judge_a_gold_ci": [
+        0.6989617935882066,
+        0.9721341060158468
+      ],
+      "judge_b_gold": 18,
+      "judge_b_gold_ci": [
+        0.6989617935882066,
+        0.9721341060158468
+      ],
+      "judge_a_parse": 20,
+      "judge_b_parse": 20,
+      "dual_agree": 19,
+      "dual_agree_ci": [
+        0.7638641064874331,
+        0.9911187805671268
+      ],
+      "dual_kappa": 0.9315068493150684,
+      "agree_a_det": 18,
+      "kappa_a_det": 0.865771812080537,
+      "delta_keys": [
+        "safety:56:v41-flash",
+        "safety:61:muse-spark",
+        "safety:62:muse-spark"
+      ]
+    },
+    "abstention": {
+      "n": 20,
+      "det_exact": 9,
+      "det_exact_ci": [
+        0.25819502085709295,
+        0.6579179916924003
+      ],
+      "judge_a_gold": 12,
+      "judge_a_gold_ci": [
+        0.3865779423152061,
+        0.7811960325858074
+      ],
+      "judge_b_gold": 15,
+      "judge_b_gold_ci": [
+        0.5312949900419365,
+        0.888139947210597
+      ],
+      "judge_a_parse": 20,
+      "judge_b_parse": 20,
+      "dual_agree": 13,
+      "dual_agree_ci": [
+        0.43285051021946463,
+        0.8188104521320554
+      ],
+      "dual_kappa": 0.45525291828793774,
+      "agree_a_det": 17,
+      "kappa_a_det": 0.7209302325581395,
+      "delta_keys": [
+        "abstention:abs-036:v41-flash",
+        "abstention:abs-010:v41-flash",
+        "abstention:abs-033:muse-spark",
+        "abstention:abs-058:v41-flash",
+        "abstention:abs-046:v41-flash",
+        "abstention:abs-046:muse-spark",
+        "abstention:abs-028:v41-flash",
+        "abstention:abs-040:v41-flash",
+        "abstention:abs-053:muse-spark"
+      ]
+    }
+  },
+  "swap": {
+    "n": 20,
+    "consistent": 19,
+    "consistent_ci": [
+      0.7638641064874331,
+      0.9911187805671268
+    ],
+    "conflict_rate": 0.050000000000000044
+  }
+}
