@@ -6,7 +6,6 @@ this file resolve by UNION of rows. HF Inference spend counts against
 the same $50 cap as Modal GPU spend.
 
 ```
-the same $50 cap as Modal GPU spend.
 6 hf-smoke-v41flash api 0.03 $0.00
 6 hf-ff1-v41flash api 2.0 $0.08
 7 curate-v2 cpu 45 $0.00
@@ -64,5 +63,5 @@ the same $50 cap as Modal GPU spend.
 3 qwen3vl-hermes-coldstart a100-80gb 3.2 $0.13
 3 qwen3vl-ff1 a100-80gb 0.9 $0.04
 50 align-vlm-survey cpu 0.5 $0.00
-TOTAL 56.29
+TOTAL 6.29
 ```
