@@ -3,6 +3,8 @@
 from hsea.models import (
     BASETEN_BASE_URL,
     HF_BASE_URL,
+    MODAL_GEMMA4_12B,
+    MODAL_QWEN3VL_8B,
     baseten_model_id,
     hf_model_id,
     modal_model_id,
@@ -19,6 +21,20 @@ def test_baseten_model_id():
 
 def test_modal_model_id():
     assert modal_model_id("qwen") == "openai-api/modal/qwen"
+
+
+def test_modal_gemma4_12b_routing():
+    assert MODAL_GEMMA4_12B == "google/gemma-4-12B-it"
+    assert modal_model_id(MODAL_GEMMA4_12B) == (
+        "openai-api/modal/google/gemma-4-12B-it"
+    )
+
+
+def test_modal_qwen3vl_8b_routing():
+    assert MODAL_QWEN3VL_8B == "Qwen/Qwen3-VL-8B-Instruct"
+    assert modal_model_id(MODAL_QWEN3VL_8B) == (
+        "openai-api/modal/Qwen/Qwen3-VL-8B-Instruct"
+    )
 
 
 def test_hf_model_id():

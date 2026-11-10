@@ -34,8 +34,11 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_server.py` (Qwen2.5-7B, hermes parser),
   `infra/modal/vllm_mistral.py` (Mistral-7B-v0.3, mistral parser),
   `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
-  `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
-  verified 2026-11-09, see below).
+  `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct, hermes parser,
+  A100-80GB, 64K context; issue #3, see below — footage-only A10G config
+  retired),
+  `infra/modal/vllm_gemma4.py` (Gemma4-12B unified multimodal, gemma4
+  parser, nightly vLLM, A100-80GB, 64K context; issue #3, see below).
 - Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
   (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
   needed.
@@ -49,20 +52,52 @@ Verified against the installed inspect-ai provider: model id
   `https://sanggusti--dmb-vllm-mistral-serve.us-east.modal.run` (Mistral-7B),
   `https://sanggusti--dmb-vllm-qwen14b-serve.us-east.modal.run` (Qwen14B-AWQ),
   `https://sanggusti--dmb-vllm-qwen3vl-serve.us-east.modal.run`
-  (Qwen3-VL-8B-Instruct vision, 2026-11-09).
+  (Qwen3-VL-8B-Instruct, 2026-11-10; mission config — serverless, stop
+  after use),
+  `https://sanggusti--dmb-vllm-gemma4-serve.us-east.modal.run`
+  (Gemma4-12B-it, 2026-11-10; serverless, stop after use).
 - Status: **verified 2026-10-27** (smoke 1.0, forest_fire limit-1 0.627);
   Mistral + 14B tool-gated 2026-11-04 (forced tool_choice yields valid calls).
+- Gemma4-12B: **verified 2026-11-10** (issue #3): slug
+  `openai-api/modal/google/gemma-4-12B-it` (helper:
+  `hsea.models.modal_model_id(MODAL_GEMMA4_12B)`); weights ~24 GB BF16
+  on one A100-80GB (47.29 GiB free KV @ util 0.90);
+  `--max-model-len 65536` working context (native 256K);
+  `--enable-auto-tool-choice --tool-call-parser gemma4` on nightly vLLM
+  `0.34.0rc1.dev127+g8afb5e9ff` (stable 0.21.0 predates
+  `gemma4_unified`); smoke 1.0 + forest_fire limit-1 0.492 (10 tool
+  calls, land+submit; see `docs/reports/issue-3-vlm-workhorses.md`).
+- Qwen3-VL-8B: **verified 2026-11-10** (issue #3): slug
+  `openai-api/modal/Qwen/Qwen3-VL-8B-Instruct` (helper:
+  `hsea.models.modal_model_id(MODAL_QWEN3VL_8B)`); weights ~16 GB BF16
+  on one A100-80GB; `--max-model-len 65536`;
+  `--enable-auto-tool-choice --tool-call-parser hermes` on stable vLLM
+  0.21.0 (NOT qwen3_xml — see gotchas); smoke 1.0 + forest_fire
+  limit-1 0.702 (24 tool calls, recall 0.90; see
+  `docs/reports/issue-3-vlm-workhorses.md`).
 - Gotchas observed: vLLM must be pinned (0.21.0 on CUDA 12.9; 0.32 on
   CUDA 12.4 crashes in FlashInfer JIT); tool calling needs
   `--enable-auto-tool-choice` + the matching `--tool-call-parser`; the sandbox
   blocks Modal's connection (DNS), so Modal commands need an unsandboxed
   shell; Llama repos are HF-gated (401) so the matrix uses ungated
   Mistral/Qwen only; Mistral-7B-v0.3 needs temperature=0 for reliable
-  tool calls (temp 1.0 wanders to max-length empties); Qwen3-VL-8B on a
-  24 GB A10G needs `--max-model-len 4096` + `--gpu-memory-utilization
-  0.95` (16384 leaves ~0.3 GB KV cache and EngineCore fails to start);
+  tool calls (temp 1.0 wanders to max-length empties); the retired
+  Qwen3-VL-8B footage config on a 24 GB A10G needed `--max-model-len
+  4096` + `--gpu-memory-utilization 0.95` (16384 leaves ~0.3 GB KV cache
+  and EngineCore fails to start) — mission evals moved it to A100-80GB
+  / 64K (issue #3);
   the inspect provider requires `MODAL_API_KEY` set (any value) even
-  though the vLLM server checks no key.
+  though the vLLM server checks no key; parser choice is per-model, not
+  per-family — Qwen3-VL-8B emits Hermes-style calls and needs `hermes`
+  (issue #3), while Qwen3.8 needs `qwen3_xml` (issue #1); verify parser
+  choice with a `tool_choice="auto"` multi-tool probe, because a forced
+  (named) tool_choice masks a mismatch (vLLM constrains forced output
+  to a valid call either way); after `modal deploy`, requests can
+  briefly keep hitting the previous revision's warm container — verify
+  a redeploy on a clean container (`modal app stop` + redeploy) before
+  trusting probe results; first request to a scaled-to-zero app hangs
+  then 200s on cold-start (~3-7 min incl. weight download) — poll
+  `/v1/models` until 200 instead of treating timeouts as failure.
 
 ## HF Inference Providers (frontier weights)
 

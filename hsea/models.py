@@ -12,6 +12,16 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Modal-hosted Gemma4-12B unified multimodal (issue #3; see
+#: ``infra/modal/vllm_gemma4.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_GEMMA4_12B)``.
+MODAL_GEMMA4_12B = "google/gemma-4-12B-it"
+
+#: Modal-hosted Qwen3-VL-8B-Instruct (issue #3; see
+#: ``infra/modal/vllm_qwen3vl.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_QWEN3VL_8B)``.
+MODAL_QWEN3VL_8B = "Qwen/Qwen3-VL-8B-Instruct"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.
