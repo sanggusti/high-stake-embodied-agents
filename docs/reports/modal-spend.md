@@ -67,5 +67,6 @@ the same $50 cap as Modal GPU spend.
 51 align-index-synth cpu 0.5 $0.00
 57 findings-narrative cpu 0.5 $0.00
 59 tech-details cpu 0.5 $0.00
+61 metrics-playbook cpu 0.5 $0.00
 TOTAL 6.29
 ```
