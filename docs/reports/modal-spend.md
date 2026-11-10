@@ -62,11 +62,26 @@ the same $50 cap as Modal GPU spend.
 3 qwen3vl-ff1-xml a100-80gb 0.4 $0.02
 3 qwen3vl-hermes-coldstart a100-80gb 3.2 $0.13
 3 qwen3vl-ff1 a100-80gb 0.9 $0.04
-46 align-safety-survey cpu 0.5 $0.00
 50 align-vlm-survey cpu 0.5 $0.00
+46 align-safety-survey cpu 0.5 $0.00
 51 align-index-synth cpu 0.5 $0.00
 57 findings-narrative cpu 0.5 $0.00
 59 tech-details cpu 0.5 $0.00
+4 smollm3-coldstart l4 16.4 $0.22
+4 smollm3-probes l4 26.9 $0.36
+4 smollm3-smoke l4 23.5 $0.31
+4 smollm3-ff1 l4 40.1 $0.53
+4 tinyaya-coldstart l4 11.7 $0.16
+4 tinyaya-smoke l4 0.1 $0.00
+4 tinyaya-ff1-noparser l4 0.1 $0.00
+4 tinyaya-rewarm l4 5.9 $0.08
+4 tinyaya-smoke2 l4 29.3 $0.39
+4 tinyaya-ff1 l4 7.4 $0.10
+4 smolvlm-coldstart l4 8.1 $0.11
+4 smolvlm-warm l4 20.7 $0.28
+4 smolvlm-smoke l4 0.1 $0.00
+4 smolvlm-smoke2 l4 0.1 $0.00
+4 smolvlm-ff1 l4 0.4 $0.01
 61 metrics-playbook cpu 0.5 $0.00
-TOTAL 6.29
+TOTAL 8.84
 ```

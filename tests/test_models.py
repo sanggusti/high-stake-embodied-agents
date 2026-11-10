@@ -7,6 +7,9 @@ from hsea.models import (
     MODAL_MOLMO2_8B,
     MODAL_QWEN38_FP8,
     MODAL_QWEN3VL_8B,
+    MODAL_SMOLLM3_3B,
+    MODAL_SMOLVLM_256M,
+    MODAL_TINYAYA_L2,
     baseten_model_id,
     hf_model_id,
     modal_model_id,
@@ -50,6 +53,21 @@ def test_modal_qwen3vl_8b_routing():
     assert MODAL_QWEN3VL_8B == "Qwen/Qwen3-VL-8B-Instruct"
     assert modal_model_id(MODAL_QWEN3VL_8B) == (
         "openai-api/modal/Qwen/Qwen3-VL-8B-Instruct"
+    )
+
+
+def test_modal_edge_lane_routing():
+    assert MODAL_SMOLLM3_3B == "HuggingFaceTB/SmolLM3-3B"
+    assert modal_model_id(MODAL_SMOLLM3_3B) == (
+        "openai-api/modal/HuggingFaceTB/SmolLM3-3B"
+    )
+    assert MODAL_SMOLVLM_256M == "HuggingFaceTB/SmolVLM-256M-Instruct"
+    assert modal_model_id(MODAL_SMOLVLM_256M) == (
+        "openai-api/modal/HuggingFaceTB/SmolVLM-256M-Instruct"
+    )
+    assert MODAL_TINYAYA_L2 == "CohereLabs/tiny-aya-l2-thinker"
+    assert modal_model_id(MODAL_TINYAYA_L2) == (
+        "openai-api/modal/CohereLabs/tiny-aya-l2-thinker"
     )
 
 
