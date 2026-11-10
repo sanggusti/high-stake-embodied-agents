@@ -3,6 +3,10 @@
 from hsea.models import (
     BASETEN_BASE_URL,
     HF_BASE_URL,
+    MODAL_GEMMA4_12B,
+    MODAL_MOLMO2_8B,
+    MODAL_QWEN38_FP8,
+    MODAL_QWEN3VL_8B,
     MODAL_SMOLLM3_3B,
     MODAL_SMOLVLM_256M,
     MODAL_TINYAYA_L2,
@@ -22,6 +26,34 @@ def test_baseten_model_id():
 
 def test_modal_model_id():
     assert modal_model_id("qwen") == "openai-api/modal/qwen"
+
+
+def test_modal_qwen38_fp8_routing():
+    assert MODAL_QWEN38_FP8 == "Qwen/Qwen3.8-27B-FP8"
+    assert modal_model_id(MODAL_QWEN38_FP8) == (
+        "openai-api/modal/Qwen/Qwen3.8-27B-FP8"
+    )
+
+
+def test_modal_molmo2_8b_routing():
+    assert MODAL_MOLMO2_8B == "allenai/Molmo2-8B"
+    assert modal_model_id(MODAL_MOLMO2_8B) == (
+        "openai-api/modal/allenai/Molmo2-8B"
+    )
+
+
+def test_modal_gemma4_12b_routing():
+    assert MODAL_GEMMA4_12B == "google/gemma-4-12B-it"
+    assert modal_model_id(MODAL_GEMMA4_12B) == (
+        "openai-api/modal/google/gemma-4-12B-it"
+    )
+
+
+def test_modal_qwen3vl_8b_routing():
+    assert MODAL_QWEN3VL_8B == "Qwen/Qwen3-VL-8B-Instruct"
+    assert modal_model_id(MODAL_QWEN3VL_8B) == (
+        "openai-api/modal/Qwen/Qwen3-VL-8B-Instruct"
+    )
 
 
 def test_modal_edge_lane_routing():

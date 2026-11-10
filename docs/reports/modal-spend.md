@@ -82,5 +82,6 @@ the same $50 cap as Modal GPU spend.
 4 smolvlm-smoke l4 0.1 $0.00
 4 smolvlm-smoke2 l4 0.1 $0.00
 4 smolvlm-ff1 l4 0.4 $0.01
+61 metrics-playbook cpu 0.5 $0.00
 TOTAL 8.84
 ```

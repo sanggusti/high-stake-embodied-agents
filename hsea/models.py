@@ -12,6 +12,25 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Modal-hosted Qwen3.8-27B official FP8 (issue #1; see
+#: ``infra/modal/vllm_qwen38.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_QWEN38_FP8)``.
+MODAL_QWEN38_FP8 = "Qwen/Qwen3.8-27B-FP8"
+
+#: Modal-hosted Molmo2-8B (issue #2; see ``infra/modal/vllm_molmo2.py``).
+#: Full inspect-ai id is ``modal_model_id(MODAL_MOLMO2_8B)``.
+MODAL_MOLMO2_8B = "allenai/Molmo2-8B"
+
+#: Modal-hosted Gemma4-12B unified multimodal (issue #3; see
+#: ``infra/modal/vllm_gemma4.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_GEMMA4_12B)``.
+MODAL_GEMMA4_12B = "google/gemma-4-12B-it"
+
+#: Modal-hosted Qwen3-VL-8B-Instruct (issue #3; see
+#: ``infra/modal/vllm_qwen3vl.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_QWEN3VL_8B)``.
+MODAL_QWEN3VL_8B = "Qwen/Qwen3-VL-8B-Instruct"
+
 #: Modal-hosted SmolLM3-3B (issue #4; see
 #: ``infra/modal/vllm_smollm3.py``). Full inspect-ai id is
 #: ``modal_model_id(MODAL_SMOLLM3_3B)``.

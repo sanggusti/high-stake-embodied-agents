@@ -19,16 +19,21 @@ evaluated on dataset-composed footage, action, and safety tracks.
 | [sam-segmap](sam-segmap.md) | SAM segmentation maps → routes + severity |
 | [sam-routes-report](sam-routes-report.md) | Progress report: SAM routes + baseline figures |
 | [watcher](watcher.md) | Scenario watcher: observability & replay |
-| [metrics](metrics.md) | Score vector, weights, and metric roadmap |
+| [metrics](metrics.md) | Score vector, weights, unified metrics map, and metric roadmap |
 | [inference](inference.md) | Baseten + Modal + HF model routing through inspect-ai |
 | [models](models.md) | Newest open models to benchmark/finetune/evaluate |
 | [datasets](datasets.md) | Disaster footage + action datasets to align on |
 | [alignment-research](alignment-research.md) | DORA-inspired alignment research + playbook |
+| [alignment-methods](alignment-methods.md) | Unified index to the three alignment survey lanes + cross-lane ranking |
+| [alignment-methods-posttraining](alignment-methods-posttraining.md) | Post-training survey: SFT, DPO family, RLVR, agent RL |
+| [alignment-methods-safety](alignment-methods-safety.md) | Safety-alignment survey: 10 methods + experiments |
+| [alignment-methods-vlm](alignment-methods-vlm.md) | 2024-2026 VLM alignment survey for footage agents |
 | [tracking](tracking.md) | Run registry, eval logs, reproducibility contract |
 | [footage-evals](footage-evals.md) | Footage VLM eval results and repro |
 | [abstention-evals](abstention-evals.md) | Abstention and escalation threshold procedure |
 | [redteam](redteam.md) | Red-teaming harness and scoring |
 | [safety-gates](safety-gates.md) | Safety gates for finetune PRs and SafeTune |
+| [safety-metrics](safety-metrics.md) | Safety metric inventory + M1-M6 high-stakes derivations (lane branch) |
 | [license-clearance-24](license-clearance-24.md) | Dataset license clearance sweep |
 | [human-evals](human-evals.md) | Operator-in-the-loop baselines and grading |
 | [runbooks](runbooks.md) | Setup, daily commands, troubleshooting |
