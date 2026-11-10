@@ -51,7 +51,9 @@ DPO (dispatch, #20 builder; TREC-IS skipped per #24):
 RLVR: 250 episodes (133 ≥ 0.5 / 117 negatives), teachers span
 Qwen2.5-7B/14B, muse-spark-open-1026, Mistral-7B, Qwen3-VL-8B,
 DeepSeek-V4.1-Flash, mockllm. Negatives include v1's 10 failure
-episodes per the flywheel.md v2 prescription.
+episodes per the v1 loop prescription from the retired flywheel doc
+(historical reference; the v1 null lesson is now noted in
+`docs/research-track.md`).
 
 ![flywheel-v2 curation summary](issue-7-flywheel-v2-curation.png)
 
