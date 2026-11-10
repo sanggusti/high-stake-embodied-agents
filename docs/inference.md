@@ -35,7 +35,9 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_mistral.py` (Mistral-7B-v0.3, mistral parser),
   `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
   `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
-  verified 2026-11-09, see below).
+  verified 2026-11-09, see below),
+  `infra/modal/vllm_qwen38.py` (Qwen3.8-27B-FP8, qwen3_xml parser,
+  A100-80GB, 262K context; issue #1, see below).
 - Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
   (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
   needed.
@@ -49,9 +51,17 @@ Verified against the installed inspect-ai provider: model id
   `https://sanggusti--dmb-vllm-mistral-serve.us-east.modal.run` (Mistral-7B),
   `https://sanggusti--dmb-vllm-qwen14b-serve.us-east.modal.run` (Qwen14B-AWQ),
   `https://sanggusti--dmb-vllm-qwen3vl-serve.us-east.modal.run`
-  (Qwen3-VL-8B-Instruct vision, 2026-11-09).
+  (Qwen3-VL-8B-Instruct vision, 2026-11-09),
+  `https://sanggusti--dmb-vllm-qwen38-serve.us-east.modal.run`
+  (Qwen3.8-27B-FP8, 2026-11-10; serverless, stop after use).
 - Status: **verified 2026-10-27** (smoke 1.0, forest_fire limit-1 0.627);
   Mistral + 14B tool-gated 2026-11-04 (forced tool_choice yields valid calls).
+- Qwen3.8-27B-FP8: **verified 2026-11-10** (issue #1): slug
+  `openai-api/modal/Qwen/Qwen3.8-27B-FP8` (helper:
+  `hsea.models.modal_model_id(MODAL_QWEN38_FP8)`); weights ~31 GB FP8
+  on one A100-80GB; `--max-model-len 262144` native context;
+  `--enable-auto-tool-choice --tool-call-parser qwen3_xml`; smoke +
+  forest_fire limit-1 green (see `docs/reports/issue-1-qwen38-serve.md`).
 - Gotchas observed: vLLM must be pinned (0.21.0 on CUDA 12.9; 0.32 on
   CUDA 12.4 crashes in FlashInfer JIT); tool calling needs
   `--enable-auto-tool-choice` + the matching `--tool-call-parser`; the sandbox
@@ -62,7 +72,15 @@ Verified against the installed inspect-ai provider: model id
   24 GB A10G needs `--max-model-len 4096` + `--gpu-memory-utilization
   0.95` (16384 leaves ~0.3 GB KV cache and EngineCore fails to start);
   the inspect provider requires `MODAL_API_KEY` set (any value) even
-  though the vLLM server checks no key.
+  though the vLLM server checks no key; Qwen3-family models emit XML
+  tool calls (`<tool_call><function=name>...`) so they need
+  `--tool-call-parser qwen3_xml` (vLLM >= 0.20.2) — `hermes` expects
+  JSON and fails silently, leaving calls as plain text (issue #1);
+  Qwen3.8's `generation_config.json` overrides sampling to top_k=20 /
+  top_p=0.95 (vLLM warns; pass `--generation-config vllm` to ignore);
+  first request to a scaled-to-zero app returns HTTP 303 while the
+  container cold-starts (~3-4 min for Qwen3.8 incl. 207 s engine init)
+  — retry until 200 instead of treating 303 as failure.
 
 ## HF Inference Providers (frontier weights)
 
