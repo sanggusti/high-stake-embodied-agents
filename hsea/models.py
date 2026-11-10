@@ -17,6 +17,10 @@ HF_BASE_URL = "https://router.huggingface.co/v1"
 #: ``modal_model_id(MODAL_QWEN38_FP8)``.
 MODAL_QWEN38_FP8 = "Qwen/Qwen3.8-27B-FP8"
 
+#: Modal-hosted Molmo2-8B (issue #2; see ``infra/modal/vllm_molmo2.py``).
+#: Full inspect-ai id is ``modal_model_id(MODAL_MOLMO2_8B)``.
+MODAL_MOLMO2_8B = "allenai/Molmo2-8B"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.
