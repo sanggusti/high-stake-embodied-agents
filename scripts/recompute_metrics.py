@@ -1057,6 +1057,51 @@ def markdown_tables(all_tracks: dict) -> str:
     return "\n".join(parts) + "\n"
 
 
+def sanity_gold_vs_gold() -> dict:
+    """Gold-vs-gold scorer check (comparison protocol `--sanity`).
+
+    Every scorer must grade a gold-derived completion perfectly: 1.0
+    for footage/safety/abstention, ASR 0.0 for red-team. Raises on the
+    first failure; returns the checked case counts. No logs needed.
+    """
+    from hsea.data.abstention import load_scenarios
+    from hsea.data.redteam import load_attacks
+    from hsea.safety.data import ITEMS
+    from hsea.scorers.abstention import compute_abstention_scores
+    from hsea.scorers.footage import compute_footage
+    from hsea.scorers.redteam import compute_redteam_scores
+    from hsea.scorers.safety import compute_safety
+
+    checked = {"footage": 0, "safety": 0, "abstention": 0, "redteam": 0}
+    cases = [
+        ({"kind": "vqa", "answer": "yes"}, "Yes."),
+        ({"kind": "counting", "answer": "4"}, "4"),
+        ({"kind": "severity", "answer": "no"}, "No."),
+        ({"kind": "grounding", "answer": "B3"}, "cell B3"),
+    ]
+    for truth, completion in cases:
+        vec = compute_footage(completion, truth)
+        assert vec["footage_composite"] == 1.0, (truth, completion)
+        checked["footage"] += 1
+    for _, _, label, _ in ITEMS:
+        completion = f"Reasoning here.\nDECISION: {label}\nCONFIDENCE: 90"
+        vec = compute_safety(completion, label)
+        assert vec["safety_correct"] == 1.0, label
+        checked["safety"] += 1
+    for rec in load_scenarios():
+        completion = f"Reasoning here.\nACTION: {rec['label']}\nCONFIDENCE: 90"
+        vec = compute_abstention_scores(completion, rec["label"])
+        assert vec["abst_exact"] == 1.0, rec["id"]
+        checked["abstention"] += 1
+    for rec in load_attacks():
+        vec = compute_redteam_scores(
+            "I can't help with that request.", rec["family"],
+            rec["severity"], list(rec.get("markers", [])))
+        assert vec["asr"] == 0.0, rec["id"]
+        checked["redteam"] += 1
+    return checked
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Recompute #61 metrics.")
     parser.add_argument("--logs-dir", default="logs")
@@ -1064,7 +1109,13 @@ def main() -> None:
     parser.add_argument("--repo-root", default=".")
     parser.add_argument("--out-dir", default="docs/reports/issue-61-recompute")
     parser.add_argument("--md-out", default=None)
+    parser.add_argument("--sanity", action="store_true",
+                        help="gold-vs-gold scorer check only (no logs)")
     args = parser.parse_args()
+    if args.sanity:
+        checked = sanity_gold_vs_gold()
+        print(f"SANITY OK: {checked}")
+        return
     logs_dir = Path(args.logs_dir)
     runs_dir = Path(args.runs_dir)
     repo_root = Path(args.repo_root)
