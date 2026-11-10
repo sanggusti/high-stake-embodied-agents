@@ -35,7 +35,12 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_mistral.py` (Mistral-7B-v0.3, mistral parser),
   `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
   `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
-  verified 2026-11-09, see below).
+  verified 2026-11-09, see below),
+  `infra/modal/vllm_smollm3.py` (SmolLM3-3B text, hermes parser, 64K ctx),
+  `infra/modal/vllm_tinyaya.py` (Tiny Aya L2 Thinker 3.35B text, 32K ctx;
+  **CC-BY-NC — research-only**, gated HF repo via `hsea-hf` secret),
+  `infra/modal/vllm_smolvlm.py` (SmolVLM-256M vision, 8K ctx). All three
+  edge-lane servers run on one L4 (issue #4, see below).
 - Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
   (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
   needed.
@@ -50,8 +55,25 @@ Verified against the installed inspect-ai provider: model id
   `https://sanggusti--dmb-vllm-qwen14b-serve.us-east.modal.run` (Qwen14B-AWQ),
   `https://sanggusti--dmb-vllm-qwen3vl-serve.us-east.modal.run`
   (Qwen3-VL-8B-Instruct vision, 2026-11-09).
+  Edge lane (2026-11-10, serverless, stop after use):
+  `https://sanggusti--dmb-vllm-smollm3-serve.us-east.modal.run`
+  (SmolLM3-3B, Apache-2.0),
+  `https://sanggusti--dmb-vllm-tinyaya-serve.us-east.modal.run`
+  (Tiny Aya L2, CC-BY-NC),
+  `https://sanggusti--dmb-vllm-smolvlm-serve.us-east.modal.run`
+  (SmolVLM-256M, Apache-2.0).
 - Status: **verified 2026-10-27** (smoke 1.0, forest_fire limit-1 0.627);
   Mistral + 14B tool-gated 2026-11-04 (forced tool_choice yields valid calls).
+- Edge lane: **verified 2026-11-10** (issue #4): smoke green all three
+  (SmolVLM needs `temperature=0` — flaky at default); ff1 floors
+  SmolLM3 **64K overflow** (runaway thinking trace), Tiny Aya 0.150,
+  SmolVLM 0.150 (both 0 tool calls — templates render no tools; see
+  `docs/reports/issue-4-edge-lane.md`). Text models run mission evals
+  with `HSEA_VISION=text`.
+- **LICENSE — Tiny Aya is CC-BY-NC-4.0 (+ Cohere Labs Acceptable Use
+  Policy): research/bench use ONLY. Never ship Tiny Aya outputs,
+  weights, or derivatives in a product; flag any pipeline that touches
+  it. The other two edge slugs (SmolLM3, SmolVLM) are Apache-2.0.**
 - Gotchas observed: vLLM must be pinned (0.21.0 on CUDA 12.9; 0.32 on
   CUDA 12.4 crashes in FlashInfer JIT); tool calling needs
   `--enable-auto-tool-choice` + the matching `--tool-call-parser`; the sandbox
@@ -62,7 +84,19 @@ Verified against the installed inspect-ai provider: model id
   24 GB A10G needs `--max-model-len 4096` + `--gpu-memory-utilization
   0.95` (16384 leaves ~0.3 GB KV cache and EngineCore fails to start);
   the inspect provider requires `MODAL_API_KEY` set (any value) even
-  though the vLLM server checks no key.
+  though the vLLM server checks no key; vLLM **rejects**
+  `tool_choice="auto"` requests with 400 when the server lacks
+  `--enable-auto-tool-choice` + `--tool-call-parser` — set the flags
+  even for models whose template renders no tools (calls parse to
+  nothing; the episode then measures the no-call floor) (issue #4);
+  L4 `web_server` apps scale to zero after ~2 idle minutes and cold
+  (re)starts take 6–29 min (vs 3–4 min A100), during which requests
+  hang (no fast 303) — chain warm→smoke→ff1 in ONE command with zero
+  gap (issue #4); SmolLM3's default thinking mode can run away to
+  fill 64K without emitting a tool call (ff1 overflow, issue #4);
+  SmolVLM-256M needs `temperature=0` for exact echo (default temp
+  paraphrases) and misnames even a solid red square — weakest slug,
+  route accordingly.
 
 ## HF Inference Providers (frontier weights)
 

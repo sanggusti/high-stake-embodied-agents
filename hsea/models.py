@@ -12,6 +12,21 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Modal-hosted SmolLM3-3B (issue #4; see
+#: ``infra/modal/vllm_smollm3.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_SMOLLM3_3B)``.
+MODAL_SMOLLM3_3B = "HuggingFaceTB/SmolLM3-3B"
+
+#: Modal-hosted SmolVLM-256M-Instruct (issue #4; see
+#: ``infra/modal/vllm_smolvlm.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_SMOLVLM_256M)``.
+MODAL_SMOLVLM_256M = "HuggingFaceTB/SmolVLM-256M-Instruct"
+
+#: Modal-hosted Tiny Aya L2 Thinker (issue #4; see
+#: ``infra/modal/vllm_tinyaya.py``). CC-BY-NC — research-only. Full
+#: inspect-ai id is ``modal_model_id(MODAL_TINYAYA_L2)``.
+MODAL_TINYAYA_L2 = "CohereLabs/tiny-aya-l2-thinker"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.
