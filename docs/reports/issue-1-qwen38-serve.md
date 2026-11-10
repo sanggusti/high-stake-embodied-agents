@@ -40,9 +40,10 @@ All recorded via `python -m hsea.aggregate record`
 
 Duration: smoke1 8:25 (cold start), ff1-hermes 12:00, smoke2 5:26
 (cold start after idle scaledown), ff1 12:43. Cold start ≈ 3–4 min
-(207 s engine init). Text+image verified live; `--limit-mm-per-prompt
-'{"image": 8, "video": 2}'` is configured but no video eval exists in
-the repo, so video is configured-not-verified.
+(207 s engine init). Text+image verified live via the evals above;
+video verified via direct API probe (2 s red→blue mp4 as
+`video_url`, model described the frames correctly; no video eval
+exists in the repo, so this was a curl probe, not an inspect run).
 
 ![parser fix + provider comparison](issue-1-qwen38-serve.png)
 
@@ -61,8 +62,9 @@ Qwen3.8 limit-1 0.757 vs published limit-1 numbers — muse-spark
   estimate stayed <$2.50 → still GO.
 - Actual (GPU-active wall clock × rate): probes 12.1 min $0.50,
   smoke1 8.4 min $0.35, ff1-hermes 12.0 min $0.50, smoke2 5.4 min
-  $0.23, ff1 12.7 min $0.53 → **$2.11** this issue.
-- Running TOTAL after this issue: **$2.61**.
+  $0.23, ff1 12.7 min $0.53, video probe 4.1 min $0.17 → **$2.28**
+  this issue.
+- Running TOTAL after this issue: **$2.78**.
 
 ## Artifacts
 

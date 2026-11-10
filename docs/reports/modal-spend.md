@@ -31,5 +31,6 @@ the same $50 cap as Modal GPU spend.
 1 qwen38-ff1-hermes a100-80gb 12.0 $0.50
 1 qwen38-smoke2 a100-80gb 5.4 $0.23
 1 qwen38-ff1 a100-80gb 12.7 $0.53
-TOTAL 2.61
+1 qwen38-video a100-80gb 4.1 $0.17
+TOTAL 2.78
 ```
