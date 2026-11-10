@@ -419,7 +419,14 @@ under estimate.
 
 Fresh Findings-tab captures at 1440 px and 390 px widths are
 committed alongside this report (`issue-61-recompute-1440.png`,
-`issue-61-recompute-390.png`).
+`issue-61-recompute-390.png`), taken from the live Space at
+`db82339` in an authenticated session (Gradio 6.31.0,
+`?__theme=light`). Desktop shows all 4 regenerated figures
+interleaved with prose plus the refreshed all-results table;
+narrow shows wrapped text, scaled figures, and no page
+overflow. (One narrow-crop artifact: the AB1 figure was still
+lazy-loading in a single stitched band; the desktop capture
+and `/config` image count confirm it renders.)
 
 ## Copy-rule compliance
 
