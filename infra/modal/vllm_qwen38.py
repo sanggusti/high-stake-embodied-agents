@@ -55,10 +55,13 @@ def serve():
         "0.0.0.0",
         "--port",
         "8000",
-        # Required for OpenAI-style tool calling (Qwen emits Hermes format).
+        # Required for OpenAI-style tool calling. Qwen3.8 emits Qwen XML
+        # calls (``<tool_call><function=name>...``), NOT Hermes JSON, so the
+        # parser must be ``qwen3_xml`` (vLLM >= 0.20.2): ``hermes`` fails
+        # silently and the calls come back as plain text (issue #1).
         "--enable-auto-tool-choice",
         "--tool-call-parser",
-        "hermes",
+        "qwen3_xml",
         # Native 262K context: hybrid attention keeps KV at ~17 GB,
         # so weights (~31 GB) + full context fit one 80GB GPU.
         "--max-model-len",
