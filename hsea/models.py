@@ -12,6 +12,9 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Command A+ W4A4 repo served by ``infra/modal/vllm_cmdaplus.py`` (#5).
+MODAL_CMDAPLUS_W4A4 = "CohereLabs/command-a-plus-05-2026-w4a4"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.

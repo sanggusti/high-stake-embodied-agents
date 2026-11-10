@@ -35,7 +35,9 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_mistral.py` (Mistral-7B-v0.3, mistral parser),
   `infra/modal/vllm_qwen14b.py` (Qwen2.5-14B-AWQ, hermes + `--quantization awq`),
   `infra/modal/vllm_qwen3vl.py` (Qwen3-VL-8B-Instruct vision, no tool parser;
-  verified 2026-11-09, see below).
+  verified 2026-11-09, see below),
+  `infra/modal/vllm_cmdaplus.py` (Command A+ W4A4 on 2×H100,
+  cohere_command4 parser; verified 2026-11-10, see below).
 - Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
   (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
   needed.
@@ -115,14 +117,17 @@ Verified against the installed inspect-ai provider: model id
 - API paths are DEAD (verified 2026-11-09, issue #5): the model is
   absent from the HF router catalog (direct call → HTTP 400
   `model_not_found`), and no `COHERE_API_KEY` is available.
-- Chosen path: **Modal 2×H100, W4A4 repo, vLLM** (Cohere-stated fit).
-  Arch `Cohere2VisionForConditionalGeneration` is in vLLM's supported
-  list with this checkpoint named; tool parser candidate is
-  `cohere_command3` (+ `cohere_melody` package) — coverage of A+'s
-  template unverified until a live deploy. Deploy parked while Modal
-  approvals are disabled; see
+- Chosen path: **Modal 2×H100, W4A4 repo, vLLM** (Cohere-stated fit),
+  served by `infra/modal/vllm_cmdaplus.py` (vLLM 0.31.0, `-tp 2`,
+  `--tool-call-parser cohere_command4 --reasoning-parser
+  cohere_command4`, 64K ctx, 8 imgs; needs the `dmb-hf-token` Modal
+  secret for the 132 GB download).
+- Tool parser is `cohere_command4` (+ `cohere_melody` package) per
+  the W4A4 model card — verified live (forced-call probe PASS).
+- Status: **serving verified 2026-11-10** — smoke 1.000;
+  forest_fire limit-1 mission 0.6225 (recall 0.50, 22 tool calls);
+  cost-per-eval ≈ $0.21 warm. See
   `docs/reports/issue-5-command-a-plus-serving.md` for the full verdict.
-- Status: **not yet serving** — no smoke eval; cost-per-eval unknown.
 
 ## Verification ladder
 
