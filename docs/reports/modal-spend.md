@@ -40,6 +40,7 @@ the same $50 cap as Modal GPU spend.
 41 showcase-A cpu 0.5 $0.00
 42 docs-realign cpu 0.2 $0.00
 41 feedback cpu 0.5 $0.00
+46 align-safety-survey cpu 0.5 $0.00
 2 molmo2-a10g-probes a10g 27.0 $0.50
 2 molmo2-coldstart1 a100-80gb 5.4 $0.22
 2 molmo2-ground-tool-probes a100-80gb 9.0 $0.37
