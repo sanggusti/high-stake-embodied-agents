@@ -40,6 +40,7 @@ the same $50 cap as Modal GPU spend.
 42 docs-realign cpu 0.2 $0.00
 41 showcase-A cpu 0.5 $0.00
 41 feedback cpu 0.5 $0.00
+46 align-safety-survey cpu 0.5 $0.00
 2 molmo2-a10g-probes a10g 27.0 $0.50
 2 molmo2-coldstart1 a100-80gb 5.4 $0.22
 2 molmo2-ground-tool-probes a100-80gb 9.0 $0.37
@@ -50,7 +51,6 @@ the same $50 cap as Modal GPU spend.
 2 molmo2-ff1-explore a100-80gb 0.6 $0.03
 2 molmo2-ff1-full a100-80gb 0.4 $0.02
 2 molmo2-smoke a100-80gb 0.2 $0.01
-46 align-safety-survey cpu 0.5 $0.00
 41 results-table cpu 0.5 $0.00
 48 align-pt-survey cpu 0.5 $0.00
 3 gemma4-coldstart a100-80gb 6.9 $0.29
@@ -73,5 +73,24 @@ the same $50 cap as Modal GPU spend.
 61 rt-v41flash-seed3 api 0.3 $0.01
 61 rt-v41flash-seed4 api 0.3 $0.01
 61 metrics-playbook cpu 0.5 $0.00
-TOTAL 6.33
+4 smollm3-coldstart l4 16.4 $0.22
+4 smollm3-probes l4 26.9 $0.36
+4 smollm3-smoke l4 23.5 $0.31
+4 smollm3-ff1 l4 40.1 $0.53
+4 tinyaya-coldstart l4 11.7 $0.16
+4 tinyaya-smoke l4 0.1 $0.00
+4 tinyaya-ff1-noparser l4 0.1 $0.00
+4 tinyaya-rewarm l4 5.9 $0.08
+4 tinyaya-smoke2 l4 29.3 $0.39
+4 tinyaya-ff1 l4 7.4 $0.10
+4 smolvlm-coldstart l4 8.1 $0.11
+4 smolvlm-warm l4 20.7 $0.28
+4 smolvlm-smoke l4 0.1 $0.00
+4 smolvlm-smoke2 l4 0.1 $0.00
+4 smolvlm-ff1 l4 0.4 $0.01
+5 cmdaplus-coldstart1 h100-2x 21.4 $2.82
+5 cmdaplus-probe-smoke-ff1a h100-2x 3.6 $0.47
+5 cmdaplus-coldstart2 h100-2x 14.2 $1.87
+5 cmdaplus-ff1 h100-2x 1.6 $0.21
+TOTAL 14.25
 ```
