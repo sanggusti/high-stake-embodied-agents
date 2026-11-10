@@ -50,5 +50,23 @@ the same $50 cap as Modal GPU spend.
 2 molmo2-ff1-explore a100-80gb 0.6 $0.03
 2 molmo2-ff1-full a100-80gb 0.4 $0.02
 2 molmo2-smoke a100-80gb 0.2 $0.01
-TOTAL 4.70
+46 align-safety-survey cpu 0.5 $0.00
+41 results-table cpu 0.5 $0.00
+48 align-pt-survey cpu 0.5 $0.00
+3 gemma4-coldstart a100-80gb 6.9 $0.29
+3 gemma4-probes a100-80gb 5.2 $0.22
+3 gemma4-smoke a100-80gb 4.8 $0.20
+3 gemma4-ff1 a100-80gb 4.4 $0.18
+3 qwen3vl-coldstart a100-80gb 4.5 $0.19
+3 qwen3vl-probes a100-80gb 3.5 $0.15
+3 qwen3vl-smoke a100-80gb 4.2 $0.17
+3 qwen3vl-ff1-xml a100-80gb 0.4 $0.02
+3 qwen3vl-hermes-coldstart a100-80gb 3.2 $0.13
+3 qwen3vl-ff1 a100-80gb 0.9 $0.04
+50 align-vlm-survey cpu 0.5 $0.00
+51 align-index-synth cpu 0.5 $0.00
+57 findings-narrative cpu 0.5 $0.00
+59 tech-details cpu 0.5 $0.00
+61 metrics-playbook cpu 0.5 $0.00
+TOTAL 6.29
 ```

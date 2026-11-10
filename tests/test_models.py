@@ -4,6 +4,7 @@ from hsea.models import (
     BASETEN_BASE_URL,
     HF_BASE_URL,
     MODAL_MOLMO2_8B,
+    MODAL_QWEN38_FP8,
     baseten_model_id,
     hf_model_id,
     modal_model_id,
@@ -20,6 +21,13 @@ def test_baseten_model_id():
 
 def test_modal_model_id():
     assert modal_model_id("qwen") == "openai-api/modal/qwen"
+
+
+def test_modal_qwen38_fp8_routing():
+    assert MODAL_QWEN38_FP8 == "Qwen/Qwen3.8-27B-FP8"
+    assert modal_model_id(MODAL_QWEN38_FP8) == (
+        "openai-api/modal/Qwen/Qwen3.8-27B-FP8"
+    )
 
 
 def test_modal_molmo2_8b_routing():
