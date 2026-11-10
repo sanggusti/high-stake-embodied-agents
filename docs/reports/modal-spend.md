@@ -88,5 +88,6 @@ the same $50 cap as Modal GPU spend.
 5 cmdaplus-ff1 h100-2x 1.6 $0.21
 62 judge-probes api 0.5 $0.00
 62 judge-pilot-62 api 6.3 $0.02
+61 metrics-playbook cpu 0.5 $0.00
 TOTAL 14.23
 ```
