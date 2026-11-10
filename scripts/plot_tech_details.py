@@ -143,12 +143,13 @@ def fig_dataflow(out_dir: Path) -> Path:
          bg=DATA_BG, edge=GOLD)
     splits = [("sft.jsonl", "8,673 rows"), ("dpo.jsonl", "7,000 pairs"),
               ("rlvr.jsonl", "250 eps")]
+    split_cys = []
     for i, (a, b) in enumerate(splits):
         yy = 1.52 - i * 0.30
+        split_cys.append(yy + 0.12)
         _box(ax, 4.30, yy, 1.55, 0.24, a, b, bg=DATA_BG, edge=GOLD)
-    _arrow(ax, 3.90, 0.95, 4.30, 1.40)
-    _arrow(ax, 3.90, 0.95, 4.30, 1.10)
-    _arrow(ax, 3.90, 0.95, 4.30, 0.80)
+    for cy in split_cys:
+        _arrow(ax, 3.90, 0.95, 4.30, cy)
     stages = [("AlignTune", "SFT then DPO"), ("SafeTune", "drift repair"),
               ("AgentTune", "RLVR / GRPO"), ("Inspect evals", "aggregate tables")]
     for i, (a, b) in enumerate(stages):
@@ -156,9 +157,8 @@ def fig_dataflow(out_dir: Path) -> Path:
         yy = 1.52 - i * 0.30
         _box(ax, xx, yy, 1.80, 0.24, a, b,
              bg=OUT_BG if i == 3 else CARD, edge=TEAL if i == 3 else LINE)
-    _arrow(ax, 5.85, 1.40, 6.25, 1.40)
-    _arrow(ax, 5.85, 1.10, 6.25, 1.10)
-    _arrow(ax, 5.85, 0.80, 6.25, 0.80)
+    for cy in split_cys:
+        _arrow(ax, 5.85, cy, 6.25, cy)
     for top, bot in ((1.52, 1.46), (1.22, 1.16), (0.92, 0.86)):
         _arrow(ax, 7.15, top, 7.15, bot)
     _box(ax, 8.35, 0.62, 1.55, 0.66, "docs/reports", "tables + plots",
