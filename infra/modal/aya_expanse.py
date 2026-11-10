@@ -276,7 +276,6 @@ def dpo(max_steps: int = -1) -> dict:
         bf16=True,
         beta=0.1,
         max_length=2048,
-        max_prompt_length=1024,
         seed=SEED,
     )
     trainer = DPOTrainer(
