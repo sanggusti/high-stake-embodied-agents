@@ -21,6 +21,16 @@ MODAL_QWEN38_FP8 = "Qwen/Qwen3.8-27B-FP8"
 #: Full inspect-ai id is ``modal_model_id(MODAL_MOLMO2_8B)``.
 MODAL_MOLMO2_8B = "allenai/Molmo2-8B"
 
+#: Modal-hosted Gemma4-12B unified multimodal (issue #3; see
+#: ``infra/modal/vllm_gemma4.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_GEMMA4_12B)``.
+MODAL_GEMMA4_12B = "google/gemma-4-12B-it"
+
+#: Modal-hosted Qwen3-VL-8B-Instruct (issue #3; see
+#: ``infra/modal/vllm_qwen3vl.py``). Full inspect-ai id is
+#: ``modal_model_id(MODAL_QWEN3VL_8B)``.
+MODAL_QWEN3VL_8B = "Qwen/Qwen3-VL-8B-Instruct"
+
 
 def baseten_model_id(model_slug: str) -> str:
     """inspect-ai model id for a Baseten Model APIs slug.
