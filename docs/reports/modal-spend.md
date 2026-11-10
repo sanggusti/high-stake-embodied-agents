@@ -40,6 +40,7 @@ the same $50 cap as Modal GPU spend.
 42 docs-realign cpu 0.2 $0.00
 41 showcase-A cpu 0.5 $0.00
 41 feedback cpu 0.5 $0.00
+46 align-safety-survey cpu 0.5 $0.00
 2 molmo2-a10g-probes a10g 27.0 $0.50
 2 molmo2-coldstart1 a100-80gb 5.4 $0.22
 2 molmo2-ground-tool-probes a100-80gb 9.0 $0.37
@@ -63,7 +64,6 @@ the same $50 cap as Modal GPU spend.
 3 qwen3vl-hermes-coldstart a100-80gb 3.2 $0.13
 3 qwen3vl-ff1 a100-80gb 0.9 $0.04
 50 align-vlm-survey cpu 0.5 $0.00
-46 align-safety-survey cpu 0.5 $0.00
 51 align-index-synth cpu 0.5 $0.00
 57 findings-narrative cpu 0.5 $0.00
 59 tech-details cpu 0.5 $0.00
@@ -82,6 +82,10 @@ the same $50 cap as Modal GPU spend.
 4 smolvlm-smoke l4 0.1 $0.00
 4 smolvlm-smoke2 l4 0.1 $0.00
 4 smolvlm-ff1 l4 0.4 $0.01
+5 cmdaplus-coldstart1 h100-2x 21.4 $2.82
+5 cmdaplus-probe-smoke-ff1a h100-2x 3.6 $0.47
+5 cmdaplus-coldstart2 h100-2x 14.2 $1.87
+5 cmdaplus-ff1 h100-2x 1.6 $0.21
 61 metrics-playbook cpu 0.5 $0.00
-TOTAL 8.84
+TOTAL 14.21
 ```

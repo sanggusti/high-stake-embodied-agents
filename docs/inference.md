@@ -47,7 +47,9 @@ Verified against the installed inspect-ai provider: model id
   `infra/modal/vllm_tinyaya.py` (Tiny Aya L2 Thinker 3.35B text, 32K ctx;
   **CC-BY-NC — research-only**, gated HF repo via `hsea-hf` secret),
   `infra/modal/vllm_smolvlm.py` (SmolVLM-256M vision, 8K ctx). All three
-  edge-lane servers run on one L4 (issue #4, see below).
+  edge-lane servers run on one L4 (issue #4, see below),
+  `infra/modal/vllm_cmdaplus.py` (Command A+ W4A4 on 2×H100,
+  cohere_command4 parser; verified 2026-11-10, see below).
 - Auth for the CLI: `MODAL_TOKEN_ID` + `MODAL_SECRET_KEY` in `.env`
   (read as `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`), no `modal setup`
   needed.
@@ -218,6 +220,27 @@ Verified against the installed inspect-ai provider: model id
   selected org. Never share keys.
 - Example: `inspect eval evals/forest_fire.py --limit 1 --model
   openai-api/hf/deepseek-ai/DeepSeek-V4.1-Flash`
+
+## Command A+ (frontier anchor — deferred to Modal)
+
+- Weights: `CohereLabs/command-a-plus-05-2026` (218B MoE / 25B active,
+  Apache 2.0, **ungated**; BF16/FP8/W4A4 variants all public).
+- Context: **128K in / 64K out** (Cohere API contract; checkpoint rope
+  covers 200K).
+- API paths are DEAD (verified 2026-11-09, issue #5): the model is
+  absent from the HF router catalog (direct call → HTTP 400
+  `model_not_found`), and no `COHERE_API_KEY` is available.
+- Chosen path: **Modal 2×H100, W4A4 repo, vLLM** (Cohere-stated fit),
+  served by `infra/modal/vllm_cmdaplus.py` (vLLM 0.31.0, `-tp 2`,
+  `--tool-call-parser cohere_command4 --reasoning-parser
+  cohere_command4`, 64K ctx, 8 imgs; needs the `dmb-hf-token` Modal
+  secret for the 132 GB download).
+- Tool parser is `cohere_command4` (+ `cohere_melody` package) per
+  the W4A4 model card — verified live (forced-call probe PASS).
+- Status: **serving verified 2026-11-10** — smoke 1.000;
+  forest_fire limit-1 mission 0.6225 (recall 0.50, 22 tool calls);
+  cost-per-eval ≈ $0.21 warm. See
+  `docs/reports/issue-5-command-a-plus-serving.md` for the full verdict.
 
 ## Verification ladder
 

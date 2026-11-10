@@ -3,6 +3,7 @@
 from hsea.models import (
     BASETEN_BASE_URL,
     HF_BASE_URL,
+    MODAL_CMDAPLUS_W4A4,
     MODAL_GEMMA4_12B,
     MODAL_MOLMO2_8B,
     MODAL_QWEN38_FP8,
@@ -26,6 +27,13 @@ def test_baseten_model_id():
 
 def test_modal_model_id():
     assert modal_model_id("qwen") == "openai-api/modal/qwen"
+
+
+def test_modal_cmdaplus_w4a4_routing():
+    assert MODAL_CMDAPLUS_W4A4 == "CohereLabs/command-a-plus-05-2026-w4a4"
+    assert modal_model_id(MODAL_CMDAPLUS_W4A4) == (
+        "openai-api/modal/CohereLabs/command-a-plus-05-2026-w4a4"
+    )
 
 
 def test_modal_qwen38_fp8_routing():

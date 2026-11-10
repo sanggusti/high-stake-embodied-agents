@@ -12,6 +12,9 @@ from __future__ import annotations
 BASETEN_BASE_URL = "https://inference.baseten.co/v1"
 HF_BASE_URL = "https://router.huggingface.co/v1"
 
+#: Command A+ W4A4 repo served by ``infra/modal/vllm_cmdaplus.py`` (#5).
+MODAL_CMDAPLUS_W4A4 = "CohereLabs/command-a-plus-05-2026-w4a4"
+
 #: Modal-hosted Qwen3.8-27B official FP8 (issue #1; see
 #: ``infra/modal/vllm_qwen38.py``). Full inspect-ai id is
 #: ``modal_model_id(MODAL_QWEN38_FP8)``.
