@@ -62,6 +62,25 @@ the probe's chain places it wherever capacity is free, and any
 "waiting for GPU" stall kills the launch for a later retry — never
 a queue-war.
 
+## Probe log (measured, replaces anchors)
+
+- **Probe 1** (2026-11-11 ~08:50, H200, torch 2.11 cu129, no kernels):
+  reference impl, 8.67 s/it, loss 1.157 healthy, 8673 pairs /
+  1,980,483 tokens / 43 truncated. Full SFT-3ep extrapolation: 8.34 h
+  -> $20.8 A100 / $33 H100 / $37.9 H200. Verdict: time-GO (1.24x)
+  but cost-NO-GO on every class. Lesson: the reference path cannot
+  fit the slice; the DPO stage (~2x SFT s/it) prices at ~$20 alone.
+- **Probe 2** (2026-11-11 ~09:10, H100, torch 2.10 cu128 + prebuilt
+  cc1d 1.7.0 + fla 0.6.0): kernels imported (`fused prebuilt`),
+  weights loaded, then step-0 crash in bitsandbytes'
+  `_dequant_linear_fallback` (M=8192 > 1536 custom-kernel cap ->
+  dequant + `F.linear` bf16 -> `CUBLAS_STATUS_INVALID_VALUE`).
+  Same fallback trained fine in probe 1 (H200/cu129/torch2.11):
+  either a torch-2.10-cu128 cuBLAS regression or H100-specific.
+  Isolation repro on L4 decides the fix (torch cu126 build vs
+  H100 avoidance). #74's 80GB finetune finished ~09:05, so A100
+  placement is available again.
+
 ## Deferred-with-estimate log (DEVIATIONS feed)
 
 - DPO on-policy-rejected upgrade (§2.1): ~$5 inference + curation.
