@@ -1,0 +1,73 @@
+"""Modal-hosted Qwen3.8-27B flywheel-v2 SFT weights (issue #8).
+
+Same factory as vllm_qwen38.py, but serves the merged bf16 LoRA weights
+from the flywheel-models volume instead of the stock FP8 checkpoint.
+Shorter context than base (32K vs 262K): merged bf16 weights are ~55 GB,
+so the KV budget shrinks to fit one A100-80GB.
+
+Requires a finished ``infra/modal/finetune_qwen38.py`` run (writes
+``MODEL_PATH``). inspect-ai reaches it as ``openai-api/modal/<name>``
+with ``MODAL_BASE_URL=<serve_url>/v1``.
+"""
+
+import modal
+
+MODEL_PATH = "/models/qwen38-flywheel-v2-merged"
+APP_NAME = "dmb-vllm-qwen38-ft"
+# inspect-ai model id: openai-api/modal/qwen38-flywheel-v2.
+SERVED_NAME = "qwen38-flywheel-v2"
+
+vllm_image = (
+    modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
+    .entrypoint([])
+    .uv_pip_install("vllm==0.21.0")
+    .env({"HF_XET_HIGH_PERFORMANCE": "1"})
+)
+
+hf_cache_vol = modal.Volume.from_name("dmb-huggingface-cache", create_if_missing=True)
+vllm_cache_vol = modal.Volume.from_name("dmb-vllm-cache", create_if_missing=True)
+models_vol = modal.Volume.from_name("dmb-flywheel-models", create_if_missing=True)
+
+app = modal.App(APP_NAME)
+
+
+@app.function(
+    image=vllm_image,
+    gpu="A100-80GB",
+    volumes={
+        "/root/.cache/huggingface": hf_cache_vol,
+        "/root/.cache/vllm": vllm_cache_vol,
+        "/models": models_vol,
+    },
+    timeout=3600,
+)
+@modal.concurrent(max_inputs=32)
+@modal.web_server(port=8000, startup_timeout=1200)
+def serve():
+    import os
+    import subprocess
+
+    if not os.path.isdir(MODEL_PATH):
+        raise RuntimeError(
+            f"{MODEL_PATH} missing: run finetune_qwen38.py first")
+    cmd = [
+        "vllm",
+        "serve",
+        MODEL_PATH,
+        "--served-model-name",
+        SERVED_NAME,
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--enable-auto-tool-choice",
+        "--tool-call-parser",
+        "qwen3_xml",
+        "--max-model-len",
+        "32768",
+        "--gpu-memory-utilization",
+        "0.90",
+        "--limit-mm-per-prompt",
+        '{"image": 8, "video": 2}',
+    ]
+    subprocess.Popen(cmd)
