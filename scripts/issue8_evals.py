@@ -86,10 +86,10 @@ def run_matrix(base_url: str, ft_url: str, only: str = "all",
         for task_file, alias, extra, scorer in MATRIX:
             before = set(glob.glob(str(ROOT / "logs" / "*.eval")))
             cmd = [str(ROOT / ".venv" / "bin" / "inspect"), "eval",
-                   str(ROOT / task_file), "--model", model_id]
+                   task_file, "--model", model_id]
             print(f"[{model}] {alias}: {' '.join(cmd)}", flush=True)
             proc = subprocess.run(cmd, env=_inspect_env(url, extra),
-                                  capture_output=True, text=True)
+                                  capture_output=True, text=True, cwd=ROOT)
             print(proc.stdout[-2000:], flush=True)
             if proc.returncode != 0:
                 print(proc.stderr[-3000:], flush=True)
