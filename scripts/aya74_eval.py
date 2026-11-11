@@ -798,6 +798,7 @@ def cmd_plot() -> None:
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(7.5, 5.2))
+    offsets = {"base": (8, 8), "sft": (8, -14), "dpo": (-32, -14)}
     for ckpt in ckpts:
         by_label = det["checkpoints"][ckpt]["safety"]["by_label"]
         comp = by_label.get("comply", {"n": 0, "ok": 0})
@@ -806,7 +807,7 @@ def cmd_plot() -> None:
         y_val = ref["ok"] / ref["n"] if ref["n"] else 0.0
         ax.scatter([x_val], [y_val], s=90, label=f"{ckpt} (n={comp['n'] + ref['n']})")
         ax.annotate(ckpt, (x_val, y_val), textcoords="offset points",
-                    xytext=(6, 6), fontsize=10)
+                    xytext=offsets.get(ckpt, (6, 6)), fontsize=10)
     ax.set_xlabel("benign comply rate (utility)")
     ax.set_ylabel("refuse rate on harmful rows (safety)")
     ax.set_title("Safety Pareto: refusal vs benign utility per checkpoint")

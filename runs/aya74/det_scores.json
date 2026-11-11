@@ -1,0 +1,257 @@
+{
+  "checkpoints": {
+    "base": {
+      "safety": {
+        "n": 78,
+        "exact": 68,
+        "rate": 0.8717948717948718,
+        "ci": [
+          0.7798385083935379,
+          0.9288475388000653
+        ],
+        "by_label": {
+          "refuse": {
+            "n": 40,
+            "ok": 38
+          },
+          "comply": {
+            "n": 22,
+            "ok": 22
+          },
+          "escalate": {
+            "n": 10,
+            "ok": 4
+          },
+          "abstain": {
+            "n": 6,
+            "ok": 4
+          }
+        }
+      },
+      "abstention": {
+        "n": 80,
+        "exact": 18,
+        "rate": 0.225,
+        "ci": [
+          0.1473309016978239,
+          0.3278699532476924
+        ],
+        "soft_mean": 0.225,
+        "footer_rate": 0.275
+      },
+      "redteam": {
+        "n": 30,
+        "asr_sum": 23.0,
+        "asr": 0.7666666666666667,
+        "needs_review": 0,
+        "by_family": {
+          "jailbreak": {
+            "n": 10,
+            "asr": 9.0
+          },
+          "misuse": {
+            "n": 10,
+            "asr": 7.0
+          },
+          "retrieval_injection": {
+            "n": 10,
+            "asr": 7.0
+          }
+        }
+      },
+      "footage": {
+        "n": 49,
+        "exact": 11,
+        "rate": 0.22448979591836735,
+        "ci": [
+          0.1302483771472861,
+          0.35879056187045744
+        ],
+        "by_kind": {
+          "counting": {
+            "n": 5,
+            "ok": 0
+          },
+          "vqa": {
+            "n": 32,
+            "ok": 5
+          },
+          "severity": {
+            "n": 12,
+            "ok": 6
+          }
+        }
+      },
+      "dispatch_n": 24
+    },
+    "sft": {
+      "safety": {
+        "n": 78,
+        "exact": 62,
+        "rate": 0.7948717948717948,
+        "ci": [
+          0.692458195735871,
+          0.8696031520383659
+        ],
+        "by_label": {
+          "refuse": {
+            "n": 40,
+            "ok": 36
+          },
+          "comply": {
+            "n": 22,
+            "ok": 22
+          },
+          "escalate": {
+            "n": 10,
+            "ok": 1
+          },
+          "abstain": {
+            "n": 6,
+            "ok": 3
+          }
+        }
+      },
+      "abstention": {
+        "n": 80,
+        "exact": 69,
+        "rate": 0.8625,
+        "ci": [
+          0.7703270280036946,
+          0.9214536632044886
+        ],
+        "soft_mean": 0.90625,
+        "footer_rate": 1.0
+      },
+      "redteam": {
+        "n": 30,
+        "asr_sum": 10.0,
+        "asr": 0.3333333333333333,
+        "needs_review": 0,
+        "by_family": {
+          "jailbreak": {
+            "n": 10,
+            "asr": 4.0
+          },
+          "misuse": {
+            "n": 10,
+            "asr": 4.0
+          },
+          "retrieval_injection": {
+            "n": 10,
+            "asr": 2.0
+          }
+        }
+      },
+      "footage": {
+        "n": 49,
+        "exact": 35,
+        "rate": 0.7142857142857143,
+        "ci": [
+          0.5759085079389967,
+          0.8215056506027583
+        ],
+        "by_kind": {
+          "counting": {
+            "n": 5,
+            "ok": 3
+          },
+          "vqa": {
+            "n": 32,
+            "ok": 28
+          },
+          "severity": {
+            "n": 12,
+            "ok": 4
+          }
+        }
+      },
+      "dispatch_n": 24
+    },
+    "dpo": {
+      "safety": {
+        "n": 78,
+        "exact": 62,
+        "rate": 0.7948717948717948,
+        "ci": [
+          0.692458195735871,
+          0.8696031520383659
+        ],
+        "by_label": {
+          "refuse": {
+            "n": 40,
+            "ok": 35
+          },
+          "comply": {
+            "n": 22,
+            "ok": 22
+          },
+          "escalate": {
+            "n": 10,
+            "ok": 2
+          },
+          "abstain": {
+            "n": 6,
+            "ok": 3
+          }
+        }
+      },
+      "abstention": {
+        "n": 80,
+        "exact": 62,
+        "rate": 0.775,
+        "ci": [
+          0.6721300467523076,
+          0.8526690983021762
+        ],
+        "soft_mean": 0.84375,
+        "footer_rate": 0.9875
+      },
+      "redteam": {
+        "n": 30,
+        "asr_sum": 11.0,
+        "asr": 0.36666666666666664,
+        "needs_review": 0,
+        "by_family": {
+          "jailbreak": {
+            "n": 10,
+            "asr": 4.0
+          },
+          "misuse": {
+            "n": 10,
+            "asr": 5.0
+          },
+          "retrieval_injection": {
+            "n": 10,
+            "asr": 2.0
+          }
+        }
+      },
+      "footage": {
+        "n": 49,
+        "exact": 37,
+        "rate": 0.7551020408163265,
+        "ci": [
+          0.619134127396842,
+          0.8539779661052471
+        ],
+        "by_kind": {
+          "counting": {
+            "n": 5,
+            "ok": 3
+          },
+          "vqa": {
+            "n": 32,
+            "ok": 30
+          },
+          "severity": {
+            "n": 12,
+            "ok": 4
+          }
+        }
+      },
+      "dispatch_n": 24
+    }
+  },
+  "n_prompts": 261
+}

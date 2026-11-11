@@ -1,0 +1,12 @@
+{
+  "mode": "hf-equivalent",
+  "judges": [
+    "hf-v41",
+    "hf-gemma"
+  ],
+  "calls": 348,
+  "prompt_tokens": 472763,
+  "completion_tokens": 50348,
+  "estimated_cost": 0.04217334480000001,
+  "minutes": 29.000050083796182
+}
