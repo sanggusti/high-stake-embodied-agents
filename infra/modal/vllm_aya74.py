@@ -51,7 +51,7 @@ def _serve_cmd(model: str, revision: str | None) -> list[str]:
 
 @app.function(
     image=vllm_image,
-    gpu="L4",
+    gpu="A10G",
     volumes={
         "/root/.cache/huggingface": hf_cache_vol,
         "/root/.cache/vllm": vllm_cache_vol,
@@ -64,12 +64,13 @@ def _serve_cmd(model: str, revision: str | None) -> list[str]:
 def serve_base():
     import subprocess
 
-    subprocess.Popen(_serve_cmd(BASE_MODEL, MODEL_REVISION))
+    proc = subprocess.Popen(_serve_cmd(BASE_MODEL, MODEL_REVISION))
+    proc.wait()
 
 
 @app.function(
     image=vllm_image,
-    gpu="L4",
+    gpu="A10G",
     volumes={
         "/root/.cache/huggingface": hf_cache_vol,
         "/root/.cache/vllm": vllm_cache_vol,
@@ -83,4 +84,5 @@ def serve_base():
 def serve_merged():
     import subprocess
 
-    subprocess.Popen(_serve_cmd(MERGED_PATH, None))
+    proc = subprocess.Popen(_serve_cmd(MERGED_PATH, None))
+    proc.wait()
