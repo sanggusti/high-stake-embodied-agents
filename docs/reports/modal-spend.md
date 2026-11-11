@@ -101,5 +101,7 @@ the same $50 cap as Modal GPU spend.
 8 sft-1ep a100-80gb 126 $5.23
 8 base-full+ood+bon a100-80gb 160 $6.64
 8 dpo-1ep a100-80gb 123 $5.10
-TOTAL 33.30
+8 ftserve-crash-t1 h100 41 $2.67
+8 ftserve-crash-t2 h100 8 $0.52
+TOTAL 36.49
 ```

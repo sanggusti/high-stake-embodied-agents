@@ -18,6 +18,17 @@ Which adapter comes from the ``/models/ACTIVE_ADAPTER`` pointer file
 
 inspect-ai reaches it as ``openai-api/modal/qwen38-flywheel-v2``
 (the LoRA name) with ``MODAL_BASE_URL=<serve_url>/v1``.
+
+Cold-start forensics (2026-11-11): the first deploy's task 1 crashed
+in BASE weight load (fused-qkv shape assert) while task 2, identical
+code/weights 25 min later, loaded fine from the warm HF cache
+(52.09 GiB in 39.8 s) — a transient cold-cache materialization race,
+not a config error. ``serve()`` therefore pre-flights the snapshot
+(``snapshot_download`` + safetensors inventory gate) before exec'ing
+vLLM, so the server never starts on a half-materialized cache.
+Eval-critical flags match the working base serve (``vllm_qwen38.py``):
+qwen3_xml tool parser + mm limits; only ``--max-model-len`` differs
+(32768 vs 262144 — bf16 weights leave no room for 262K KV).
 """
 
 import modal
@@ -71,6 +82,7 @@ def resolve_adapter() -> str:
 @modal.concurrent(max_inputs=32)
 @modal.web_server(port=8000, startup_timeout=1200)
 def serve():
+    import json
     import os
     import subprocess
 
@@ -79,8 +91,25 @@ def serve():
         raise RuntimeError(
             f"{adapter} missing: run the training stage first, then "
             f"write its adapter dir to {POINTER_PATH}")
-    print(f"serving base {BASE_MODEL} + LoRA {adapter} as {SERVED_NAME}",
-          flush=True)
+    # Cold-start gate (2026-11-11 forensics): fully materialize +
+    # inventory the pinned snapshot BEFORE vLLM starts, so a retry
+    # never reads a half-downloaded cache (task-1 shape assert).
+    from huggingface_hub import snapshot_download
+
+    snap = snapshot_download(repo_id=BASE_MODEL, revision=BASE_REVISION)
+    index = os.path.join(snap, "model.safetensors.index.json")
+    if not os.path.isfile(index):
+        raise RuntimeError(f"snapshot {snap} lacks the weight index")
+    with open(index) as fh:
+        weight_map = json.load(fh)["weight_map"]
+    missing = sorted({f for f in weight_map.values()
+                      if not os.path.isfile(os.path.join(snap, f))
+                      or os.path.getsize(os.path.join(snap, f)) == 0})
+    if missing:
+        raise RuntimeError(f"snapshot {snap} incomplete: {missing[:5]}")
+    print(f"serving base {BASE_MODEL}@{BASE_REVISION[:8]} "
+          f"({len(set(weight_map.values()))} shards verified) + LoRA "
+          f"{adapter} as {SERVED_NAME}", flush=True)
     cmd = [
         "vllm",
         "serve",
@@ -92,6 +121,14 @@ def serve():
         "--tokenizer",
         adapter,
         "--trust-remote-code",
+        # Same eval-critical flags as the working base serve: Qwen3.8
+        # emits Qwen XML tool calls (hermes fails silently), and the
+        # footage tasks send images.
+        "--enable-auto-tool-choice",
+        "--tool-call-parser",
+        "qwen3_xml",
+        "--limit-mm-per-prompt",
+        '{"image": 8, "video": 2}',
         "--max-model-len",
         "32768",
         "--gpu-memory-utilization",
