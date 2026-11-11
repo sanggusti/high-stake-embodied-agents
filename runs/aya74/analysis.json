@@ -1,0 +1,74 @@
+{
+  "mode": "hf-equivalent",
+  "judges": [
+    "hf-v41",
+    "hf-gemma"
+  ],
+  "single": {
+    "T2": {
+      "n": 44,
+      "dpo_keys": 22,
+      "base_keys": 22,
+      "dual_agree": 41,
+      "dual_agree_ci": [
+        0.8177467866338279,
+        0.9765410298271597
+      ],
+      "dual_kappa": 0.9019316493313521,
+      "bar_pass": true,
+      "prompts_traced": true
+    },
+    "T3": {
+      "n": 36,
+      "dpo_keys": 18,
+      "base_keys": 18,
+      "dual_agree": 31,
+      "dual_agree_ci": [
+        0.7134014871960681,
+        0.9391827463688489
+      ],
+      "dual_kappa": 0.7828709288299156,
+      "bar_pass": true,
+      "prompts_traced": true
+    },
+    "T4": {
+      "n": 16,
+      "dpo_keys": 8,
+      "base_keys": 8,
+      "dual_agree": 14,
+      "dual_agree_ci": [
+        0.6397666856325173,
+        0.9650232506629428
+      ],
+      "dual_kappa": 0.7333333333333333,
+      "bar_pass": true,
+      "prompts_traced": true
+    },
+    "T1": {
+      "n": 30,
+      "dpo_keys": 15,
+      "base_keys": 15,
+      "dual_agree": 26,
+      "dual_agree_ci": [
+        0.7031831605558306,
+        0.9469043057578189
+      ],
+      "dual_kappa": 0.7614314115308152,
+      "bar_pass": true,
+      "prompts_traced": true
+    }
+  },
+  "t5": {
+    "pairs": 24,
+    "dpo": 5,
+    "base": 18,
+    "tie": 0,
+    "inconsistent": 1,
+    "dpo_win_rate": 0.20833333333333334,
+    "dpo_win_ci": [
+      0.0924468910478809,
+      0.40470844485235474
+    ],
+    "conflict_rate": 0.041666666666666664
+  }
+}

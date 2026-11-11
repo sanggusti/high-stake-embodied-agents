@@ -96,5 +96,18 @@ count against the same $100 cap as Modal GPU spend.
 62 judge-pilot-62 api 6.3 $0.02
 62m meta-probes api 0.3 $0.05
 62m meta-pilot api 8.45 $1.11
-TOTAL 15.43
+74 aya74-verify cpu 0.0 $0.00
+74 aya74-sft-smoke a100-80gb 4 $0.17
+74 aya74-dpo-smoke a100-80gb 5 $0.21
+74 aya74-sft-full a100-80gb 150 $6.24
+74 aya74-dpo-full a100-80gb 68 $2.83
+74 aya74-merge a10g 8 $0.15
+74 aya74-gen-base a10g 39 $0.72
+74 aya74-gen-sft a10g 21 $0.39
+74 aya74-gen-dpo a10g 21 $0.39
+74 aya74-gen-footage a10g 12 $0.22
+74 aya74-serve-l4 l4 8 $0.11
+74 aya74-serve-a10g a10g 7 $0.13
+74 aya74-judges api 29.0 $0.04
+TOTAL 27.03
 ```
