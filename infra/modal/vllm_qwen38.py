@@ -34,7 +34,8 @@ app = modal.App(APP_NAME)
 
 @app.function(
     image=vllm_image,
-    gpu="A100-80GB",
+    # Binding (issue #8 forensics): fallback chain, never single class.
+    gpu=["A100-80GB", "H100"],
     volumes={
         "/root/.cache/huggingface": hf_cache_vol,
         "/root/.cache/vllm": vllm_cache_vol,

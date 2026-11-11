@@ -173,8 +173,35 @@ def test_lora_regex_empty_raises():
 
 
 def test_model_card_pins_revs_and_config():
-    card = ft.build_model_card(1.2345, 345, 1875849, True, "abc123")
+    card = ft.build_model_card(1.2345, 345, 1875849, True, "abc123",
+                               "NVIDIA A100-SXM4-80GB", "reference impl")
     for needle in (ft.BASE_MODEL, ft.BASE_REVISION, ft.DATA_REPO,
                    ft.DATA_REVISION, "r=32", "packing", "research-only",
-                   "abc123", "1.23"):
+                   "abc123", "1.23", "transformers==5.22.2", "trl==1.7.1",
+                   "A100", "reference impl"):
         assert needle in card
+
+
+def test_count_steps_matches_honest_math():
+    # Binding: steps = rows / eff-batch x epochs (troubleshoot note).
+    assert ft.count_steps(8673, 4, 2, 3) == 3255
+    assert ft.count_steps(7000, 4, 2, 1) == 875
+
+
+def test_extrapolate_cost_scales_with_rate():
+    full = ft.extrapolate_cost(3255, 7.0, "A100-80GB")
+    assert full["hours"] == pytest.approx(3255 * 7.0 / 3600 + 0.5, rel=1e-3)
+    assert full["cost_usd"] == pytest.approx(full["hours"] * 2.49, rel=1e-3)
+    h100 = ft.extrapolate_cost(3255, 7.0, "H100")
+    assert h100["cost_usd"] > full["cost_usd"]
+
+
+def test_probe_verdict_two_x_rule():
+    assert ft.probe_verdict(7.0)["verdict"] == "GO"
+    assert ft.probe_verdict(14.0)["verdict"] == "GO"
+    assert ft.probe_verdict(14.01)["verdict"] == "ABORT"
+
+
+def test_gpu_fallback_chain_not_single_class():
+    assert isinstance(ft.GPU_CHAIN, list) and len(ft.GPU_CHAIN) >= 2
+    assert "A100-80GB" in ft.GPU_CHAIN

@@ -1,9 +1,10 @@
-"""AlignTune SFT: Qwen3.8-27B QLoRA on flywheel-v2 (issue #8).
+"""AlignTune SFT: Qwen3.8-27B QLoRA on flywheel-v2 (issue #8, full loop).
 
 Lineage: ``infra/modal/finetune.py`` (Phase D, Qwen2.5-7B) scaled to the
 27B multimodal base. QLoRA (NF4 + bf16 compute) keeps the full
-``Qwen3_5ForConditionalGeneration`` model on one A100-80GB; LoRA targets
-the language tower only (vision tower frozen, SFT rows are text-only).
+``Qwen3_5ForConditionalGeneration`` model on one 80GB-class GPU; LoRA
+targets the language tower only (vision tower frozen, SFT rows are
+text-only).
 
 Data fixes applied at load (the pinned ``sanggusti/dmb-flywheel-v2``
 files are never rewritten):
@@ -12,18 +13,35 @@ files are never rewritten):
 - OpenAI-style content blocks (``{"type": "text", "text": ...}``) are
   flattened to plain strings for the Qwen3.8 chat template.
 
-Usage (needs `modal` auth; GPU spend applies):
+Redo rules (binding, from docs/reports/issue-8-troubleshoot.md):
+- No fused-kernel SOURCE builds. The image tries a PyPI prebuilt
+  ``causal-conv1d`` wheel with ``--only-binary`` (hard failover to
+  ``|| true``); when no wheel fits, training runs the reference
+  PyTorch implementation with honest time math. The active path is
+  logged and recorded in the return dict.
+- Steps = rows / effective-batch x epochs = 8673 / 8 x 3 = 3255.
+  Run ``modal run infra/modal/finetune_qwen38.py --mode probe`` FIRST:
+  it trains 50 steps, measures s/it, extrapolates wall time + cost,
+  and the full run only proceeds when the extrapolation is within 2x
+  of the pre-run estimate. Abort and re-plan otherwise.
+- GPU fallback chain on every function, never a strict single class.
+- transformers/trl/torch pinned to the tested lock releases
+  (requirements-train.lock), never floating main.
+- Sequence 80GB-class jobs against #73/#74; never queue-war them.
+
+Usage (needs `modal` auth + an unsandboxed shell; GPU spend applies):
   modal volume put dmb-flywheel data/flywheel-v2/sft.jsonl /flywheel-v2/sft.jsonl
-  modal run infra/modal/finetune_qwen38.py
+  modal run infra/modal/finetune_qwen38.py --mode probe     # 50-step timing
+  modal run infra/modal/finetune_qwen38.py --mode train     # full SFT
 Output: adapter at /models/qwen38-flywheel-v2-lora, merged bf16 model at
 /models/qwen38-flywheel-v2-merged (volume dmb-flywheel-models), plus an
 HF push of the adapter repo (see HF_REPO).
 
-Cost estimate (recorded before the first GPU op, issue #8):
-  ~1,630 steps (8,673 rows, length-grouped, eff batch 8, 3 epochs),
-  <=150 min on A100-80GB at ~$2.49/hr -> <=$6.25 for training.
-  (Packing was abandoned: the hybrid tower needs fused kernels whose
-  source builds are brittle; see the SFTConfig comment.)
+Cost estimate (recorded before the first GPU op, issue #8 full loop):
+  3,255 steps (8,673 rows / eff-batch 8 x 3 epochs) at ~5-9 s/it
+  (reference impl) = 4.5-8.1 h + ~0.5 h setup on A100-80GB at
+  ~$2.49/hr -> ~$11-21 for training. The probe re-estimate decides
+  2 vs 3 epochs BEFORE the full run commits (see ESTIMATE_S_PER_IT).
 """
 
 from __future__ import annotations
@@ -49,6 +67,29 @@ GRAD_ACCUM = 2
 LEARNING_RATE = 2e-4
 MAX_SEQ_LENGTH = 2048
 SEED = 8
+
+# Tested pins (requirements-train.lock, verified 2026-11-09).
+# transformers 5.22.2 ships qwen3_5 modeling: no git main needed.
+PIN_TRANSFORMERS = "transformers==5.22.2"
+PIN_TRL = "trl==1.7.1"
+PIN_TORCH = "torch==2.11.0"
+PIN_PEFT = "peft==0.21.2"
+PIN_DATASETS = "datasets==5.1.0"
+PIN_ACCELERATE = "accelerate==1.15.0"
+PIN_BITSANDBYTES = "bitsandbytes==0.50.2"
+PIN_HF_HUB = "huggingface-hub==1.33.0"
+
+# GPU fallback chain (binding: never a strict single class).
+GPU_CHAIN = ["A100-80GB", "H100"]
+
+# Modal $/hr per class (from docs/reports/modal-spend.md ledger rows).
+GPU_RATES = {"A100-80GB": 2.49, "H100": 3.95, "H200": 4.95}
+
+# Pre-run planning anchor (s/it on the reference impl). The probe
+# measures the truth; abort + re-plan when measured > 2x this.
+ESTIMATE_S_PER_IT = 7.0
+PROBE_STEPS = 50
+ABORT_FACTOR = 2.0
 
 _ATTENTION_SUBMODULES = ("q_proj", "k_proj", "v_proj", "o_proj")
 _MLP_SUBMODULES = ("gate_proj", "up_proj", "down_proj")
@@ -176,8 +217,43 @@ def lora_regex_for(module_names: list[str]) -> str:
     return rf"(?:{stem})\.(?:{leaves})"
 
 
+def count_steps(n_rows: int, batch: int, accum: int, epochs: int) -> int:
+    """Honest step math: ceil(rows / eff-batch) per epoch x epochs."""
+    import math
+
+    eff = batch * accum
+    return math.ceil(n_rows / eff) * epochs
+
+
+def extrapolate_cost(steps: int, s_per_it: float, gpu: str,
+                     setup_minutes: float = 30.0) -> dict:
+    """Wall time + cost extrapolation from a measured s/it."""
+    rate = GPU_RATES.get(gpu, GPU_RATES["A100-80GB"])
+    hours = steps * s_per_it / 3600 + setup_minutes / 60
+    return {
+        "steps": steps,
+        "s_per_it": round(s_per_it, 2),
+        "gpu": gpu,
+        "hours": round(hours, 2),
+        "cost_usd": round(hours * rate, 2),
+        "rate_usd_hr": rate,
+    }
+
+
+def probe_verdict(s_per_it: float) -> dict:
+    """GO / ABORT from the 50-step probe (binding 2x rule)."""
+    over = s_per_it > ESTIMATE_S_PER_IT * ABORT_FACTOR
+    return {
+        "measured_s_per_it": round(s_per_it, 2),
+        "anchor_s_per_it": ESTIMATE_S_PER_IT,
+        "factor": round(s_per_it / ESTIMATE_S_PER_IT, 2),
+        "verdict": "ABORT" if over else "GO",
+    }
+
+
 def build_model_card(train_loss: float, steps: int, tokens: int,
-                     merged: bool, commit: str) -> str:
+                     merged: bool, commit: str, gpu: str,
+                     fused: str, epochs: int = EPOCHS) -> str:
     """Adapter model card (base, data rev, config, research-only gate)."""
     return f"""---
 license: other
@@ -202,8 +278,10 @@ CrisisMMD), so this adapter is gated like its data.
 
 - method: QLoRA NF4, bf16 compute, r={LORA_R} alpha={LORA_ALPHA} dropout={LORA_DROPOUT}
 - targets: language-tower attention + MLP projections (vision tower frozen)
-- epochs={EPOCHS} batch={BATCH_SIZE} accum={GRAD_ACCUM} lr={LEARNING_RATE} cosine
+- epochs={epochs} batch={BATCH_SIZE} accum={GRAD_ACCUM} lr={LEARNING_RATE} cosine
 - max_seq={MAX_SEQ_LENGTH} length-grouped (no packing) seed={SEED}
+- pins: {PIN_TRANSFORMERS} {PIN_TRL} {PIN_TORCH} {PIN_PEFT}
+- gpu: {gpu} (fallback chain {GPU_CHAIN}); fused kernels: {fused}
 - code commit: {commit}
 
 ## Result
@@ -213,44 +291,37 @@ CrisisMMD), so this adapter is gated like its data.
 """
 
 
-_TORCH_CU129_WHEEL = (
-    "https://download.pytorch.org/whl/cu129/torch-2.12.1%2Bcu129"
+_TORCH_CU128_WHEEL = (
+    "https://download.pytorch.org/whl/cu128/torch-2.11.0%2Bcu128"
     "-cp312-cp312-manylinux_2_28_x86_64.whl"
 )
 
 train_image = (
     modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
     .entrypoint([])
-    .apt_install("git", "build-essential")
-    # transformers + trl from main: qwen3_5 support is newer than the
-    # last stable release (base config pins transformers 5.8.0.dev0).
-    # cu129 torch by direct wheel URL (a bare torch pin re-resolves to
-    # PyPI's cu13.x build and breaks the kernel compile against nvcc).
-    .uv_pip_install(_TORCH_CU129_WHEEL)
+    .apt_install("git")
+    # Tested lock pins (requirements-train.lock): transformers 5.22.2
+    # ships qwen3_5 modeling, so no git-main drift. cu128 torch by
+    # direct wheel URL (a bare torch pin re-resolves to PyPI's cu13.x
+    # build and breaks bitsandbytes kernels).
+    .uv_pip_install(_TORCH_CU128_WHEEL)
     .uv_pip_install(
-        _TORCH_CU129_WHEEL,
-        "git+https://github.com/huggingface/transformers.git",
-        "git+https://github.com/huggingface/trl.git",
-        "datasets",
-        "accelerate",
-        "peft",
-        "bitsandbytes",
-        "huggingface_hub",
+        PIN_TRANSFORMERS,
+        PIN_TRL,
+        PIN_PEFT,
+        PIN_DATASETS,
+        PIN_ACCELERATE,
+        PIN_BITSANDBYTES,
+        PIN_HF_HUB,
         "hf_xet",
-        "setuptools",
-        "wheel",
-        "ninja",
-        "packaging",
     )
-    # qwen3_5 text tower mixes linear-attention layers: packed training
-    # needs the fused causal conv1d kernel. Built with --no-build-
-    # isolation so nvcc compiles against the installed cu129 torch
-    # (isolated builds fetch cu13.x torch from PyPI and mismatch).
+    # Prebuilt fused kernels ONLY (--only-binary: never a source
+    # build). No fitting wheel -> `|| true` keeps the image green and
+    # training runs the reference impl with honest time math.
     .run_commands(
-        "export TORCH_CUDA_ARCH_LIST='8.0' CC=gcc CXX=g++ "
-        "CUDA_HOME=/usr/local/cuda; "
         "/.uv/uv pip install --python $(command -v python) "
-        "--no-build-isolation causal-conv1d"
+        "--only-binary :all: causal-conv1d "
+        "|| echo NO_FUSED_KERNELS_USING_REFERENCE_IMPL"
     )
     .env({"HF_XET_HIGH_PERFORMANCE": "1"})
 )
@@ -263,25 +334,28 @@ app = modal.App("dmb-qwen38-finetune")
 
 
 @app.local_entrypoint()
-def main():
-    result = train.remote()
+def main(mode: str = "train"):
+    if mode not in ("probe", "train"):
+        raise ValueError("mode must be 'probe' or 'train'")
+    result = train.remote(probe=(mode == "probe"))
     print(result)
 
 
 @app.function(
     image=train_image,
-    gpu="A100-80GB",
+    gpu=GPU_CHAIN,
     volumes={
         "/data": data_vol,
         "/models": models_vol,
         "/root/.cache/huggingface": hf_cache_vol,
     },
     secrets=[modal.Secret.from_name("dmb-hf-token")],
-    timeout=10800,
+    timeout=43200,
 )
-def train() -> dict:
+def train(probe: bool = False) -> dict:
     import json
     import os
+    import subprocess
     import time
 
     import torch
@@ -296,6 +370,22 @@ def train() -> dict:
 
     t0 = time.time()
     started = time.strftime("%Y-%m-%dT%H:%M:%S")
+    try:
+        gpu_name = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
+            capture_output=True, text=True, timeout=30,
+        ).stdout.strip().splitlines()[0]
+    except Exception:  # noqa: BLE001 (name is informational only)
+        gpu_name = "unknown"
+    gpu_class = ("H100" if "H100" in gpu_name else "A100-80GB"
+                 if "A100" in gpu_name else "A100-80GB")
+    try:
+        import causal_conv1d  # noqa: F401,PLC0415
+
+        fused = f"causal-conv1d prebuilt wheel ({causal_conv1d.__version__})"
+    except ImportError:
+        fused = "reference impl (no prebuilt causal-conv1d wheel)"
+    print(f"gpu={gpu_name} fused={fused}", flush=True)
 
     rows: list[dict] = []
     for line_no, line in enumerate(open(DATASET_PATH), start=1):
@@ -314,7 +404,7 @@ def train() -> dict:
 
     # Fail fast: every row must render under the real chat template
     # before the 27B weights load. Rows are length-sorted so unpacked
-    # batches pad minimally (TRL main has no group_by_length).
+    # batches pad minimally (TRL 1.7.1 has no group_by_length).
     total_tokens = 0
     truncated = 0
     sized: list[tuple[int, dict]] = []
@@ -362,20 +452,22 @@ def train() -> dict:
         target_modules=regex,
     )
     dataset = Dataset.from_list(rows)
+    full_steps = count_steps(len(rows), BATCH_SIZE, GRAD_ACCUM, EPOCHS)
     args = SFTConfig(
         output_dir="/tmp/qwen38-sft",
         num_train_epochs=EPOCHS,
+        max_steps=PROBE_STEPS if probe else -1,
         # No packing: the qwen3_5 hybrid tower needs fused kernels
         # (causal-conv1d, flash-linear-attention) to keep packed
-        # sequences apart, and their source builds are brittle. Rows
-        # are pre-sorted by length so padding waste stays low.
+        # sequences apart; source builds are banned, so rows are
+        # pre-sorted by length and padding waste stays low.
         per_device_train_batch_size=BATCH_SIZE,
         gradient_accumulation_steps=GRAD_ACCUM,
         learning_rate=LEARNING_RATE,
         lr_scheduler_type="cosine",
         warmup_steps=10,
-        logging_steps=25,
-        save_strategy="epoch",
+        logging_steps=10 if probe else 25,
+        save_strategy="no" if probe else "epoch",
         save_total_limit=1,
         bf16=True,
         max_length=MAX_SEQ_LENGTH,
@@ -390,8 +482,33 @@ def train() -> dict:
         processing_class=tokenizer,
     )
     trainer.model.print_trainable_parameters()
+    train_t0 = time.time()
     stats = trainer.train()
-    print(f"train_loss={stats.training_loss:.4f}", flush=True)
+    train_seconds = time.time() - train_t0
+    s_per_it = train_seconds / max(1, stats.global_step)
+    print(f"train_loss={stats.training_loss:.4f} "
+          f"s_per_it={s_per_it:.2f}", flush=True)
+
+    if probe:
+        minutes = (time.time() - t0) / 60
+        verdict = probe_verdict(s_per_it)
+        full = extrapolate_cost(full_steps, s_per_it, gpu_class)
+        print(f"PROBE {verdict} full_run={full}", flush=True)
+        return {
+            "mode": "probe",
+            "pairs": len(rows),
+            "tokens": total_tokens,
+            "truncated": truncated,
+            "steps": stats.global_step,
+            "minutes": round(minutes, 1),
+            "gpu_name": gpu_name,
+            "gpu_class": gpu_class,
+            "fused": fused,
+            "pins": [PIN_TRANSFORMERS, PIN_TRL, PIN_TORCH, PIN_PEFT],
+            "verdict": verdict,
+            "full_run": full,
+        }
+
     trainer.save_model(ADAPTER_DIR)
     models_vol.commit()
 
@@ -411,7 +528,8 @@ def train() -> dict:
     minutes = (time.time() - t0) / 60
     commit = os.environ.get("HSEA_COMMIT", "unknown")
     card = build_model_card(stats.training_loss, stats.global_step,
-                            total_tokens, merged, commit)
+                            total_tokens, merged, commit, gpu_name,
+                            fused)
     hf_rev = None
     token = next((os.environ.get(k) for k in
                   ("HF_TOKEN", "HUGGINGFACE_TOKEN", "HUGGING_FACE_HUB_TOKEN")
@@ -438,9 +556,14 @@ def train() -> dict:
         "train_loss": stats.training_loss,
         "steps": stats.global_step,
         "minutes": round(minutes, 1),
+        "s_per_it": round(s_per_it, 2),
         "merged": merged,
         "adapter": ADAPTER_DIR,
         "output": OUTPUT_DIR if merged else ADAPTER_DIR,
         "hf_repo": HF_REPO if hf_rev else None,
         "hf_rev": hf_rev,
+        "gpu_name": gpu_name,
+        "gpu_class": gpu_class,
+        "fused": fused,
+        "pins": [PIN_TRANSFORMERS, PIN_TRL, PIN_TORCH, PIN_PEFT],
     }
