@@ -1,0 +1,75 @@
+# Issue #8 full-loop execution plan: estimates + decision gates
+
+Pre-GPU estimate-first record (binding). Ledger before this issue:
+`docs/reports/modal-spend.md` TOTAL $14.27 against the $100 total cap;
+training spend from the ditched overnight attempts is partly
+unreported, so this plan targets **≤$32 of the $35 slice** ($3 buffer).
+Slice rule: hard ≤$35 Modal; stage 5 (RLVR/GRPO) capped at ~40% (~$14).
+
+## Per-stage pre-run estimates (A100-80GB @ $2.49/hr, slow/fast paths)
+
+Slow = reference impl (~7 s/it SFT, ~13 s/it DPO, ~90 s/it GRPO);
+fast = prebuilt fused kernels (~2x throughput). Setup ≈ 30 min/run
+(weight load + template render); the SFT probe replaces every anchor
+with measured numbers before anything commits.
+
+| stage | steps math | slow $ | fast $ | gate |
+|---|---|---|---|---|
+| 1 SFT 3ep | 8673/8×3 = 3255 | ~$17.0 | ~$9.4 | probe 50 steps; GO/ABORT at 2x; 3ep iff projected ≤$12 else 2ep (~$11.7/~$6.4) |
+| 2 DPO 1ep | 7000/8×1 = 875 | ~$9.1 | ~$5.0 | probe 50 steps; GO/ABORT at 2x |
+| 2b IPO arm | same as DPO | ~$9.1 | ~$5.0 | RUN iff tail margin allows; else defer with this estimate (logged) |
+| 3 drift audit | dpo-full matrix | ~$3.5 | ~$3.0 | safety+redteam+footage always; missions iff margin allows |
+| 4 SafeTune | 459/8×3 = 174 | ~$2.1 | ~$1.5 | SFT-derived estimate (no paid probe); Gate 2 = exit bar |
+| 4b Gate-2 re-check | safety-only | ~$0.8 | ~$0.8 | after repair |
+| 5 GRPO pilot | 60 steps, G=4 | ~$5.0 | ~$3.5 | probe 10 steps (recorded deviation); 60→30 if slow |
+| 5b RFT baseline | 100×8 sample + SFT | ~$2.5 | ~$2.5 | sampling mandatory; filtered-SFT iff margin allows |
+| 6 base-full matrix | 1× full battery | ~$3.5 | ~$3.0 | once, reused by every stage |
+| 6 final-full matrix | 1× full battery | ~$3.5 | ~$3.0 | on the GRPO checkpoint |
+| 6 judges + OOD/BoN | sampled | ~$1.5 | ~$1.5 | hard $2 cap (issue8_judge), OOD/BoN inside serve windows |
+
+Slow-path full plan ≈ $44 (NO-GO) → trims, in order: (1) IPO deferred,
+(2) SFT 3→2 epochs, (3) stage-3 audit drops missions (footage-only
+benign-flat; missions return at final), (4) GRPO 60→30 steps (1 epoch),
+(5) RFT sampling 200→100 prompts; filtered-SFT iff margin allows,
+(6) judges sampled to ~$1. Slow+trimmed ≈ $36.7 — still $1.7 over,
+so the slow path additionally drops SFT to **1 epoch** (≈$6.4;
+LIMA-format argument: 8.6k rows × 1 epoch = 1085 steps is ample for
+contract teaching) for ≈**$31.4** total. Fast-path full plan ≈ $33.9
+(GO as written, IPO still deferred unless the tail shows margin).
+
+## Gate sequence (each gate re-estimates the TAIL before committing)
+
+1. **SFT probe** → measured s/it, fused-vs-reference path, GPU class.
+   Decide SFT epochs (3/2/1) by the table above. ABORT + replan if
+   >2x the 7 s/it anchor (>14 s/it).
+2. **SFT train** (detached) → record actual $; update tail budget.
+3. **DPO probe** → measured s/it; re-estimate tail; lock the trim
+   list (missions in stage-3 audit? GRPO 60/30? RFT-SFT?).
+4. **DPO train** → record actual $; NO-GO check on the tail.
+5. **Base-full + dpo audit** (sequential serves, app stopped after
+   each) → Gate 1 verdict via `issue8_drift.py --stage dpo`.
+6. **SafeTune train** → safety-only re-check → Gate 2 (`--stage
+   safetune`); repair iterates ONLY inside remaining budget.
+7. **GRPO probe → pilot** + RFT sampling (+RFT-SFT iff margin).
+8. **Final-full + judges + OOD/BoN + replay** → report, ledger, PR.
+
+## Sequencing (#73/#74)
+
+80GB jobs run one at a time across the three issues; every function
+carries a fallback chain so a contended class falls through instead
+of stalling. #74's finetune was RUNNING when the SFT probe launched;
+the probe's chain places it wherever capacity is free, and any
+"waiting for GPU" stall kills the launch for a later retry — never
+a queue-war.
+
+## Deferred-with-estimate log (DEVIATIONS feed)
+
+- DPO on-policy-rejected upgrade (§2.1): ~$5 inference + curation.
+- KTO arm (§2.5): DPO-class cost (~$5-9); sanctioned for binary
+  abstention labels when pairs do not exist.
+- ReMax (§4.3): GRPO-class cost; trigger = GRPO instability only.
+- GRPO KL arm (beta>0): needs a ref 27B in memory; ref-free pilot first.
+- Cold-start CoT SFT (R1 §3.2 full form): reasoning lives in repair
+  RESPONSE texts instead (small-scale pattern).
+- vLLM-colocated GRPO generation: does not fit 1×80GB with a 27B
+  trainer; standard HF generation used.
