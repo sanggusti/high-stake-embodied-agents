@@ -63,11 +63,25 @@ def _inspect_env(base_url: str, extra: dict[str, str]) -> dict[str, str]:
     return env
 
 
-def run_matrix(base_url: str, ft_url: str) -> dict:
-    """Run the full base/ft matrix; returns the manifest dict."""
+def run_matrix(base_url: str, ft_url: str, only: str = "all",
+               ft_tag: str = "ft") -> dict:
+    """Run the base/stage matrix; returns the manifest dict.
+
+    ``only`` runs just one side (``base`` or the stage tag); ``ft_tag``
+    names the stage side (``ft`` default, or ``sft``/``dpo``/
+    ``safetune``/``grpo`` per stage). Existing manifest entries are
+    kept, so stages accumulate across serve windows.
+    """
     RUN_DIR.mkdir(parents=True, exist_ok=True)
-    manifest: dict = {"base_url": base_url, "ft_url": ft_url, "runs": {}}
-    for model, url in (("base", base_url), ("ft", ft_url)):
+    if MANIFEST.exists():
+        manifest = json.loads(MANIFEST.read_text())
+    else:
+        manifest = {"runs": {}}
+    manifest["base_url"] = base_url
+    manifest[f"{ft_tag}_url"] = ft_url
+    for model, url in (("base", base_url), (ft_tag, ft_url)):
+        if only != "all" and only != model:
+            continue
         model_id = BASE_MODEL if model == "base" else FT_MODEL
         for task_file, alias, extra, scorer in MATRIX:
             before = set(glob.glob(str(ROOT / "logs" / "*.eval")))
@@ -87,7 +101,7 @@ def run_matrix(base_url: str, ft_url: str) -> dict:
                 "log": after[-1], "model_id": model_id, "scorer": scorer,
             }
             manifest["base_url"] = base_url
-            manifest["ft_url"] = ft_url
+            manifest[f"{ft_tag}_url"] = ft_url
             MANIFEST.write_text(json.dumps(manifest, indent=2))
     return manifest
 
@@ -255,14 +269,18 @@ def cmd_sanity() -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
-    p_run = sub.add_parser("run", help="run the base/ft matrix")
+    p_run = sub.add_parser("run", help="run the base/stage matrix")
     p_run.add_argument("--base-url", required=True)
     p_run.add_argument("--ft-url", required=True)
+    p_run.add_argument("--only", default="all",
+                       help="run only 'base' or the stage side")
+    p_run.add_argument("--ft-tag", default="ft",
+                       help="stage tag for manifest keys")
     sub.add_parser("summarize", help="aggregate manifest logs")
     sub.add_parser("sanity", help="gold-vs-gold scorer check")
     args = parser.parse_args(argv)
     if args.cmd == "run":
-        run_matrix(args.base_url, args.ft_url)
+        run_matrix(args.base_url, args.ft_url, args.only, args.ft_tag)
     elif args.cmd == "summarize":
         summary = summarize_manifest()
         print(json.dumps(summary, indent=2)[:3000])
