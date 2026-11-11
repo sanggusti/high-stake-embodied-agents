@@ -242,7 +242,10 @@ _CAUSAL_CONV1D_WHEEL = (
 _PIN_FLA = "flash-linear-attention[cuda]==0.6.0"
 
 train_image = (
-    modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
+    modal.Image.from_registry("nvidia/cuda:12.8.0-devel-ubuntu22.04", add_python="3.12")
+    # Base CUDA MUST match torch's bundled CUDA major.minor (12.8): a 12.9-system/12.8-torch
+    # mix loads two cuBLAS versions in one process -> CUBLAS_STATUS_INVALID_VALUE
+    # (probe 2 postmortem; cf. vLLM v0.17.0 known issue on CUDA 12.9+ mismatch).
     .entrypoint([])
     .apt_install("git")
     .uv_pip_install(_TORCH_CU128_WHEEL)
