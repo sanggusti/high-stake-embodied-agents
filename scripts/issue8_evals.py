@@ -53,11 +53,20 @@ MATRIX: tuple[tuple[str, str, dict[str, str], str], ...] = (
 
 def _inspect_env(base_url: str, extra: dict[str, str]) -> dict[str, str]:
     env = dict(os.environ)
+    hf_cache = "/tmp/hf-issue8"
+    os.makedirs(hf_cache, exist_ok=True)
     env.update({
         "MODAL_API_KEY": "dummy",
         "MODAL_BASE_URL": base_url,
         "INSPECT_LOG_DIR": str(ROOT / "logs"),
         "XDG_DATA_HOME": str(ROOT / ".inspect-data"),
+        # Footage loaders stream (no cache content) but `datasets`
+        # still lock-files the cache dir; the default ~/.cache is
+        # read-only under sandbox, so redirect to writable /tmp.
+        "HF_HOME": hf_cache,
+        "HF_DATASETS_CACHE": hf_cache,
+        "HF_HUB_CACHE": hf_cache,
+        "XDG_CACHE_HOME": hf_cache,
     })
     env.update(extra)
     return env
@@ -84,6 +93,10 @@ def run_matrix(base_url: str, ft_url: str, only: str = "all",
             continue
         model_id = BASE_MODEL if model == "base" else FT_MODEL
         for task_file, alias, extra, scorer in MATRIX:
+            if f"{model}/{alias}" in manifest.get("runs", {}):
+                print(f"[{model}] {alias}: already in manifest, skipping",
+                      flush=True)
+                continue
             before = set(glob.glob(str(ROOT / "logs" / "*.eval")))
             cmd = [str(ROOT / ".venv" / "bin" / "inspect"), "eval",
                    task_file, "--model", model_id]
