@@ -205,3 +205,16 @@ def test_probe_verdict_two_x_rule():
 def test_gpu_fallback_chain_not_single_class():
     assert isinstance(ft.GPU_CHAIN, list) and len(ft.GPU_CHAIN) >= 2
     assert "A100-80GB" in ft.GPU_CHAIN
+
+
+def test_classify_gpu_distinguishes_h200():
+    assert ft.classify_gpu("NVIDIA H200") == "H200"
+    assert ft.classify_gpu("NVIDIA H100 80GB HBM3") == "H100"
+    assert ft.classify_gpu("NVIDIA A100-SXM4-80GB") == "A100-80GB"
+    assert ft.classify_gpu("mystery") == "A100-80GB"
+
+
+def test_probe_verdict_cost_gate():
+    assert ft.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
+    assert ft.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
+    assert ft.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"

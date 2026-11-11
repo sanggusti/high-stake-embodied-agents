@@ -150,3 +150,16 @@ def test_rft_filter_keeps_passing_only(tmp_path, monkeypatch):
     assert kept[0]["messages"][-1]["role"] == "assistant"
     assert report["verifier_pass_rate"] == 0.5
     assert report["prompts_with_pass"] == 1
+
+
+def test_classify_gpu_distinguishes_h200():
+    assert st.classify_gpu("NVIDIA H200") == "H200"
+    assert st.classify_gpu("NVIDIA H100 80GB HBM3") == "H100"
+    assert st.classify_gpu("NVIDIA A100-SXM4-80GB") == "A100-80GB"
+    assert st.classify_gpu("mystery") == "A100-80GB"
+
+
+def test_probe_verdict_cost_gate():
+    assert st.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
+    assert st.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
+    assert st.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"

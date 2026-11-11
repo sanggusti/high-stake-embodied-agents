@@ -93,3 +93,16 @@ def test_model_card_names_rewards_and_baseline():
                                  "NVIDIA A100-SXM4-80GB")
     for needle in ("GRPO", "SafeTune", "E-RFT", "487", "trl==1.7.1"):
         assert needle in card
+
+
+def test_classify_gpu_distinguishes_h200():
+    assert grpo.classify_gpu("NVIDIA H200") == "H200"
+    assert grpo.classify_gpu("NVIDIA H100 80GB HBM3") == "H100"
+    assert grpo.classify_gpu("NVIDIA A100-SXM4-80GB") == "A100-80GB"
+    assert grpo.classify_gpu("mystery") == "A100-80GB"
+
+
+def test_probe_verdict_cost_gate():
+    assert grpo.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
+    assert grpo.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
+    assert grpo.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"

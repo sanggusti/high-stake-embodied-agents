@@ -37,11 +37,17 @@ Output: adapter at /models/qwen38-flywheel-v2-lora, merged bf16 model at
 /models/qwen38-flywheel-v2-merged (volume dmb-flywheel-models), plus an
 HF push of the adapter repo (see HF_REPO).
 
-Cost estimate (recorded before the first GPU op, issue #8 full loop):
-  3,255 steps (8,673 rows / eff-batch 8 x 3 epochs) at ~5-9 s/it
-  (reference impl) = 4.5-8.1 h + ~0.5 h setup on A100-80GB at
-  ~$2.49/hr -> ~$11-21 for training. The probe re-estimate decides
-  2 vs 3 epochs BEFORE the full run commits (see ESTIMATE_S_PER_IT).
+Probe 1 result (2026-11-11, H200): reference impl at 8.67 s/it
+(loss 1.157, healthy) — no PyPI prebuilt kernel wheel fits, and the
+reference path prices SFT-3ep at ~$21-38 (NO-GO on cost). The image
+now installs PREBUILT fused kernels from the GitHub release assets
+(causal-conv1d 1.7.0 cu12/torch2.10) + fla 0.6.0 over prebuilt triton
+JIT — zero source builds — with torch 2.10.0+cu128 (newest torch a
+cu12 wheel covers). Probe 2 decides: fused (~1-2 s/it expected)
+commits the full loop; reference re-measured re-runs the cost gate.
+
+Cost estimate (probe-2 target): 3,255 steps at ~1.5 s/it = ~1.4 h +
+~0.5 h setup on A100-80GB -> ~$4.75 for SFT-3ep.
 """
 
 from __future__ import annotations
@@ -72,7 +78,7 @@ SEED = 8
 # transformers 5.22.2 ships qwen3_5 modeling: no git main needed.
 PIN_TRANSFORMERS = "transformers==5.22.2"
 PIN_TRL = "trl==1.7.1"
-PIN_TORCH = "torch==2.11.0"
+PIN_TORCH = "torch==2.10.0"  # cu128: newest torch with a prebuilt cu12 causal-conv1d wheel
 PIN_PEFT = "peft==0.21.2"
 PIN_DATASETS = "datasets==5.1.0"
 PIN_ACCELERATE = "accelerate==1.15.0"
@@ -83,13 +89,25 @@ PIN_HF_HUB = "huggingface-hub==1.33.0"
 GPU_CHAIN = ["A100-80GB", "H100"]
 
 # Modal $/hr per class (from docs/reports/modal-spend.md ledger rows).
-GPU_RATES = {"A100-80GB": 2.49, "H100": 3.95, "H200": 4.95}
+GPU_RATES = {"A100-80GB": 2.49, "H100": 3.95, "H200": 4.54}
 
 # Pre-run planning anchor (s/it on the reference impl). The probe
 # measures the truth; abort + re-plan when measured > 2x this.
 ESTIMATE_S_PER_IT = 7.0
 PROBE_STEPS = 50
 ABORT_FACTOR = 2.0
+STAGE_BUDGET_USD = 12.0
+
+def classify_gpu(gpu_name: str) -> str:
+    """nvidia-smi product name -> ledger GPU class (H200 is distinct
+    from H100: different rate, different placement pool)."""
+    if "H200" in gpu_name:
+        return "H200"
+    if "H100" in gpu_name:
+        return "H100"
+    if "A100" in gpu_name:
+        return "A100-80GB"
+    return "A100-80GB"
 
 _ATTENTION_SUBMODULES = ("q_proj", "k_proj", "v_proj", "o_proj")
 _MLP_SUBMODULES = ("gate_proj", "up_proj", "down_proj")
@@ -240,14 +258,22 @@ def extrapolate_cost(steps: int, s_per_it: float, gpu: str,
     }
 
 
-def probe_verdict(s_per_it: float) -> dict:
-    """GO / ABORT from the 50-step probe (binding 2x rule)."""
+def probe_verdict(s_per_it: float, cost_usd: float | None = None,
+                  budget_usd: float | None = None) -> dict:
+    """GO / ABORT / NO-GO from the probe: the binding 2x time rule
+    plus the stage cost gate (NO-GO when the extrapolated cost
+    exceeds the stage budget even if time is GO)."""
     over = s_per_it > ESTIMATE_S_PER_IT * ABORT_FACTOR
+    over_budget = (cost_usd is not None and budget_usd is not None
+                   and cost_usd > budget_usd)
+    verdict = "ABORT" if over else ("NO-GO" if over_budget else "GO")
     return {
         "measured_s_per_it": round(s_per_it, 2),
         "anchor_s_per_it": ESTIMATE_S_PER_IT,
         "factor": round(s_per_it / ESTIMATE_S_PER_IT, 2),
-        "verdict": "ABORT" if over else "GO",
+        "cost_usd": cost_usd,
+        "budget_usd": budget_usd,
+        "verdict": verdict,
     }
 
 
@@ -292,9 +318,18 @@ CrisisMMD), so this adapter is gated like its data.
 
 
 _TORCH_CU128_WHEEL = (
-    "https://download.pytorch.org/whl/cu128/torch-2.11.0%2Bcu128"
+    "https://download.pytorch.org/whl/cu128/torch-2.10.0%2Bcu128"
     "-cp312-cp312-manylinux_2_28_x86_64.whl"
 )
+# Prebuilt qwen3_5 fused kernels, zero source builds: causal-conv1d
+# cu12/torch2.10 wheel from the GitHub release assets plus fla
+# (pure-python dispatch over prebuilt triton JIT kernels).
+_CAUSAL_CONV1D_WHEEL = (
+    "https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.7.0"
+    "/causal_conv1d-1.7.0%2Bcu12torch2.10cxx11abiTRUE"
+    "-cp312-cp312-linux_x86_64.whl"
+)
+_PIN_FLA = "flash-linear-attention[cuda]==0.6.0"
 
 train_image = (
     modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
@@ -314,14 +349,8 @@ train_image = (
         PIN_BITSANDBYTES,
         PIN_HF_HUB,
         "hf_xet",
-    )
-    # Prebuilt fused kernels ONLY (--only-binary: never a source
-    # build). No fitting wheel -> `|| true` keeps the image green and
-    # training runs the reference impl with honest time math.
-    .run_commands(
-        "/.uv/uv pip install --python $(command -v python) "
-        "--only-binary :all: causal-conv1d "
-        "|| echo NO_FUSED_KERNELS_USING_REFERENCE_IMPL"
+        _CAUSAL_CONV1D_WHEEL,
+        _PIN_FLA,
     )
     .env({"HF_XET_HIGH_PERFORMANCE": "1"})
 )
@@ -334,10 +363,10 @@ app = modal.App("dmb-qwen38-finetune")
 
 
 @app.local_entrypoint()
-def main(mode: str = "train"):
+def main(mode: str = "train", epochs: int = EPOCHS):
     if mode not in ("probe", "train"):
         raise ValueError("mode must be 'probe' or 'train'")
-    result = train.remote(probe=(mode == "probe"))
+    result = train.remote(probe=(mode == "probe"), epochs=epochs)
     print(result)
 
 
@@ -352,7 +381,7 @@ def main(mode: str = "train"):
     secrets=[modal.Secret.from_name("dmb-hf-token")],
     timeout=43200,
 )
-def train(probe: bool = False) -> dict:
+def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
     import json
     import os
     import subprocess
@@ -377,14 +406,25 @@ def train(probe: bool = False) -> dict:
         ).stdout.strip().splitlines()[0]
     except Exception:  # noqa: BLE001 (name is informational only)
         gpu_name = "unknown"
-    gpu_class = ("H100" if "H100" in gpu_name else "A100-80GB"
-                 if "A100" in gpu_name else "A100-80GB")
+    gpu_class = classify_gpu(gpu_name)
     try:
-        import causal_conv1d  # noqa: F401,PLC0415
+        import causal_conv1d  # noqa: PLC0415
 
-        fused = f"causal-conv1d prebuilt wheel ({causal_conv1d.__version__})"
+        cc1d = causal_conv1d.__version__
     except ImportError:
-        fused = "reference impl (no prebuilt causal-conv1d wheel)"
+        cc1d = None
+    try:
+        import fla  # noqa: PLC0415
+
+        fla_v = getattr(fla, "__version__", "?")
+    except ImportError:
+        fla_v = None
+    if cc1d and fla_v:
+        fused = f"fused prebuilt (causal-conv1d {cc1d}, fla {fla_v})"
+    elif cc1d or fla_v:
+        fused = f"PARTIAL kernels (cc1d={cc1d}, fla={fla_v})"
+    else:
+        fused = "reference impl (no prebuilt kernels)"
     print(f"gpu={gpu_name} fused={fused}", flush=True)
 
     rows: list[dict] = []
@@ -452,10 +492,10 @@ def train(probe: bool = False) -> dict:
         target_modules=regex,
     )
     dataset = Dataset.from_list(rows)
-    full_steps = count_steps(len(rows), BATCH_SIZE, GRAD_ACCUM, EPOCHS)
+    full_steps = count_steps(len(rows), BATCH_SIZE, GRAD_ACCUM, epochs)
     args = SFTConfig(
         output_dir="/tmp/qwen38-sft",
-        num_train_epochs=EPOCHS,
+        num_train_epochs=epochs,
         max_steps=PROBE_STEPS if probe else -1,
         # No packing: the qwen3_5 hybrid tower needs fused kernels
         # (causal-conv1d, flash-linear-attention) to keep packed
@@ -491,8 +531,9 @@ def train(probe: bool = False) -> dict:
 
     if probe:
         minutes = (time.time() - t0) / 60
-        verdict = probe_verdict(s_per_it)
         full = extrapolate_cost(full_steps, s_per_it, gpu_class)
+        verdict = probe_verdict(s_per_it, full["cost_usd"],
+                                STAGE_BUDGET_USD)
         print(f"PROBE {verdict} full_run={full}", flush=True)
         return {
             "mode": "probe",
@@ -504,6 +545,7 @@ def train(probe: bool = False) -> dict:
             "gpu_name": gpu_name,
             "gpu_class": gpu_class,
             "fused": fused,
+            "epochs": epochs,
             "pins": [PIN_TRANSFORMERS, PIN_TRL, PIN_TORCH, PIN_PEFT],
             "verdict": verdict,
             "full_run": full,
@@ -529,7 +571,7 @@ def train(probe: bool = False) -> dict:
     commit = os.environ.get("HSEA_COMMIT", "unknown")
     card = build_model_card(stats.training_loss, stats.global_step,
                             total_tokens, merged, commit, gpu_name,
-                            fused)
+                            fused, epochs)
     hf_rev = None
     token = next((os.environ.get(k) for k in
                   ("HF_TOKEN", "HUGGINGFACE_TOKEN", "HUGGING_FACE_HUB_TOKEN")
@@ -553,6 +595,7 @@ def train(probe: bool = False) -> dict:
         "pairs": len(rows),
         "tokens": total_tokens,
         "truncated": truncated,
+        "epochs": epochs,
         "train_loss": stats.training_loss,
         "steps": stats.global_step,
         "minutes": round(minutes, 1),

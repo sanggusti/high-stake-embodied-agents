@@ -116,3 +116,16 @@ def test_model_card_names_loss_and_parent():
     for needle in ("sigmoid_norm", "stage-1 SFT adapter", "7,000",
                    "trl==1.7.1", "abc123"):
         assert needle in card
+
+
+def test_classify_gpu_distinguishes_h200():
+    assert dpo.classify_gpu("NVIDIA H200") == "H200"
+    assert dpo.classify_gpu("NVIDIA H100 80GB HBM3") == "H100"
+    assert dpo.classify_gpu("NVIDIA A100-SXM4-80GB") == "A100-80GB"
+    assert dpo.classify_gpu("mystery") == "A100-80GB"
+
+
+def test_probe_verdict_cost_gate():
+    assert dpo.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
+    assert dpo.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
+    assert dpo.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"

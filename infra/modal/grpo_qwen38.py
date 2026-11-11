@@ -62,7 +62,7 @@ SEED = 8
 
 PIN_TRANSFORMERS = "transformers==5.22.2"
 PIN_TRL = "trl==1.7.1"
-PIN_TORCH = "torch==2.11.0"
+PIN_TORCH = "torch==2.10.0"  # cu128: newest torch with a prebuilt cu12 causal-conv1d wheel
 PIN_PEFT = "peft==0.21.2"
 PIN_DATASETS = "datasets==5.1.0"
 PIN_ACCELERATE = "accelerate==1.15.0"
@@ -70,11 +70,44 @@ PIN_BITSANDBYTES = "bitsandbytes==0.50.2"
 PIN_HF_HUB = "huggingface-hub==1.33.0"
 
 GPU_CHAIN = ["A100-80GB", "H100"]
-GPU_RATES = {"A100-80GB": 2.49, "H100": 3.95, "H200": 4.95}
+GPU_RATES = {"A100-80GB": 2.49, "H100": 3.95, "H200": 4.54}
 
 ESTIMATE_S_PER_IT = 90.0
 PROBE_STEPS = 10
 ABORT_FACTOR = 2.0
+STAGE_BUDGET_USD = 14.0
+
+def detect_fused() -> str:
+    """Prebuilt-kernel path report (fused / PARTIAL / reference)."""
+    try:
+        import causal_conv1d  # noqa: PLC0415
+
+        cc1d = causal_conv1d.__version__
+    except ImportError:
+        cc1d = None
+    try:
+        import fla  # noqa: PLC0415
+
+        fla_v = getattr(fla, "__version__", "?")
+    except ImportError:
+        fla_v = None
+    if cc1d and fla_v:
+        return f"fused prebuilt (causal-conv1d {cc1d}, fla {fla_v})"
+    if cc1d or fla_v:
+        return f"PARTIAL kernels (cc1d={cc1d}, fla={fla_v})"
+    return "reference impl (no prebuilt kernels)"
+
+
+def classify_gpu(gpu_name: str) -> str:
+    """nvidia-smi product name -> ledger GPU class (H200 is distinct
+    from H100: different rate, different placement pool)."""
+    if "H200" in gpu_name:
+        return "H200"
+    if "H100" in gpu_name:
+        return "H100"
+    if "A100" in gpu_name:
+        return "A100-80GB"
+    return "A100-80GB"
 
 
 def parse_priority(text) -> str | None:
@@ -171,14 +204,22 @@ def extrapolate_cost(steps: int, s_per_it: float, gpu: str,
     }
 
 
-def probe_verdict(s_per_it: float) -> dict:
-    """GO / ABORT from the 10-step probe (binding 2x rule)."""
+def probe_verdict(s_per_it: float, cost_usd: float | None = None,
+                  budget_usd: float | None = None) -> dict:
+    """GO / ABORT / NO-GO from the probe: the binding 2x time rule
+    plus the stage cost gate (NO-GO when the extrapolated cost
+    exceeds the stage budget even if time is GO)."""
     over = s_per_it > ESTIMATE_S_PER_IT * ABORT_FACTOR
+    over_budget = (cost_usd is not None and budget_usd is not None
+                   and cost_usd > budget_usd)
+    verdict = "ABORT" if over else ("NO-GO" if over_budget else "GO")
     return {
         "measured_s_per_it": round(s_per_it, 2),
         "anchor_s_per_it": ESTIMATE_S_PER_IT,
         "factor": round(s_per_it / ESTIMATE_S_PER_IT, 2),
-        "verdict": "ABORT" if over else "GO",
+        "cost_usd": cost_usd,
+        "budget_usd": budget_usd,
+        "verdict": verdict,
     }
 
 
@@ -222,9 +263,18 @@ irreversible, format). Research-only: gated like its data.
 
 
 _TORCH_CU128_WHEEL = (
-    "https://download.pytorch.org/whl/cu128/torch-2.11.0%2Bcu128"
+    "https://download.pytorch.org/whl/cu128/torch-2.10.0%2Bcu128"
     "-cp312-cp312-manylinux_2_28_x86_64.whl"
 )
+# Prebuilt qwen3_5 fused kernels, zero source builds: causal-conv1d
+# cu12/torch2.10 wheel from the GitHub release assets plus fla
+# (pure-python dispatch over prebuilt triton JIT kernels).
+_CAUSAL_CONV1D_WHEEL = (
+    "https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.7.0"
+    "/causal_conv1d-1.7.0%2Bcu12torch2.10cxx11abiTRUE"
+    "-cp312-cp312-linux_x86_64.whl"
+)
+_PIN_FLA = "flash-linear-attention[cuda]==0.6.0"
 
 train_image = (
     modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
@@ -240,11 +290,8 @@ train_image = (
         PIN_BITSANDBYTES,
         PIN_HF_HUB,
         "hf_xet",
-    )
-    .run_commands(
-        "/.uv/uv pip install --python $(command -v python) "
-        "--only-binary :all: causal-conv1d "
-        "|| echo NO_FUSED_KERNELS_USING_REFERENCE_IMPL"
+        _CAUSAL_CONV1D_WHEEL,
+        _PIN_FLA,
     )
     .env({"HF_XET_HIGH_PERFORMANCE": "1"})
 )
@@ -300,8 +347,9 @@ def train(probe: bool = False) -> dict:
         ).stdout.strip().splitlines()[0]
     except Exception:  # noqa: BLE001 (name is informational only)
         gpu_name = "unknown"
-    gpu_class = ("H100" if "H100" in gpu_name else "A100-80GB"
-                 if "A100" in gpu_name else "A100-80GB")
+    gpu_class = classify_gpu(gpu_name)
+    fused = detect_fused()
+    print(f"gpu={gpu_name} fused={fused}", flush=True)
 
     if not os.path.isdir(PARENT_ADAPTER_DIR):
         raise RuntimeError(
@@ -387,8 +435,9 @@ def train(probe: bool = False) -> dict:
 
     if probe:
         minutes = (time.time() - t0) / 60
-        verdict = probe_verdict(s_per_it)
         full = extrapolate_cost(PILOT_STEPS, s_per_it, gpu_class)
+        verdict = probe_verdict(s_per_it, full["cost_usd"],
+                                STAGE_BUDGET_USD)
         print(f"PROBE {verdict} full_run={full}", flush=True)
         return {
             "mode": "probe",
