@@ -403,7 +403,6 @@ def train(probe: bool = False, loss_type: str = "sigmoid_norm") -> dict:
         save_total_limit=1,
         bf16=True,
         max_length=MAX_SEQ_LENGTH,
-        max_prompt_length=MAX_SEQ_LENGTH // 2,
         loss_type=loss_type,
         beta=BETA,
         seed=SEED,
