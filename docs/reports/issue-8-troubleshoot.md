@@ -47,3 +47,31 @@ healthy but ~1% done on a 5-8 hour trajectory.
 - Pin `transformers`/`trl` to a tested release or a known-good commit,
   not floating main. Record the pins.
 - Sequence 80GB-class jobs against #73/#74; do not queue-war them.
+
+## 2026-11-11: LoRA-serve cold-start crash (ap-d4obCWpn1REz469ExJ4dly)
+
+First `dmb-vllm-qwen38-ft` deploy (bf16 base + DPO LoRA): task 1
+crashed 41 min in during BASE weight load —
+`qwen3_5.py load_weights -> load_merged_column_weight`, shape assert
+on a fused-qkv shard. Task 2 (identical code/weights, ~25 min later
+after crash-loop backoff) loaded fine from the warm HF cache (52.09
+GiB in 39.8 s), compiled, and was mid-warmup when stopped.
+Zero completions served; both tasks burned GPU: ledgered 41 + 8 min
+at h100 rate (+$3.19, conservative — per-task GPU class is not
+recoverable post-hoc via the CLI).
+
+Verdict: transient cold-cache materialization race, not a config
+error (the config is proven loadable by task 2). Fix in
+`vllm_qwen38_ft.py`: `serve()` pre-flights `snapshot_download` +
+a safetensors inventory gate before exec'ing vLLM, so the server
+never starts on a half-materialized cache. Same edit adds the
+eval-critical flags the crashed revision lacked vs the working base
+serve (`vllm_qwen38.py`): `--enable-auto-tool-choice`,
+`--tool-call-parser qwen3_xml`, `--limit-mm-per-prompt
+'{"image": 8, "video": 2}'`. Only `--max-model-len` still differs
+(32768 vs 262144: bf16 weights leave no room for 262K KV).
+
+Side finding: vLLM logs `no matching PunicaWrapper ... visual.blocks.*
+will be ignored` at LoRA load. Harmless — SFT/DPO target the text
+tower only (`lora_regex_for` excludes vision), so there is no visual
+LoRA to drop; the warnings are vLLM scanning ineligible modules.
