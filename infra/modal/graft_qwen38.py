@@ -30,7 +30,8 @@ image = (
         "torch==2.10.0",
         index_url="https://download.pytorch.org/whl/cpu",
     )
-    .uv_pip_install("safetensors==0.7.0", "huggingface-hub==1.33.0")
+    .uv_pip_install("safetensors==0.7.0", "huggingface-hub==1.33.0",
+                    "numpy==2.2.6")
 )
 
 models_vol = modal.Volume.from_name("dmb-flywheel-models")
