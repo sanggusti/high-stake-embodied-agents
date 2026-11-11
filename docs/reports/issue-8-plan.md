@@ -80,6 +80,14 @@ a queue-war.
   Isolation repro on L4 decides the fix (torch cu126 build vs
   H100 avoidance). #74's 80GB finetune finished ~09:05, so A100
   placement is available again.
+- **Probe 2 postmortem** (no new GPU needed): vLLM v0.17.0 release
+  notes document `CUBLAS_STATUS_INVALID_VALUE` on CUDA 12.9+ as a
+  CUDA-library-mismatch failure. Probe 2 mixed a 12.9 base image
+  with torch's bundled 12.8 (two cuBLAS in one process); probe 1
+  matched 12.9/12.9 and trained. Fix: base image CUDA 12.8 to match
+  torch cu128 (commit d4d9b5a); serve images stay on 12.9 (vLLM
+  validated there). Probe 3 re-runs the 50-step timing on the
+  aligned image.
 
 ## Deferred-with-estimate log (DEVIATIONS feed)
 

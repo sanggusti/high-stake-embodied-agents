@@ -129,3 +129,10 @@ def test_probe_verdict_cost_gate():
     assert dpo.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
     assert dpo.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
     assert dpo.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"
+
+
+def test_should_abort_two_x_rule():
+    a = dpo.ESTIMATE_S_PER_IT
+    assert dpo.should_abort(a * 50, 50)["abort"] is False  # at anchor
+    assert dpo.should_abort(a * 2 * 50, 50)["abort"] is False  # at 2x
+    assert dpo.should_abort(a * 2 * 50 + 1, 50)["abort"] is True  # over

@@ -218,3 +218,10 @@ def test_probe_verdict_cost_gate():
     assert ft.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
     assert ft.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
     assert ft.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"
+
+
+def test_should_abort_two_x_rule():
+    a = ft.ESTIMATE_S_PER_IT
+    assert ft.should_abort(a * 50, 50)["abort"] is False  # at anchor
+    assert ft.should_abort(a * 2 * 50, 50)["abort"] is False  # at 2x
+    assert ft.should_abort(a * 2 * 50 + 1, 50)["abort"] is True  # over

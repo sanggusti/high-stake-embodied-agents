@@ -98,6 +98,20 @@ PROBE_STEPS = 50
 ABORT_FACTOR = 2.0
 STAGE_BUDGET_USD = 12.0
 
+
+ABORT_CHECK_STEPS = 50
+
+
+def should_abort(elapsed_s: float, steps: int,
+                 anchor_s_per_it: float = ESTIMATE_S_PER_IT,
+                 factor: float = ABORT_FACTOR) -> dict:
+    """In-run 2x gate (pure): abort a full run whose early steps run
+    slower than factor x anchor. Same binding rule as the probe, zero
+    extra setup cost (checked inside the run at ABORT_CHECK_STEPS)."""
+    s_per_it = elapsed_s / max(1, steps)
+    over = s_per_it > anchor_s_per_it * factor
+    return {"s_per_it": round(s_per_it, 2), "abort": over}
+
 def classify_gpu(gpu_name: str) -> str:
     """nvidia-smi product name -> ledger GPU class (H200 is distinct
     from H100: different rate, different placement pool)."""
@@ -366,10 +380,13 @@ app = modal.App("dmb-qwen38-finetune")
 
 
 @app.local_entrypoint()
-def main(mode: str = "train", epochs: int = EPOCHS):
+def main(mode: str = "train", epochs: int = EPOCHS,
+         batch: int = BATCH_SIZE, accum: int = GRAD_ACCUM,
+         max_seq: int = MAX_SEQ_LENGTH):
     if mode not in ("probe", "train"):
         raise ValueError("mode must be 'probe' or 'train'")
-    result = train.remote(probe=(mode == "probe"), epochs=epochs)
+    result = train.remote(probe=(mode == "probe"), epochs=epochs,
+                          batch=batch, accum=accum, max_seq=max_seq)
     print(result)
 
 
@@ -384,7 +401,9 @@ def main(mode: str = "train", epochs: int = EPOCHS):
     secrets=[modal.Secret.from_name("dmb-hf-token")],
     timeout=43200,
 )
-def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
+def train(probe: bool = False, epochs: int = EPOCHS,
+          batch: int = BATCH_SIZE, accum: int = GRAD_ACCUM,
+          max_seq: int = MAX_SEQ_LENGTH) -> dict:
     import json
     import os
     import subprocess
@@ -455,12 +474,12 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
         ids = tokenizer.apply_chat_template(row["messages"], tokenize=True)
         n = len(ids["input_ids"]) if hasattr(ids, "keys") else len(ids)
         total_tokens += n
-        if n > MAX_SEQ_LENGTH:
+        if n > max_seq:
             truncated += 1
         sized.append((n, row))
     sized.sort(key=lambda pair: pair[0])
     rows = [row for _, row in sized]
-    print(f"template_tokens={total_tokens} truncated>{MAX_SEQ_LENGTH}:{truncated}",
+    print(f"template_tokens={total_tokens} truncated>{max_seq}:{truncated}",
           flush=True)
 
     quant = BitsAndBytesConfig(
@@ -495,7 +514,7 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
         target_modules=regex,
     )
     dataset = Dataset.from_list(rows)
-    full_steps = count_steps(len(rows), BATCH_SIZE, GRAD_ACCUM, epochs)
+    full_steps = count_steps(len(rows), batch, accum, epochs)
     args = SFTConfig(
         output_dir="/tmp/qwen38-sft",
         num_train_epochs=epochs,
@@ -504,8 +523,8 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
         # (causal-conv1d, flash-linear-attention) to keep packed
         # sequences apart; source builds are banned, so rows are
         # pre-sorted by length and padding waste stays low.
-        per_device_train_batch_size=BATCH_SIZE,
-        gradient_accumulation_steps=GRAD_ACCUM,
+        per_device_train_batch_size=batch,
+        gradient_accumulation_steps=accum,
         learning_rate=LEARNING_RATE,
         lr_scheduler_type="cosine",
         warmup_steps=10,
@@ -513,7 +532,7 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
         save_strategy="no" if probe else "epoch",
         save_total_limit=1,
         bf16=True,
-        max_length=MAX_SEQ_LENGTH,
+        max_length=max_seq,
         packing=False,
         seed=SEED,
     )
@@ -525,10 +544,35 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
         processing_class=tokenizer,
     )
     trainer.model.print_trainable_parameters()
+    from transformers import TrainerCallback
+
+    abort_state: dict = {}
+
+    class _AbortCallback(TrainerCallback):
+        def on_step_end(self, args, state, control, **kwargs):
+            if (state.global_step == ABORT_CHECK_STEPS and not probe):
+                check = should_abort(time.time() - train_t0,
+                                     state.global_step)
+                print(f"ABORT_CHECK {check}", flush=True)
+                if check["abort"]:
+                    abort_state["aborted"] = check
+                    control.should_training_stop = True
+            return control
+
+    trainer.add_callback(_AbortCallback())
     train_t0 = time.time()
     stats = trainer.train()
     train_seconds = time.time() - train_t0
     s_per_it = train_seconds / max(1, stats.global_step)
+    if abort_state.get("aborted") and not probe:
+        minutes = (time.time() - t0) / 60
+        print(f"ABORTED {abort_state['aborted']} after {minutes:.1f} min; no save, no push", flush=True)
+        return {"mode": "aborted",
+                "abort": abort_state["aborted"],
+                "steps": stats.global_step,
+                "minutes": round(minutes, 1),
+                "gpu_name": gpu_name,
+                "gpu_class": gpu_class}
     print(f"train_loss={stats.training_loss:.4f} "
           f"s_per_it={s_per_it:.2f}", flush=True)
 
@@ -549,6 +593,9 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
             "gpu_class": gpu_class,
             "fused": fused,
             "epochs": epochs,
+            "batch": batch,
+            "accum": accum,
+            "max_seq": max_seq,
             "pins": [PIN_TRANSFORMERS, PIN_TRL, PIN_TORCH, PIN_PEFT],
             "verdict": verdict,
             "full_run": full,
@@ -599,6 +646,9 @@ def train(probe: bool = False, epochs: int = EPOCHS) -> dict:
         "tokens": total_tokens,
         "truncated": truncated,
         "epochs": epochs,
+        "batch": batch,
+        "accum": accum,
+        "max_seq": max_seq,
         "train_loss": stats.training_loss,
         "steps": stats.global_step,
         "minutes": round(minutes, 1),

@@ -106,3 +106,10 @@ def test_probe_verdict_cost_gate():
     assert grpo.probe_verdict(7.0, 5.0, 12.0)["verdict"] == "GO"
     assert grpo.probe_verdict(7.0, 12.01, 12.0)["verdict"] == "NO-GO"
     assert grpo.probe_verdict(999.0, 1.0, 12.0)["verdict"] == "ABORT"
+
+
+def test_should_abort_two_x_rule():
+    a = grpo.ESTIMATE_S_PER_IT
+    assert grpo.should_abort(a * 50, 50)["abort"] is False  # at anchor
+    assert grpo.should_abort(a * 2 * 50, 50)["abort"] is False  # at 2x
+    assert grpo.should_abort(a * 2 * 50 + 1, 50)["abort"] is True  # over

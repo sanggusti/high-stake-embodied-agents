@@ -76,6 +76,20 @@ PROBE_STEPS = 50
 ABORT_FACTOR = 2.0
 STAGE_BUDGET_USD = 3.0
 
+
+ABORT_CHECK_STEPS = 50
+
+
+def should_abort(elapsed_s: float, steps: int,
+                 anchor_s_per_it: float = ESTIMATE_S_PER_IT,
+                 factor: float = ABORT_FACTOR) -> dict:
+    """In-run 2x gate (pure): abort a full run whose early steps run
+    slower than factor x anchor. Same binding rule as the probe, zero
+    extra setup cost (checked inside the run at ABORT_CHECK_STEPS)."""
+    s_per_it = elapsed_s / max(1, steps)
+    over = s_per_it > anchor_s_per_it * factor
+    return {"s_per_it": round(s_per_it, 2), "abort": over}
+
 def probe_verdict(s_per_it: float, cost_usd: float | None = None,
                   budget_usd: float | None = None) -> dict:
     """GO / ABORT / NO-GO from the probe: the binding 2x time rule
@@ -390,10 +404,35 @@ def train(probe: bool = False, dataset_path: str = DATASET_PATH,
         args=args,
         processing_class=tokenizer,
     )
+    from transformers import TrainerCallback
+
+    abort_state: dict = {}
+
+    class _AbortCallback(TrainerCallback):
+        def on_step_end(self, args, state, control, **kwargs):
+            if (state.global_step == ABORT_CHECK_STEPS and not probe):
+                check = should_abort(time.time() - train_t0,
+                                     state.global_step)
+                print(f"ABORT_CHECK {check}", flush=True)
+                if check["abort"]:
+                    abort_state["aborted"] = check
+                    control.should_training_stop = True
+            return control
+
+    trainer.add_callback(_AbortCallback())
     train_t0 = time.time()
     stats = trainer.train()
     train_seconds = time.time() - train_t0
     s_per_it = train_seconds / max(1, stats.global_step)
+    if abort_state.get("aborted") and not probe:
+        minutes = (time.time() - t0) / 60
+        print(f"ABORTED {abort_state['aborted']} after {minutes:.1f} min; no save, no push", flush=True)
+        return {"mode": "aborted",
+                "abort": abort_state["aborted"],
+                "steps": stats.global_step,
+                "minutes": round(minutes, 1),
+                "gpu_name": gpu_name,
+                "gpu_class": gpu_class}
     print(f"train_loss={stats.training_loss:.4f} "
           f"s_per_it={s_per_it:.2f}", flush=True)
 
