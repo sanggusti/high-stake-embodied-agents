@@ -134,3 +134,24 @@ alone, + SafeTune + GRPO + RFT + final + judges) does NOT fit.
 Next: ONE startup+smoke to prove serving unblocked (~$0.80), then
 STOP and escalate to the parent for top-up-vs-scope-cut. The full
 eval sweep is NO-GO on-slice until that decision lands.
+
+## 2026-11-11: tunnel fixed, engine verified, stopped pre-completion (ap-4vDfKgRVpgRtWmggeHTo7N)
+
+Fresh `dmb-vllm-qwen38-lora` + Popen-and-return: `/v1/models` -> 200
+(0.9 s), uvicorn access logs flowing, Modal health checks passing
+(no more `initializing too long` recycles). LoRA adapter
+`qwen38-flywheel-v2` loaded from `/models/qwen38-flywheel-v2-dpo`.
+Engine init #1 completed cleanly (warmup 10.00 s vs 465 s before
+the max-num-seqs fix; all 102 PIECEWISE + 70 FULL cudagraphs
+captured), ZERO errors in the full log. A second engine init began
+15:22:55 (cause undetermined — possibly a LoRA re-warm pass after
+the 15:10:43 adapter load) and was ~1-2 min from done when the app
+was stopped at 15:24:49. Zero POSTs: the proof smoke was sent
+during init #2 and killed by the immediate stop in the same shell
+command (lesson: verify smoke output BEFORE stopping). So: tunnel
+FIXED, engine path VERIFIED, but end-to-end completion still
+UNPROVEN. Burn 27 min, ledgered h100-conservative (+$1.76, TOTAL
+$48.65). Slice $34.38/$35 ($0.62 left) — all further GPU spend
+STOPPED for parent top-up-vs-scope-cut decision. Next attempt (if
+funded): identical config, but prove readiness with a completion
+poll (~20+ min patience), not `/v1/models`.
