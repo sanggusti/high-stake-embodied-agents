@@ -1,0 +1,60 @@
+{"id": "foot-22", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-24", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-26", "completion": "<|START_RESPONSE|>0<|END_RESPONSE|>"}
+{"id": "foot-57", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-75", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-92", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-113", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-125", "completion": "<|START_RESPONSE|>No.<|END_RESPONSE|>"}
+{"id": "foot-133", "completion": "<|START_RESPONSE|>Dry.<|END_RESPONSE|>"}
+{"id": "foot-184", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-187", "completion": "<|START_RESPONSE|>No.<|END_RESPONSE|>"}
+{"id": "foot-207", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-222", "completion": "<|START_RESPONSE|>The area is currently in a state of flux.<|END_RESPONSE|>"}
+{"id": "foot-234", "completion": "<|START_RESPONSE|>No.<|END_RESPONSE|>"}
+{"id": "foot-261", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-271", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-277", "completion": "<|START_RESPONSE|>There are 3 buildings in the image.<|END_RESPONSE|>"}
+{"id": "foot-280", "completion": "<|START_RESPONSE|>0<|END_RESPONSE|>"}
+{"id": "foot-286", "completion": "<|START_RESPONSE|>There are 3 buildings in the image.<|END_RESPONSE|>"}
+{"id": "foot-302", "completion": "<|START_RESPONSE|>There are 3 buildings in the image.<|END_RESPONSE|>"}
+{"id": "foot-304", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-357", "completion": "<|START_RESPONSE|>There are 3 buildings.<|END_RESPONSE|>"}
+{"id": "foot-360", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-413", "completion": "<|START_RESPONSE|>The level of density in this image is high.<|END_RESPONSE|>"}
+{"id": "foot-421", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-425", "completion": "<|START_RESPONSE|>The area is currently in a state of flux.<|END_RESPONSE|>"}
+{"id": "foot-432", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-443", "completion": "<|START_RESPONSE|>0<|END_RESPONSE|>"}
+{"id": "foot-461", "completion": "<|START_RESPONSE|>Dry.<|END_RESPONSE|>"}
+{"id": "foot-472", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}
+{"id": "foot-475", "completion": "<|START_RESPONSE|>One.<|END_RESPONSE|>"}
+{"id": "foot-491", "completion": "<|START_RESPONSE|>The level of density in this image is high.<|END_RESPONSE|>"}
+{"id": "foot-498", "completion": "<|START_RESPONSE|>0<|END_RESPONSE|>"}
+{"id": "foot-510", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}
+{"id": "foot-512", "completion": "<|START_RESPONSE|>No.<|END_RESPONSE|>"}
+{"id": "foot-514", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}
+{"id": "foot-530", "completion": "<|START_RESPONSE|>The overall condition of the given image is good.<|END_RESPONSE|>"}
+{"id": "foot-566", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-571", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}
+{"id": "foot-577", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}
+{"id": "foot-582", "completion": "<|START_RESPONSE|>There are 3 buildings in the image.<|END_RESPONSE|>"}
+{"id": "foot-600", "completion": "<|START_RESPONSE|>The level of density in this image is high.<|END_RESPONSE|>"}
+{"id": "foot-609", "completion": "<|START_RESPONSE|>No.<|END_RESPONSE|>"}
+{"id": "foot-725", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-729", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}
+{"id": "foot-733", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-798", "completion": "<|START_RESPONSE|>The area is currently in a state of flux.<|END_RESPONSE|>"}
+{"id": "foot-806", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-817", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-822", "completion": "<|START_RESPONSE|>The overall condition of the given image is good.<|END_RESPONSE|>"}
+{"id": "foot-823", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-874", "completion": "<|START_RESPONSE|>0<|END_RESPONSE|>"}
+{"id": "foot-875", "completion": "<|START_RESPONSE|>The level of density in this image is high.<|END_RESPONSE|>"}
+{"id": "foot-876", "completion": "<|START_RESPONSE|>Yes.<|END_RESPONSE|>"}
+{"id": "foot-888", "completion": "<|START_RESPONSE|>There are 3 buildings.<|END_RESPONSE|>"}
+{"id": "foot-896", "completion": "<|START_RESPONSE|>The area is currently in a state of flux.<|END_RESPONSE|>"}
+{"id": "foot-905", "completion": "<|START_RESPONSE|>Paved.<|END_RESPONSE|>"}
+{"id": "foot-951", "completion": "<|START_RESPONSE|>The area is currently in a state of flux.<|END_RESPONSE|>"}
+{"id": "foot-959", "completion": "<|START_RESPONSE|>No.<|END_RESPONSE|>"}
+{"id": "foot-973", "completion": "<|START_RESPONSE|>The area is dense.<|END_RESPONSE|>"}

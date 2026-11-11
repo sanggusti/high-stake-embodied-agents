@@ -134,5 +134,17 @@ count against the same $100 cap as Modal GPU spend.
 74 aya74-gen-kto-ipo a10g 19 $0.35
 74 aya74-judges-t5-hf api 8.7 $0.01
 74 aya74-judges-t5-meta api 1.1 $0.01
-TOTAL 32.97
+73 aya73-smoke-fail l4 3 $0.04
+73 aya73-smoke2 l4 4 $0.05
+73 aya73-smoke3 l4 4.8 $0.06
+73 aya73-sft l4 164.7 $2.18
+73 aya73-dpo l4 69.2 $0.92
+73 aya73-merge l4 3.3 $0.04
+73 aya73-serve-base l4 280 $3.71
+73 aya73-serve-sft l4 280 $3.71
+73 aya73-serve-dpo l4 285 $3.77
+73 aya73-probes api 1.0 $0.00
+73 aya73-judge-run1 api 8.0 $0.37
+73 aya73-judge-run2 api 33.8 $5.32
+TOTAL 53.14
 ```
