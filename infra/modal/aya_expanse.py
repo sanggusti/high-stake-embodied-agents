@@ -336,7 +336,8 @@ def merge() -> dict:
     secrets=[hf_secret],
     timeout=7200,
 )
-def generate(checkpoint: str = "dpo", limit: int = 0) -> dict:
+def generate(checkpoint: str = "dpo", limit: int = 0,
+             include: str = "") -> dict:
     import json
 
     import torch
@@ -346,6 +347,8 @@ def generate(checkpoint: str = "dpo", limit: int = 0) -> dict:
     assert checkpoint in ("base", "sft", "dpo"), checkpoint
     with open(PROMPTS_PATH) as fh:
         prompts = [json.loads(line) for line in fh if line.strip()]
+    if include:
+        prompts = [p for p in prompts if p["key"].startswith(include)]
     if limit > 0:
         prompts = prompts[:limit]
     print(f"generate checkpoint={checkpoint} prompts={len(prompts)}")
@@ -366,7 +369,8 @@ def generate(checkpoint: str = "dpo", limit: int = 0) -> dict:
         model = PeftModel.from_pretrained(sft, f"{OUT_ROOT}/dpo").merge_and_unload()
     model.eval()
 
-    out_path = f"{OUT_ROOT}/eval_{checkpoint}.jsonl"
+    suffix = f"_{include.rstrip(':')}" if include else ""
+    out_path = f"{OUT_ROOT}/eval_{checkpoint}{suffix}.jsonl"
     n = 0
     with open(out_path, "w") as fh:
         for rec in prompts:
@@ -394,7 +398,8 @@ def generate(checkpoint: str = "dpo", limit: int = 0) -> dict:
 
 @app.local_entrypoint()
 def main(cmd: str = "verify", checkpoint: str = "dpo",
-         max_steps: int = -1, epochs: int = 3, limit: int = 0):
+         max_steps: int = -1, epochs: int = 3, limit: int = 0,
+         include: str = ""):
     if cmd == "verify":
         print(verify.remote())
     elif cmd == "sft":
@@ -404,6 +409,7 @@ def main(cmd: str = "verify", checkpoint: str = "dpo",
     elif cmd == "merge":
         print(merge.remote())
     elif cmd == "generate":
-        print(generate.remote(checkpoint=checkpoint, limit=limit))
+        print(generate.remote(checkpoint=checkpoint, limit=limit,
+                              include=include))
     else:
         raise SystemExit(f"unknown cmd {cmd!r}")

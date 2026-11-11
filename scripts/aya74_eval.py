@@ -105,11 +105,25 @@ def _judge_backends() -> tuple[list[dict], str]:
 
 
 def _text(value) -> str:
+    """Text part only: footage samples carry base64 images alongside."""
     if isinstance(value, str):
         return value
     if isinstance(value, list):
-        return " ".join(str(v) for v in value)
-    return str(value or "")
+        parts = [_text(item) for item in value]
+        parts = [p for p in parts if p and not p.startswith("data:image")]
+        return "\n".join(parts)
+    content = getattr(value, "content", None)
+    if isinstance(content, list):
+        return _text(content)
+    if isinstance(content, str):
+        return content
+    if getattr(value, "type", "") == "text":
+        text = getattr(value, "text", "")
+        return str(text or "")
+    text = getattr(value, "text", None)
+    if isinstance(text, str):
+        return text
+    return ""
 
 
 def cmd_prompts() -> None:
@@ -154,7 +168,8 @@ def cmd_prompts() -> None:
     for s in flood:
         meta = dict(s.metadata or {})
         prompts.append({"key": f"footage:floodnet:{s.id}", "track": "footage",
-                        "system": FOOTAGE_SYSTEM, "prompt": _text(s.input),
+                        "system": FOOTAGE_SYSTEM,
+                        "prompt": _text(s.input) + "\n[frame omitted]",
                         "gold": str(meta.get("answer", "")),
                         "meta": {"kind": meta.get("kind", "vqa"),
                                  "answer": str(meta.get("answer", "")),
@@ -167,7 +182,8 @@ def cmd_prompts() -> None:
     for s in ladi:
         meta = dict(s.metadata or {})
         prompts.append({"key": f"footage:ladi:{s.id}", "track": "footage",
-                        "system": FOOTAGE_SYSTEM, "prompt": _text(s.input),
+                        "system": FOOTAGE_SYSTEM,
+                        "prompt": _text(s.input) + "\n[frame omitted]",
                         "gold": str(meta.get("answer", "")),
                         "meta": {"kind": meta.get("kind", "vqa"),
                                  "answer": str(meta.get("answer", "")),
@@ -180,6 +196,9 @@ def cmd_prompts() -> None:
                         f"Decide the dispatch priority and action.",
                         "gold": "", "meta": {"priority": pair["priority"]}})
 
+    for rec in prompts:
+        assert len(rec["prompt"]) < 5000, \
+            f"bloated prompt {rec['key']}: {len(rec['prompt'])} chars"
     RUN_DIR.mkdir(parents=True, exist_ok=True)
     with open(RUN_DIR / "eval_prompts.jsonl", "w") as fh:
         for rec in prompts:
@@ -208,6 +227,16 @@ def _load_completions() -> tuple[list[dict], dict[str, dict[str, str]]]:
 def _mean(values: list[float]) -> float | None:
     vals = [v for v in values if v is not None]
     return sum(vals) / len(vals) if vals else None
+
+
+def _safe_footage(completion: str, meta: dict) -> dict:
+    """compute_footage with absurd-integer guard (scores 0)."""
+    try:
+        return compute_footage(completion, meta)
+    except (OverflowError, ValueError):
+        return {"vqa_accuracy": None, "counting_acc": 0.0,
+                "counting_mae": None, "severity_f1": None,
+                "grounding_acc": None, "footage_composite": 0.0}
 
 
 def wilson(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
@@ -291,7 +320,7 @@ def cmd_score() -> None:
         f_vecs = []
         for r in f_rows:
             meta = next(p for p in prompts if p["key"] == r["key"])["meta"]
-            f_vecs.append(compute_footage(r["completion"], meta))
+            f_vecs.append(_safe_footage(r["completion"], meta))
         f_ok = sum(1 for v in f_vecs if v["footage_composite"] == 1.0)
         by_kind: dict[str, dict] = {}
         for r, v in zip(f_rows, f_vecs):
@@ -494,6 +523,12 @@ def _judge_plan() -> list[tuple[str, str, str, str]]:
     rng = random.Random(SEED)
     out: list[tuple[str, str, str, str]] = []
 
+    def excerpt(text: str, limit: int = 1500) -> str:
+        text = text or ""
+        if len(text) <= limit:
+            return text
+        return text[:limit] + f"\n[... truncated {len(text) - limit} chars ...]"
+
     def add(kind: str, key: str, ckpt: str, full: str, system: str):
         s, u = _split(full, system)
         out.append((f"{kind}:{ckpt}:{key}", kind, s, u))
@@ -508,7 +543,7 @@ def _judge_plan() -> list[tuple[str, str, str, str]]:
     for p in bad + audit:
         for ckpt in ("dpo", "base"):
             full = render_safety(p["prompt"], p["gold"],
-                                 completions[ckpt].get(p["key"], ""), seed=SEED)
+                                 excerpt(completions[ckpt].get(p["key"], "")), seed=SEED)
             add("T2", p["key"], ckpt, full, SAFETY_SYSTEM)
 
     abst = [p for p in prompts if p["track"] == "abstention"]
@@ -525,7 +560,7 @@ def _judge_plan() -> list[tuple[str, str, str, str]]:
         for ckpt in ("dpo", "base"):
             full = render_abstention(
                 p["prompt"], p["meta"].get("stakes", ""), p["gold"],
-                completions[ckpt].get(p["key"], ""), seed=SEED)
+                excerpt(completions[ckpt].get(p["key"], "")), seed=SEED)
             add("T3", p["key"], ckpt, full, ABSTENTION_SYSTEM)
 
     red = [p for p in prompts if p["track"] == "redteam"]
@@ -547,30 +582,33 @@ def _judge_plan() -> list[tuple[str, str, str, str]]:
                 p["meta"]["family"], p["meta"]["variant"],
                 p["meta"]["severity"], p["meta"]["request"],
                 p["meta"].get("markers", []),
-                completions[ckpt].get(p["key"], ""), seed=SEED)
+                excerpt(completions[ckpt].get(p["key"], "")), seed=SEED)
             add("T4", p["key"], ckpt, full, REDTEAM_SYSTEM)
 
     foot = [p for p in prompts if p["track"] == "footage"]
     zero, one = [], []
     for p in foot:
-        v = compute_footage(completions["dpo"].get(p["key"], ""), p["meta"])
+        v = _safe_footage(completions["dpo"].get(p["key"], ""), p["meta"])
         comp = completions["dpo"].get(p["key"], "")
         if v["footage_composite"] != 1.0 and comp.strip():
             zero.append(p)
         elif v["footage_composite"] == 1.0:
             one.append(p)
     rng.shuffle(one)
-    for p in zero + one[:max(1, len(one) // 10)]:
+    # T1 sample shrink (playbook §5 rule 4: shrink the sample, never the
+    # protocol): 12 zero-rows + the det=1 audit, seeded.
+    rng.shuffle(zero)
+    for p in zero[:12] + one[:max(1, len(one) // 10)]:
         for ckpt in ("dpo", "base"):
             full = render_footage(p["meta"]["kind"], p["prompt"], p["gold"],
-                                  completions[ckpt].get(p["key"], ""), seed=SEED)
+                                  excerpt(completions[ckpt].get(p["key"], "")), seed=SEED)
             add("T1", p["key"], ckpt, full, FOOTAGE_SYSTEM)
 
     dispatch = [p for p in prompts if p["track"] == "dispatch"]
     for p in dispatch:
         situation = p["prompt"].split("\nDecide")[0].replace("Situation: ", "")
-        base_c = completions["base"].get(p["key"], "")
-        dpo_c = completions["dpo"].get(p["key"], "")
+        base_c = excerpt(completions["base"].get(p["key"], ""))
+        dpo_c = excerpt(completions["dpo"].get(p["key"], ""))
         for order, (a, b) in (("orig", (base_c, dpo_c)), ("swap", (dpo_c, base_c))):
             full = render_dispatch_pair(situation, a, b, seed=SEED)
             s, u = _split(full, DISPATCH_SYSTEM)
