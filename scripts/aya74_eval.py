@@ -341,9 +341,11 @@ def cmd_recompute() -> None:
 
     Reads canonical logs ``runs/aya74/eval-logs/{safety,abstention,
     redteam}_{base,finetune}.eval`` via ``scripts/recompute_metrics``
-    ``load_samples`` (the protocol recompute entry point), plus footage
-    rows from ``det_scores.json`` when present. Prints the protocol
-    (metric, base, finetune, delta) tables and the refusal gate.
+    ``load_samples`` (the protocol recompute entry point) when present,
+    else key-paired Modal completions (``eval_base.jsonl`` vs
+    ``eval_dpo.jsonl``) scored locally with the same scorer functions.
+    Prints the protocol (metric, base, finetune, delta) tables and the
+    refusal gate.
     """
     from scripts.recompute_metrics import load_samples
     from hsea.stats import mcnemar, paired_delta
@@ -352,11 +354,37 @@ def cmd_recompute() -> None:
     tracks = {"safety": "safety_score", "abstention": "abstention_score",
               "redteam": "redteam_asr"}
     logs: dict[str, dict[str, list[dict]]] = {}
-    for track, scorer in tracks.items():
-        for ckpt in ("base", "finetune"):
-            path = log_dir / f"{track}_{ckpt}.eval"
-            assert path.exists(), f"missing {path}"
-            logs.setdefault(track, {})[ckpt] = load_samples(path, scorer)
+    use_logs = all((log_dir / f"{t}_{c}.eval").exists()
+                   for t in tracks for c in ("base", "finetune"))
+    source = "inspect-logs" if use_logs else "modal-generate"
+    if use_logs:
+        for track, scorer in tracks.items():
+            for ckpt in ("base", "finetune"):
+                path = log_dir / f"{track}_{ckpt}.eval"
+                logs.setdefault(track, {})[ckpt] = load_samples(path, scorer)
+    else:
+        prompts, completions = _load_completions()
+        assert "base" in completions and "dpo" in completions, \
+            "need base + dpo completions"
+        by_key = {p["key"]: p for p in prompts}
+        for track in tracks:
+            for ckpt, src in (("base", "base"), ("finetune", "dpo")):
+                rows = []
+                for key, comp in completions[src].items():
+                    p = by_key.get(key)
+                    if p is None or p["track"] != track:
+                        continue
+                    if track == "safety":
+                        scores = compute_safety(comp, p["gold"])
+                    elif track == "abstention":
+                        scores = compute_abstention_scores(comp, p["gold"])
+                    else:
+                        scores = compute_redteam_scores(
+                            comp, p["meta"]["family"], p["meta"]["severity"],
+                            p["meta"].get("markers", []))
+                    rows.append({"id": key, "metadata": p["meta"],
+                                 "scores": scores, "completion": comp})
+                logs.setdefault(track, {})[ckpt] = rows
 
     table: list[dict] = []
 
@@ -426,7 +454,11 @@ def cmd_recompute() -> None:
                     add(f"{track} text-floor exact", b, f,
                         {"n": det["dpo"][track]["n"], "unpaired": True})
 
-    trace = {"eval_ids": sorted(p.name for p in log_dir.glob("*.eval")),
+    if use_logs:
+        eval_ids: list[str] = sorted(p.name for p in log_dir.glob("*.eval"))
+    else:
+        eval_ids = ["eval_base.jsonl", "eval_dpo.jsonl"]
+    trace = {"source": source, "eval_ids": eval_ids,
              "fingerprints": _fingerprints()}
     payload = {"table": table, "trace": trace}
     with open(RUN_DIR / "recompute.json", "w") as fh:

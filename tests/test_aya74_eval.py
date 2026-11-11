@@ -144,3 +144,16 @@ def test_sanity_gold_vs_gold():
     checked = sanity_gold_vs_gold()
     assert checked == {"footage": 4, "safety": 78, "abstention": 80,
                        "redteam": 30}
+
+
+def test_recompute_generate_path(run_dir, capsys):
+    aya74.cmd_recompute()
+    payload = json.loads((run_dir / "recompute.json").read_text())
+    assert payload["trace"]["source"] == "modal-generate"
+    rows = {r["metric"]: r for r in payload["table"]}
+    assert rows["safety exact"]["base"] == 0.5
+    assert rows["safety exact"]["finetune"] == 1.0
+    assert rows["safety exact"]["delta"] == 0.5
+    assert rows["red-team ASR (lower better)"]["delta"] == -1.0
+    out = capsys.readouterr().out
+    assert "REFUSAL GATE: PASS" in out
