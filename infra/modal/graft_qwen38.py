@@ -124,9 +124,8 @@ def graft(merged: str) -> dict:
         nonlocal shard_id, shard_bytes, pending
         if not pending:
             return
-        arrays = {k: v[:] for k, v in pending.items()}
         path = f"{out_dir}/model-{shard_id:05d}-of-00005.safetensors"
-        save_file(arrays, path)
+        save_file(pending, path)
         for k in pending:
             out_index[k] = os.path.basename(path)
         shard_id += 1
@@ -135,7 +134,7 @@ def graft(merged: str) -> dict:
 
     for name in weight_map:
         src = resolve_tensor(merged_names, name)
-        sl = merged_slice(src) if src else base_slice(name)
+        tensor = (merged_slice(src)[:] if src else base_slice(name)[:])
         if src:
             n_merged += 1
         else:
@@ -143,14 +142,10 @@ def graft(merged: str) -> dict:
             if name.split(".")[0] in ("vision", "visual", "vit", "image",
                                       "multimodal"):
                 vision_from_base += 1
-        shape = sl.get().shape
-        n = 1
-        for d in shape:
-            n *= d
-        nbytes = n * 2
+        nbytes = tensor.nelement() * tensor.element_size()
         if shard_bytes + nbytes > SHARD_BYTES and pending:
             flush()
-        pending[name] = sl
+        pending[name] = tensor
         out_index[name] = ""  # set properly at flush
         shard_bytes += nbytes
     flush()
@@ -159,11 +154,8 @@ def graft(merged: str) -> dict:
     for p in glob.glob(f"{out_dir}/*.safetensors"):
         with safe_open(p, framework="pt", device="cpu") as h:
             for k in h.keys():
-                shape = h.get_slice(k).get().shape
-                n = 1
-                for d in shape:
-                    n *= d
-                total += n * 2
+                t = h.get_slice(k)[:]
+                total += t.nelement() * t.element_size()
     n_shards = shard_id - 1
     # Rename shards to the true count (index must match file names).
     final_index: dict[str, str] = {}
