@@ -37,7 +37,7 @@ BASE_MODEL = "Qwen/Qwen3.8-27B"
 BASE_REVISION = "37561816e66b5b9153b1b64c10968c18c1e6f4a0"
 POINTER_PATH = "/models/ACTIVE_ADAPTER"
 DEFAULT_ADAPTER = "/models/qwen38-flywheel-v2-dpo"
-APP_NAME = "dmb-vllm-qwen38-ft"
+APP_NAME = "dmb-vllm-qwen38-lora"
 # LoRA name (what inspect-ai requests) + base rename (unused).
 SERVED_NAME = "qwen38-flywheel-v2"
 BASE_SERVED_NAME = "qwen38-base-bf16"
@@ -94,6 +94,12 @@ def serve():
     # Cold-start gate (2026-11-11 forensics): fully materialize +
     # inventory the pinned snapshot BEFORE vLLM starts, so a retry
     # never reads a half-downloaded cache (task-1 shape assert).
+    # NOTE (tunnel forensics): this function MUST Popen-and-return
+    # like vllm_qwen38.py — the blocking subprocess.run revision
+    # served zero bytes (requests never reached uvicorn: no access
+    # logs) across healthy containers, and Modal recycled one for
+    # "initializing too long". Fresh APP_NAME also dodges the stale
+    # routing of the thrice-deployed qwen38-ft name.
     from huggingface_hub import snapshot_download
 
     snap = snapshot_download(repo_id=BASE_MODEL, revision=BASE_REVISION)
@@ -151,4 +157,6 @@ def serve():
         "--port",
         "8000",
     ]
-    subprocess.run(cmd, check=True)
+    # Popen-and-return, exactly like the working base serve: the
+    # function returns while vLLM keeps serving the port.
+    subprocess.Popen(cmd)

@@ -104,5 +104,6 @@ the same $50 cap as Modal GPU spend.
 8 ftserve-crash-t1 h100 41 $2.67
 8 ftserve-crash-t2 h100 8 $0.52
 8 ftserve-mamba-hang h100 110 $7.15
-TOTAL 43.64
+8 ftserve-tunnel-dead h100 50 $3.25
+TOTAL 46.89
 ```

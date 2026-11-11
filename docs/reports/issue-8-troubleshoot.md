@@ -106,3 +106,31 @@ Budget note: issue-8 slice now ~$29.37/$35
 (19.03 + 3.19 crash + 7.15 hang). The trim order in the plan WILL
 trigger for the remaining stages (dpo-eval + SafeTune + GRPO + RFT +
 final + judges on ~$5.60).
+
+## 2026-11-11: tunnel-dead containers (ap-zEtyWVvSBz5h2PPuhsDHjA)
+
+With `--max-num-seqs 256` the engine initialized with ZERO errors
+and uvicorn reported `Application startup complete` — yet
+`/v1/models` hung with 0 bytes for 15+ min, repeatedly. Fresh-log
+forensics: NO uvicorn access logs for any probe, so requests never
+reached the container — a Modal routing/lifecycle failure, not
+vLLM. Supporting evidence: the previous app's container 1 was
+recycled for `Runner has been initializing for too long: 3600s`
+despite its port being open — consistent with Modal waiting on the
+FUNCTION (blocking `subprocess.run`, never returns) rather than
+the port. The working base serve Popen-and-returns. A second
+suspect is stale routing on the thrice-deployed `qwen38-ft` app
+name (a prior deploy/stop confusion already caused a 404 window on
+it). Fix applies BOTH (one experiment, confessed confound, under
+burn pressure): Popen-and-return exactly like the base serve, plus
+fresh `APP_NAME = dmb-vllm-qwen38-lora`. Burn: 50 min, zero
+completions, ledgered h100-conservative (+$3.25, TOTAL $46.89).
+
+BUDGET CRISIS: slice now $32.62/$35 ledgered ($2.38 left). The
+h100-conservative rows (209 min unverifiable) likely overstate by
+~$4.90, so TRUE spend is probably ~$27.70 (true ~$7.30 left) — but
+the ledger governs. Either way the remaining scope (dpo-eval ~$6.50
+alone, + SafeTune + GRPO + RFT + final + judges) does NOT fit.
+Next: ONE startup+smoke to prove serving unblocked (~$0.80), then
+STOP and escalate to the parent for top-up-vs-scope-cut. The full
+eval sweep is NO-GO on-slice until that decision lands.
