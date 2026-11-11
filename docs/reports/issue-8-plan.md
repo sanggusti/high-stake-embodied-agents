@@ -86,8 +86,28 @@ a queue-war.
   with torch's bundled 12.8 (two cuBLAS in one process); probe 1
   matched 12.9/12.9 and trained. Fix: base image CUDA 12.8 to match
   torch cu128 (commit d4d9b5a); serve images stay on 12.9 (vLLM
-  validated there). Probe 3 re-runs the 50-step timing on the
-  aligned image.
+  validated there). The L4 repro (same mismatched combo) crashed
+  too, confirming across architectures.
+- **Probe 3** (A100, fused, batch4/accum2/seq2048): 11.52 s/it,
+  loss healthy, NO-GO at $27 for SFT-3ep. Fused kernels help ~15%
+  (Amdahl: most layers are standard attention + MLP, bnb-bound).
+- **Probe 4** (A100, fused, batch1/accum8/seq1536): 14.52 s/it,
+  ABORT (2.07x). Micro-batch 1 backfires: 8 accum micro-steps x
+  kernel-launch overhead + poor utilization >> custom-kernel win.
+  Batch 4 is the sweet spot; no more paid probes after this one
+  (in-run gates take over).
+- **SFT decision**: 1 epoch (1085 steps x ~11.5 s/it = ~3.5 h,
+  ~$9 on A100), launched 11:36 WIB detached with the step-50
+  in-run gate armed. LIMA-format argument recorded as the
+  DEVIATION (protocol says 3 epochs; slice says 1).
+- **DPO gate** (the tail decision point): DPO runs full-data with
+  its in-run gate; step-50 measured s/it sets DPO cost and the
+  tail budget. Defer order if over: GRPO-training (keep
+  RFT-sample + BoN inference-only), dpo-audit missions, RFT size,
+  judge sample. DPO-half splitter ready as last resort.
+- **Parallelism note**: base-full eval matrix runs DURING SFT
+  training (separate A100, separate pool pressure; both placed
+  without stalls). Total cost unchanged, ~1.5 h wall saved.
 
 ## Deferred-with-estimate log (DEVIATIONS feed)
 
