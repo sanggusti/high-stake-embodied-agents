@@ -14,6 +14,10 @@ Usage (Modal auth needed; GPU spend applies, estimate-first per #74):
   modal volume put dmb-flywheel data/aya74/sft.jsonl /aya74/sft.jsonl
   modal volume put dmb-flywheel data/aya74/dpo.jsonl /aya74/dpo.jsonl
   modal volume put dmb-flywheel runs/aya74/eval_prompts.jsonl /aya74/eval_prompts.jsonl
+  modal volume put dmb-flywheel data/aya74/repair_sft.jsonl /aya74/repair_sft.jsonl
+  modal volume put dmb-flywheel data/aya74/repair_dpo.jsonl /aya74/repair_dpo.jsonl
+  modal volume put dmb-flywheel data/aya74/kto.jsonl /aya74/kto.jsonl
+  modal volume put dmb-flywheel runs/aya74/eval_prompts_xstest.jsonl /aya74/eval_prompts_xstest.jsonl
   modal run infra/modal/aya_expanse.py --cmd verify
   modal run infra/modal/aya_expanse.py --cmd sft --max-steps 20   # smoke
   modal run infra/modal/aya_expanse.py --cmd sft                  # full
@@ -22,6 +26,21 @@ Usage (Modal auth needed; GPU spend applies, estimate-first per #74):
   modal run infra/modal/aya_expanse.py --cmd generate --checkpoint base
   modal run infra/modal/aya_expanse.py --cmd generate --checkpoint sft
   modal run infra/modal/aya_expanse.py --cmd generate --checkpoint dpo
+  modal run infra/modal/aya_expanse.py --cmd generate --checkpoint dpo \\
+      --prompts-path /data/aya74/eval_prompts_xstest.jsonl
+  modal run infra/modal/aya_expanse.py --cmd repair --max-steps 10  # smoke
+  modal run infra/modal/aya_expanse.py --cmd repair                 # Stage 4
+  modal run infra/modal/aya_expanse.py --cmd kto --max-steps 10    # smoke
+  modal run infra/modal/aya_expanse.py --cmd kto                    # Stage 4
+  modal run infra/modal/aya_expanse.py --cmd ipo --max-steps 10    # smoke
+  modal run infra/modal/aya_expanse.py --cmd ipo                    # bake-off
+  modal run infra/modal/aya_expanse.py --cmd rft                    # baseline
+  modal run infra/modal/aya_expanse.py --cmd grpo --max-steps 5    # smoke
+  modal run infra/modal/aya_expanse.py --cmd grpo                   # Stage 5
+
+Every function carries a GPU fallback chain (TRAIN_GPU / DUAL_GPU /
+INFER_GPU); Modal tries each class in order. No function pins a
+strict single class.
 
 Outputs on volume dmb-flywheel-models: /models/aya74/{sft,dpo}/ adapters,
 /models/aya74/logs/ trainer states, /models/aya74/eval_*.jsonl completions.
@@ -36,8 +55,19 @@ SEED = 74
 
 SFT_PATH = "/data/aya74/sft.jsonl"
 DPO_PATH = "/data/aya74/dpo.jsonl"
+REPAIR_SFT_PATH = "/data/aya74/repair_sft.jsonl"
+REPAIR_DPO_PATH = "/data/aya74/repair_dpo.jsonl"
+KTO_PATH = "/data/aya74/kto.jsonl"
 PROMPTS_PATH = "/data/aya74/eval_prompts.jsonl"
+XSTEST_PROMPTS_PATH = "/data/aya74/eval_prompts_xstest.jsonl"
 OUT_ROOT = "/models/aya74"
+
+# GPU fallback chains (issue order: every Modal call carries one; Modal
+# tries each class in order). TRAIN fits 40GB+ (single model + LoRA);
+# DUAL needs 80GB (policy + reference); INFER fits 24GB (merged fp16).
+TRAIN_GPU = ["A100-80GB", "A100-40GB", "H100", "L40S"]
+DUAL_GPU = ["A100-80GB", "H100", "H200"]
+INFER_GPU = ["A10G", "L40S", "A100-40GB", "A100-80GB"]
 
 LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj",
                 "gate_proj", "up_proj", "down_proj"]
@@ -148,7 +178,7 @@ def verify() -> dict:
 
 @app.function(
     image=train_image,
-    gpu="A100-80GB",
+    gpu=TRAIN_GPU,
     volumes={"/data": data_vol, "/models": models_vol,
               "/root/.cache/huggingface": hf_cache_vol},
     secrets=[hf_secret],
@@ -222,7 +252,7 @@ def sft(max_steps: int = -1, epochs: int = 3) -> dict:
 
 @app.function(
     image=train_image,
-    gpu="A100-80GB",
+    gpu=DUAL_GPU,
     volumes={"/data": data_vol, "/models": models_vol,
               "/root/.cache/huggingface": hf_cache_vol},
     secrets=[hf_secret],
@@ -303,7 +333,7 @@ def dpo(max_steps: int = -1) -> dict:
 
 @app.function(
     image=train_image,
-    gpu="A10G",
+    gpu=INFER_GPU,
     volumes={"/data": data_vol, "/models": models_vol,
               "/root/.cache/huggingface": hf_cache_vol},
     secrets=[hf_secret],
@@ -330,22 +360,25 @@ def merge() -> dict:
 
 @app.function(
     image=train_image,
-    gpu="A10G",
+    gpu=INFER_GPU,
     volumes={"/data": data_vol, "/models": models_vol,
               "/root/.cache/huggingface": hf_cache_vol},
     secrets=[hf_secret],
     timeout=7200,
 )
 def generate(checkpoint: str = "dpo", limit: int = 0,
-             include: str = "") -> dict:
+             include: str = "", prompts_path: str = "") -> dict:
     import json
+    import os
 
     import torch
     from peft import PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    assert checkpoint in ("base", "sft", "dpo"), checkpoint
-    with open(PROMPTS_PATH) as fh:
+    assert checkpoint in ("base", "sft", "dpo", "repair", "kto", "ipo",
+                          "grpo", "rft"), checkpoint
+    src = prompts_path or PROMPTS_PATH
+    with open(src) as fh:
         prompts = [json.loads(line) for line in fh if line.strip()]
     if include:
         prompts = [p for p in prompts if p["key"].startswith(include)]
@@ -353,23 +386,36 @@ def generate(checkpoint: str = "dpo", limit: int = 0,
         prompts = prompts[:limit]
     print(f"generate checkpoint={checkpoint} prompts={len(prompts)}")
 
-    tok_src = BASE_MODEL if checkpoint == "base" else f"{OUT_ROOT}/{checkpoint}"
+    # Adapter stacks: later stages build on earlier merges (cold-start).
+    STACKS = {
+        "base": [], "sft": ["sft"], "dpo": ["sft", "dpo"],
+        "repair": ["sft", "dpo", "repair"], "kto": ["sft", "dpo", "kto"],
+        "ipo": ["sft", "ipo"], "grpo": ["sft", "dpo", "repair", "grpo"],
+        "rft": ["sft", "dpo", "rft"],
+    }
+    stack = STACKS[checkpoint]
+    tok_src = BASE_MODEL if not stack else f"{OUT_ROOT}/{stack[-1]}"
     tokenizer = AutoTokenizer.from_pretrained(
-        tok_src, revision=MODEL_REVISION if checkpoint == "base" else None)
+        tok_src, revision=MODEL_REVISION if not stack else None)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(
         BASE_MODEL, revision=MODEL_REVISION,
         torch_dtype=torch.bfloat16, attn_implementation="sdpa",
     ).cuda()
-    if checkpoint == "sft":
-        model = PeftModel.from_pretrained(model, f"{OUT_ROOT}/sft").merge_and_unload()
-    elif checkpoint == "dpo":
-        sft = PeftModel.from_pretrained(model, f"{OUT_ROOT}/sft").merge_and_unload()
-        model = PeftModel.from_pretrained(sft, f"{OUT_ROOT}/dpo").merge_and_unload()
+    for adapter in stack:
+        model = PeftModel.from_pretrained(
+            model, f"{OUT_ROOT}/{adapter}").merge_and_unload()
     model.eval()
 
-    suffix = f"_{include.rstrip(':')}" if include else ""
+    if include:
+        suffix = f"_{include.rstrip(':')}"
+    elif os.path.basename(src) != "eval_prompts.jsonl":
+        tag = os.path.basename(src).replace("eval_prompts", "").strip("_.")
+        tag = tag.replace(".jsonl", "")
+        suffix = f"_{tag}" if tag else ""
+    else:
+        suffix = ""
     out_path = f"{OUT_ROOT}/eval_{checkpoint}{suffix}.jsonl"
     n = 0
     with open(out_path, "w") as fh:
@@ -396,10 +442,452 @@ def generate(checkpoint: str = "dpo", limit: int = 0,
     return {"checkpoint": checkpoint, "n": n, "output": out_path}
 
 
+def _merged_base(*adapters: str):
+    """Base model with adapters merged in order (cold-start stacks)."""
+    import torch
+    from peft import PeftModel
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    last = adapters[-1] if adapters else None
+    tok_src = BASE_MODEL if last is None else f"{OUT_ROOT}/{last}"
+    tokenizer = AutoTokenizer.from_pretrained(
+        tok_src, revision=MODEL_REVISION if last is None else None)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL, revision=MODEL_REVISION,
+        torch_dtype=torch.bfloat16, attn_implementation="sdpa",
+    )
+    for adapter in adapters:
+        model = PeftModel.from_pretrained(
+            model, f"{OUT_ROOT}/{adapter}").merge_and_unload()
+    model.config.use_cache = False
+    model.gradient_checkpointing_enable()
+    return model, tokenizer
+
+
+@app.function(
+    image=train_image,
+    gpu=TRAIN_GPU,
+    volumes={"/data": data_vol, "/models": models_vol,
+              "/root/.cache/huggingface": hf_cache_vol},
+    secrets=[hf_secret],
+    timeout=7200,
+)
+def repair(max_steps: int = -1, epochs: int = 1) -> dict:
+    """Stage 4 SafeTune repair: constrained safety-mix re-tune.
+
+    Starts from the merged DPO checkpoint (cold-start) + fresh LoRA;
+    1 epoch over ``repair_sft.jsonl`` (438 rows: unified-footer safety
+    + abstention, dispatch no-footer anchors, WJ-method mix) at LR
+    5e-5. Saves the ``repair`` adapter.
+    """
+    import json
+    import os
+
+    from datasets import load_dataset
+    from trl import SFTConfig, SFTTrainer
+
+    dataset = load_dataset("json", data_files=REPAIR_SFT_PATH,
+                           split="train")
+    print(f"repair rows: {len(dataset)}")
+    model, tokenizer = _merged_base("sft", "dpo")
+    out_dir = f"{OUT_ROOT}/repair"
+    args = SFTConfig(
+        output_dir="/tmp/aya74-repair",
+        num_train_epochs=epochs,
+        max_steps=max_steps,
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=4,
+        learning_rate=5e-5,
+        lr_scheduler_type="cosine",
+        warmup_steps=5,
+        logging_steps=5,
+        save_steps=25,
+        save_total_limit=1,
+        bf16=True,
+        max_length=2048,
+        packing=False,
+        seed=SEED,
+    )
+    trainer = SFTTrainer(
+        model=model, train_dataset=dataset, args=args,
+        peft_config=_lora_config(),
+    )
+    stats = trainer.train()
+    print(f"repair train_loss={stats.training_loss:.4f}")
+    trainer.model.save_pretrained(out_dir)
+    tokenizer.save_pretrained(out_dir)
+    os.makedirs(f"{OUT_ROOT}/logs", exist_ok=True)
+    with open(f"{OUT_ROOT}/logs/repair_log_history.json", "w") as fh:
+        json.dump(trainer.state.log_history, fh, indent=2)
+    trainer.state.save_to_json(f"{OUT_ROOT}/logs/repair_trainer_state.json")
+    models_vol.commit()
+    print(f"repair adapter written to {out_dir}")
+    return {"rows": len(dataset), "train_loss": stats.training_loss,
+            "output": out_dir}
+
+
+@app.function(
+    image=train_image,
+    gpu=DUAL_GPU,
+    volumes={"/data": data_vol, "/models": models_vol,
+              "/root/.cache/huggingface": hf_cache_vol},
+    secrets=[hf_secret],
+    timeout=7200,
+)
+def kto(max_steps: int = -1, epochs: int = 1) -> dict:
+    """Stage 4 KTO arm: binary abstention labels (160 rows, 1 epoch).
+
+    Starts from the merged DPO checkpoint + fresh LoRA. ``kto.jsonl``
+    carries ``label`` True (gold demo) / False (wrong-label
+    violation). Saves the ``kto`` adapter.
+    """
+    import json
+    import os
+
+    from datasets import load_dataset
+    from trl import KTOConfig, KTOTrainer
+
+    dataset = load_dataset("json", data_files=KTO_PATH, split="train")
+    print(f"kto rows: {len(dataset)}")
+    model, tokenizer = _merged_base("sft", "dpo")
+    out_dir = f"{OUT_ROOT}/kto"
+    args = KTOConfig(
+        output_dir="/tmp/aya74-kto",
+        num_train_epochs=epochs,
+        max_steps=max_steps,
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=4,
+        learning_rate=5e-5,
+        lr_scheduler_type="cosine",
+        warmup_steps=5,
+        logging_steps=5,
+        save_steps=25,
+        save_total_limit=1,
+        bf16=True,
+        beta=0.1,
+        max_length=2048,
+        seed=SEED,
+    )
+    trainer = KTOTrainer(
+        model=model,
+        ref_model=None,
+        args=args,
+        train_dataset=dataset,
+        processing_class=tokenizer,
+        peft_config=_lora_config(),
+    )
+    stats = trainer.train()
+    print(f"kto train_loss={stats.training_loss:.4f}")
+    trainer.model.save_pretrained(out_dir)
+    tokenizer.save_pretrained(out_dir)
+    os.makedirs(f"{OUT_ROOT}/logs", exist_ok=True)
+    with open(f"{OUT_ROOT}/logs/kto_log_history.json", "w") as fh:
+        json.dump(trainer.state.log_history, fh, indent=2)
+    trainer.state.save_to_json(f"{OUT_ROOT}/logs/kto_trainer_state.json")
+    models_vol.commit()
+    print(f"KTO adapter written to {out_dir}")
+    return {"rows": len(dataset), "train_loss": stats.training_loss,
+            "output": out_dir}
+
+
+@app.function(
+    image=train_image,
+    gpu=DUAL_GPU,
+    volumes={"/data": data_vol, "/models": models_vol,
+              "/root/.cache/huggingface": hf_cache_vol},
+    secrets=[hf_secret],
+    timeout=7200,
+)
+def ipo(max_steps: int = -1, data: str = "repair") -> dict:
+    """IPO bake-off arm vs DPO overfit on templated pairs.
+
+    Same recipe as ``dpo`` but ``loss_type="ipo"`` over the merged SFT
+    checkpoint. ``data="repair"`` (default, 578 debiased pairs) is the
+    slice-fitting pilot; ``data="full"`` reruns the 7,078 Phase-1
+    pairs for the strict bake-off. Saves the ``ipo`` adapter.
+    """
+    import json
+    import os
+
+    from datasets import load_dataset
+    from trl import DPOConfig, DPOTrainer
+
+    assert data in ("repair", "full"), data
+    path = REPAIR_DPO_PATH if data == "repair" else DPO_PATH
+    dataset = load_dataset("json", data_files=path, split="train")
+    print(f"ipo pairs ({data}): {len(dataset)}")
+    model, tokenizer = _merged_base("sft")
+    out_dir = f"{OUT_ROOT}/ipo"
+    args = DPOConfig(
+        output_dir="/tmp/aya74-ipo",
+        num_train_epochs=1,
+        max_steps=max_steps,
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=8,
+        learning_rate=5e-5,
+        lr_scheduler_type="cosine",
+        warmup_steps=20,
+        logging_steps=10,
+        save_steps=200,
+        save_total_limit=1,
+        bf16=True,
+        beta=0.1,
+        loss_type="ipo",
+        max_length=2048,
+        seed=SEED,
+    )
+    trainer = DPOTrainer(
+        model=model,
+        ref_model=None,
+        args=args,
+        train_dataset=dataset,
+        processing_class=tokenizer,
+        peft_config=_lora_config(),
+    )
+    stats = trainer.train()
+    print(f"ipo train_loss={stats.training_loss:.4f}")
+    trainer.model.save_pretrained(out_dir)
+    tokenizer.save_pretrained(out_dir)
+    os.makedirs(f"{OUT_ROOT}/logs", exist_ok=True)
+    with open(f"{OUT_ROOT}/logs/ipo_log_history.json", "w") as fh:
+        json.dump(trainer.state.log_history, fh, indent=2)
+    trainer.state.save_to_json(f"{OUT_ROOT}/logs/ipo_trainer_state.json")
+    models_vol.commit()
+    print(f"IPO adapter written to {out_dir}")
+    return {"pairs": len(dataset), "train_loss": stats.training_loss,
+            "output": out_dir}
+
+
+def _dispatch_reward(completions: list[str],
+                     gold: list[str]) -> list[float]:
+    """Inline mirror of hsea.rlvr.rewards.rule_reward_dispatch."""
+    import re
+
+    verbs = ("task", "dispatch", "deploy", "send", "mobilize",
+             "activate", "route", "assign", "launch", "scramble")
+    hedges = ("notify before acting", "notify first", "before acting",
+              "consider", "maybe", "perhaps", "when convenient",
+              "routine cycle", "revisit", "monitor", "stand by")
+    out = []
+    for comp, want in zip(completions, gold):
+        match = re.search(r"\bP\s*([123])\b|\bPRIORITY\s*([123])\b",
+                          comp or "", re.IGNORECASE)
+        pred = f"P{match.group(1) or match.group(2)}" if match else None
+        total = 0.0
+        if pred == want:
+            total = 1.0 if any(v in comp.lower() for v in verbs) else 0.5
+        upper = comp.upper()
+        if "DECISION:" not in upper and "ACTION:" not in upper:
+            total += 0.2
+        if any(h in comp.lower() for h in hedges):
+            total -= 0.3
+        out.append(max(0.0, round(total, 3)))
+    return out
+
+
+@app.function(
+    image=train_image,
+    gpu=DUAL_GPU,
+    volumes={"/data": data_vol, "/models": models_vol,
+              "/root/.cache/huggingface": hf_cache_vol},
+    secrets=[hf_secret],
+    timeout=7200,
+)
+def grpo(max_steps: int = 100, num_generations: int = 4) -> dict:
+    """Stage 5 RLVR/GRPO pilot on dispatch traces (TRL GRPO).
+
+    Cold-starts from merged repair (falls back to merged DPO when the
+    repair adapter is absent). Prompts: 200 stratified flywheel
+    dispatch situations; reward: SWE-RL field-match + R1 rule shaping
+    (``_dispatch_reward``). Search-R1 masking: tool-result turns ride
+    in the prompt (never take loss); the pilot is single-turn so no
+    tool spans appear in completions. Saves the ``grpo`` adapter.
+    """
+    import json
+    import os
+    import random
+
+    from datasets import load_dataset
+    from trl import GRPOConfig, GRPOTrainer
+
+    try:
+        model, tokenizer = _merged_base("sft", "dpo", "repair")
+        cold = "repair"
+    except Exception:  # noqa: BLE001 - repair adapter may not exist yet
+        model, tokenizer = _merged_base("sft", "dpo")
+        cold = "dpo"
+    print(f"grpo cold-start: {cold}")
+
+    raw = load_dataset("json", data_files=DPO_PATH, split="train")
+    buckets: dict[str, list] = {}
+    for rec in raw:
+        buckets.setdefault(rec.get("priority", "?"), []).append(rec)
+    rng = random.Random(SEED)
+    sample = []
+    for key in sorted(buckets):
+        sample.extend(buckets[key][: max(1, 200 // len(buckets))])
+    rng.shuffle(sample)
+    rows = [{"prompt": f"Situation: {r['situation']}\n"
+                       f"Decide the dispatch priority and action.",
+             "gold": r["priority"]} for r in sample[:200]]
+    from datasets import Dataset
+    dataset = Dataset.from_list(rows)
+    print(f"grpo prompts: {len(dataset)}")
+
+    def reward_fn(completions, gold, **kwargs) -> list[float]:
+        del kwargs
+        return _dispatch_reward(list(completions), list(gold))
+
+    out_dir = f"{OUT_ROOT}/grpo"
+    args = GRPOConfig(
+        output_dir="/tmp/aya74-grpo",
+        max_steps=max_steps,
+        num_generations=num_generations,
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=2,
+        learning_rate=1e-5,
+        lr_scheduler_type="cosine",
+        warmup_steps=10,
+        logging_steps=5,
+        save_steps=50,
+        save_total_limit=1,
+        bf16=True,
+        beta=0.04,
+        max_prompt_length=1024,
+        max_completion_length=256,
+        seed=SEED,
+    )
+    trainer = GRPOTrainer(
+        model=model,
+        reward_funcs=reward_fn,
+        args=args,
+        train_dataset=dataset,
+        processing_class=tokenizer,
+        peft_config=_lora_config(),
+    )
+    stats = trainer.train()
+    print(f"grpo train_loss={stats.training_loss:.4f}")
+    trainer.model.save_pretrained(out_dir)
+    tokenizer.save_pretrained(out_dir)
+    os.makedirs(f"{OUT_ROOT}/logs", exist_ok=True)
+    with open(f"{OUT_ROOT}/logs/grpo_log_history.json", "w") as fh:
+        json.dump(trainer.state.log_history, fh, indent=2)
+    trainer.state.save_to_json(f"{OUT_ROOT}/logs/grpo_trainer_state.json")
+    models_vol.commit()
+    print(f"GRPO adapter written to {out_dir}")
+    return {"prompts": len(dataset), "train_loss": stats.training_loss,
+            "output": out_dir}
+
+
+@app.function(
+    image=train_image,
+    gpu=INFER_GPU,
+    volumes={"/data": data_vol, "/models": models_vol,
+              "/root/.cache/huggingface": hf_cache_vol},
+    secrets=[hf_secret],
+    timeout=7200,
+)
+def rft(n_prompts: int = 100, n_samples: int = 4) -> dict:
+    """RFT baseline: verifier-filtered SFT the GRPO pilot must beat.
+
+    Samples ``n_samples`` completions per dispatch prompt (temp 0.7)
+    from merged DPO, keeps verifier passes (priority exact + concrete
+    action + no footer), SFT 1 epoch on the kept set (aborts under 20
+    kept). Saves the ``rft`` adapter.
+    """
+    import json
+    import os
+    import random
+
+    import torch
+    from datasets import Dataset, load_dataset
+    from peft import PeftModel
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from trl import SFTConfig, SFTTrainer
+
+    raw = load_dataset("json", data_files=DPO_PATH, split="train")
+    rng = random.Random(SEED)
+    idx = rng.sample(range(len(raw)), min(n_prompts, len(raw)))
+    tokenizer = AutoTokenizer.from_pretrained(f"{OUT_ROOT}/dpo")
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL, revision=MODEL_REVISION,
+        torch_dtype=torch.bfloat16, attn_implementation="sdpa").cuda()
+    sft = PeftModel.from_pretrained(
+        model, f"{OUT_ROOT}/sft").merge_and_unload()
+    gen_model = PeftModel.from_pretrained(
+        sft, f"{OUT_ROOT}/dpo").merge_and_unload()
+    gen_model.eval()
+
+    kept = []
+    for i in idx:
+        rec = raw[i]
+        prompt = (f"Situation: {rec['situation']}\n"
+                  f"Decide the dispatch priority and action.")
+        inputs = tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt}],
+            add_generation_prompt=True, return_tensors="pt",
+            truncation=True, max_length=1024)["input_ids"].cuda()
+        with torch.no_grad():
+            outs = gen_model.generate(
+                inputs, do_sample=True, temperature=0.7,
+                num_return_sequences=n_samples, max_new_tokens=256,
+                pad_token_id=tokenizer.pad_token_id,
+                eos_token_id=tokenizer.eos_token_id)
+        for out in outs:
+            comp = tokenizer.decode(out[inputs.shape[1]:],
+                                    skip_special_tokens=True)
+            if _dispatch_reward([comp], [rec["priority"]])[0] >= 1.0:
+                kept.append({"messages": [
+                    {"role": "user", "content": prompt},
+                    {"role": "assistant", "content": comp}]})
+    print(f"rft kept {len(kept)}/{n_prompts * n_samples}")
+    if len(kept) < 20:
+        raise SystemExit(f"rft: only {len(kept)} kept, aborting")
+    del gen_model
+    torch.cuda.empty_cache()
+
+    model, tokenizer = _merged_base("sft", "dpo")
+    out_dir = f"{OUT_ROOT}/rft"
+    args = SFTConfig(
+        output_dir="/tmp/aya74-rft",
+        num_train_epochs=1,
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=4,
+        learning_rate=5e-5,
+        lr_scheduler_type="cosine",
+        warmup_steps=5,
+        logging_steps=5,
+        save_steps=25,
+        save_total_limit=1,
+        bf16=True,
+        max_length=2048,
+        packing=False,
+        seed=SEED,
+    )
+    trainer = SFTTrainer(
+        model=model, train_dataset=Dataset.from_list(kept), args=args,
+        peft_config=_lora_config(),
+    )
+    stats = trainer.train()
+    print(f"rft train_loss={stats.training_loss:.4f}")
+    trainer.model.save_pretrained(out_dir)
+    tokenizer.save_pretrained(out_dir)
+    models_vol.commit()
+    print(f"RFT adapter written to {out_dir}")
+    return {"kept": len(kept), "train_loss": stats.training_loss,
+            "output": out_dir}
+
+
 @app.local_entrypoint()
 def main(cmd: str = "verify", checkpoint: str = "dpo",
          max_steps: int = -1, epochs: int = 3, limit: int = 0,
-         include: str = ""):
+         include: str = "", prompts_path: str = "", data: str = "repair",
+         n_prompts: int = 100, n_samples: int = 4,
+         num_generations: int = 4):
     if cmd == "verify":
         print(verify.remote())
     elif cmd == "sft":
@@ -410,6 +898,17 @@ def main(cmd: str = "verify", checkpoint: str = "dpo",
         print(merge.remote())
     elif cmd == "generate":
         print(generate.remote(checkpoint=checkpoint, limit=limit,
-                              include=include))
+                              include=include, prompts_path=prompts_path))
+    elif cmd == "repair":
+        print(repair.remote(max_steps=max_steps, epochs=epochs))
+    elif cmd == "kto":
+        print(kto.remote(max_steps=max_steps, epochs=epochs))
+    elif cmd == "ipo":
+        print(ipo.remote(max_steps=max_steps, data=data))
+    elif cmd == "grpo":
+        print(grpo.remote(max_steps=max_steps,
+                          num_generations=num_generations))
+    elif cmd == "rft":
+        print(rft.remote(n_prompts=n_prompts, n_samples=n_samples))
     else:
         raise SystemExit(f"unknown cmd {cmd!r}")

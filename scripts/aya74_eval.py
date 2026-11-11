@@ -208,6 +208,77 @@ def cmd_prompts() -> None:
           f" -> {RUN_DIR / 'eval_prompts.jsonl'}")
 
 
+def cmd_prompts_xstest() -> None:
+    """Build the XSTest lookalike prompt file (separate, GPU-gated).
+
+    Writes ``runs/aya74/eval_prompts_xstest.jsonl`` only; the main
+    prompt file is untouched so committed lanes keep their pairing.
+    Modal ``generate`` reads it via ``--prompts`` and writes
+    ``eval_{ckpt}_xstest.jsonl`` (see ``score-xstest``).
+    """
+    from hsea.safety.data import SAFETY_SYSTEM
+
+    prompts: list[dict] = []
+    for line in open(ROOT / "data" / "xstest" / "lookalikes.jsonl"):
+        rec = json.loads(line)
+        prompts.append({"key": f"xstest:{rec['id']}", "track": "xstest",
+                        "system": SAFETY_SYSTEM, "prompt": rec["prompt"],
+                        "gold": rec["label"],
+                        "meta": {"category": rec["category"],
+                                 "trigger": rec["trigger"],
+                                 "label": rec["label"]}})
+    RUN_DIR.mkdir(parents=True, exist_ok=True)
+    with open(RUN_DIR / "eval_prompts_xstest.jsonl", "w") as fh:
+        for rec in prompts:
+            fh.write(json.dumps(rec) + "\n")
+    print(f"xstest prompts={len(prompts)} "
+          f"-> {RUN_DIR / 'eval_prompts_xstest.jsonl'}")
+
+
+def cmd_score_xstest() -> None:
+    """Score XSTest lookalikes per checkpoint -> xstest_scores.json.
+
+    Checkpoints without ``eval_<ckpt>_xstest.jsonl`` are skipped (the
+    GPU leg is pending); at least one checkpoint must be present.
+    """
+    from hsea.scorers.xstest import compute_xstest
+
+    path = RUN_DIR / "eval_prompts_xstest.jsonl"
+    assert path.exists(), "run prompts-xstest first"
+    prompts = [json.loads(line) for line in open(path)]
+    summary: dict = {"n_prompts": len(prompts), "checkpoints": {}}
+    for ckpt in CHECKPOINTS:
+        cpath = RUN_DIR / f"eval_{ckpt}_xstest.jsonl"
+        if not cpath.exists():
+            print(f"WARNING: {cpath} missing, skipping {ckpt}")
+            continue
+        comps = {}
+        for line in open(cpath):
+            rec = json.loads(line)
+            comps[rec["key"]] = rec.get("completion", "")
+        ok = refused_safe = 0
+        ctrl_ok = 0
+        for p in prompts:
+            v = compute_xstest(comps.get(p["key"], ""), p["gold"])
+            ok += 1 if v["xstest_correct"] == 1.0 else 0
+            if p["gold"] == "comply" and v["refused"] == 1.0:
+                refused_safe += 1
+            if p["gold"] == "refuse" and v["xstest_correct"] == 1.0:
+                ctrl_ok += 1
+        n_safe = sum(1 for p in prompts if p["gold"] == "comply")
+        n_ctrl = len(prompts) - n_safe
+        summary["checkpoints"][ckpt] = {
+            "n": len(prompts), "exact": ok,
+            "rate": ok / len(prompts) if prompts else None,
+            "overrefusal": refused_safe / n_safe if n_safe else None,
+            "control_refusal": ctrl_ok / n_ctrl if n_ctrl else None,
+        }
+    assert summary["checkpoints"], "no xstest completion files"
+    with open(RUN_DIR / "xstest_scores.json", "w") as fh:
+        json.dump(summary, fh, indent=2)
+    print(json.dumps(summary, indent=2))
+
+
 def _load_completions() -> tuple[list[dict], dict[str, dict[str, str]]]:
     prompts = [json.loads(line)
                for line in open(RUN_DIR / "eval_prompts.jsonl")]
@@ -854,13 +925,16 @@ def cmd_plot() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="issue-74 eval loop")
-    parser.add_argument("command", choices=["prompts", "score", "recompute",
-                                            "judge-estimate", "judge-run",
-                                            "analyze", "plot"])
+    parser.add_argument("command", choices=["prompts", "prompts-xstest",
+                                            "score", "score-xstest",
+                                            "recompute", "judge-estimate",
+                                            "judge-run", "analyze", "plot"])
     args = parser.parse_args(argv)
-    {"prompts": cmd_prompts, "score": cmd_score, "recompute": cmd_recompute,
-     "judge-estimate": cmd_judge_estimate, "judge-run": cmd_judge_run,
-     "analyze": cmd_analyze, "plot": cmd_plot}[args.command]()
+    {"prompts": cmd_prompts, "prompts-xstest": cmd_prompts_xstest,
+     "score": cmd_score, "score-xstest": cmd_score_xstest,
+     "recompute": cmd_recompute, "judge-estimate": cmd_judge_estimate,
+     "judge-run": cmd_judge_run, "analyze": cmd_analyze,
+     "plot": cmd_plot}[args.command]()
 
 
 if __name__ == "__main__":

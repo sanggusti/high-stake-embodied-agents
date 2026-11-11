@@ -56,3 +56,7 @@ any stage.
 - Baseline (2026-11-09, both models): refusal 1.000 on all four
   benches' refuse rows; overall ECE 0.016–0.021. See
   `docs/reports/issue-14-safety-stack.md`.
+- Enforcement: the SafeTune drift harness (`docs/safetune.md`,
+  `scripts/safetune_drift.py`) checks these bars as absolute `fail`
+  conditions on every finetune plus relative drift tolerances vs
+  base; finetune PRs must attach its Harden/Recover/Steer report.

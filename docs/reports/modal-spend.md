@@ -109,5 +109,6 @@ count against the same $100 cap as Modal GPU spend.
 74 aya74-serve-l4 l4 8 $0.11
 74 aya74-serve-a10g a10g 7 $0.13
 74 aya74-judges api 29.0 $0.04
-TOTAL 27.03
+74 aya74-meta-judge api 3.5 $0.04
+TOTAL 27.07
 ```
