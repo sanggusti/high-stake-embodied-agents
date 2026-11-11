@@ -1,0 +1,196 @@
+{
+  "configs": {
+    "wonder-low": {
+      "safety": {
+        "n": 20,
+        "parse": 20,
+        "gold_match": 20,
+        "gold_match_ci": [
+          0.8388698745050667,
+          1.0
+        ],
+        "agree_hf_a": 18,
+        "agree_hf_a_ci": [
+          0.6989617935882066,
+          0.9721341060158468
+        ],
+        "kappa_hf_a": 0.865771812080537,
+        "agree_hf_b": 18,
+        "agree_hf_b_ci": [
+          0.6989617935882066,
+          0.9721341060158468
+        ],
+        "kappa_hf_b": 0.8648648648648649,
+        "calibration": {
+          "hit_mean": 4.8,
+          "hit_n": 20,
+          "miss_mean": null,
+          "miss_n": 0
+        },
+        "reasoning_words_mean": 54.7
+      },
+      "abstention": {
+        "n": 20,
+        "parse": 20,
+        "gold_match": 11,
+        "gold_match_ci": [
+          0.3420820083075997,
+          0.7418049791429071
+        ],
+        "agree_hf_a": 17,
+        "agree_hf_a_ci": [
+          0.6395767041130426,
+          0.9476322080405041
+        ],
+        "kappa_hf_a": 0.7209302325581395,
+        "agree_hf_b": 14,
+        "agree_hf_b_ci": [
+          0.4810232237710206,
+          0.854524726031006
+        ],
+        "kappa_hf_b": 0.5384615384615384,
+        "calibration": {
+          "hit_mean": 4.91,
+          "hit_n": 11,
+          "miss_mean": 2.67,
+          "miss_n": 9
+        },
+        "reasoning_words_mean": 57.2
+      }
+    },
+    "ember-low": {
+      "safety": {
+        "n": 20,
+        "parse": 20,
+        "gold_match": 20,
+        "gold_match_ci": [
+          0.8388698745050667,
+          1.0
+        ],
+        "agree_hf_a": 18,
+        "agree_hf_a_ci": [
+          0.6989617935882066,
+          0.9721341060158468
+        ],
+        "kappa_hf_a": 0.865771812080537,
+        "agree_hf_b": 18,
+        "agree_hf_b_ci": [
+          0.6989617935882066,
+          0.9721341060158468
+        ],
+        "kappa_hf_b": 0.8648648648648649,
+        "calibration": {
+          "hit_mean": 4.8,
+          "hit_n": 20,
+          "miss_mean": null,
+          "miss_n": 0
+        },
+        "reasoning_words_mean": 62.2
+      },
+      "abstention": {
+        "n": 20,
+        "parse": 19,
+        "gold_match": 11,
+        "gold_match_ci": [
+          0.3420820083075997,
+          0.7418049791429071
+        ],
+        "agree_hf_a": 17,
+        "agree_hf_a_ci": [
+          0.6395767041130426,
+          0.9476322080405041
+        ],
+        "kappa_hf_a": 0.7356828193832599,
+        "agree_hf_b": 14,
+        "agree_hf_b_ci": [
+          0.4810232237710206,
+          0.854524726031006
+        ],
+        "kappa_hf_b": 0.5505617977528089,
+        "calibration": {
+          "hit_mean": 4.82,
+          "hit_n": 11,
+          "miss_mean": 2.62,
+          "miss_n": 8
+        },
+        "reasoning_words_mean": 59.4
+      }
+    },
+    "ember-minimal": {
+      "safety": {
+        "n": 20,
+        "parse": 20,
+        "gold_match": 19,
+        "gold_match_ci": [
+          0.7638641064874331,
+          0.9911187805671268
+        ],
+        "agree_hf_a": 19,
+        "agree_hf_a_ci": [
+          0.7638641064874331,
+          0.9911187805671268
+        ],
+        "kappa_hf_a": 0.9322033898305084,
+        "agree_hf_b": 19,
+        "agree_hf_b_ci": [
+          0.7638641064874331,
+          0.9911187805671268
+        ],
+        "kappa_hf_b": 0.9315068493150684,
+        "calibration": {
+          "hit_mean": 4.53,
+          "hit_n": 19,
+          "miss_mean": 3,
+          "miss_n": 1
+        },
+        "reasoning_words_mean": 59.8
+      },
+      "abstention": {
+        "n": 20,
+        "parse": 20,
+        "gold_match": 12,
+        "gold_match_ci": [
+          0.3865779423152061,
+          0.7811960325858074
+        ],
+        "agree_hf_a": 18,
+        "agree_hf_a_ci": [
+          0.6989617935882066,
+          0.9721341060158468
+        ],
+        "kappa_hf_a": 0.81981981981982,
+        "agree_hf_b": 15,
+        "agree_hf_b_ci": [
+          0.5312949900419365,
+          0.888139947210597
+        ],
+        "kappa_hf_b": 0.6108949416342412,
+        "calibration": {
+          "hit_mean": 4.83,
+          "hit_n": 12,
+          "miss_mean": 2.62,
+          "miss_n": 8
+        },
+        "reasoning_words_mean": 59.2
+      }
+    }
+  },
+  "swap": {
+    "wonder-low": {
+      "n": 10,
+      "consistent": 9,
+      "consistent_ci": [
+        0.5958436145024278,
+        0.9821242504842788
+      ]
+    },
+    "ember-low": {
+      "n": 10,
+      "consistent": 9,
+      "consistent_ci": [
+        0.5958436145024278,
+        0.9821242504842788
+      ]
+    }
+  }
+}

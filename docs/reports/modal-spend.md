@@ -1,9 +1,9 @@
-# Modal + HF spend ledger (shared $50 cap)
+# Modal + HF + Meta spend ledger (shared $100 cap)
 
 Full mirror of `/tmp/modal-spend.log` (which is never committed).
 Each row: `<issue> <run> <class> <minutes> <$>`; merge conflicts on
-this file resolve by UNION of rows. HF Inference spend counts against
-the same $50 cap as Modal GPU spend.
+this file resolve by UNION of rows. HF Inference and Meta API spend
+count against the same $100 cap as Modal GPU spend.
 
 ```
 6 hf-smoke-v41flash api 0.03 $0.00
@@ -94,5 +94,7 @@ the same $50 cap as Modal GPU spend.
 5 cmdaplus-ff1 h100-2x 1.6 $0.21
 62 judge-probes api 0.5 $0.00
 62 judge-pilot-62 api 6.3 $0.02
-TOTAL 14.27
+62m meta-probes api 0.3 $0.05
+62m meta-pilot api 8.45 $1.11
+TOTAL 15.43
 ```
