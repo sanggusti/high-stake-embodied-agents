@@ -1,0 +1,37 @@
+{
+  "finetune": "repair",
+  "t5": {
+    "hf-v41": {
+      "pairs": 24,
+      "repair": 20,
+      "base": 2,
+      "tie": 0,
+      "inconsistent": 2,
+      "repair_win_rate": 0.8333333333333334,
+      "repair_win_ci": [
+        0.6414652961213058,
+        0.9332143199927109
+      ]
+    },
+    "meta-ember": {
+      "pairs": 24,
+      "repair": 12,
+      "base": 5,
+      "tie": 2,
+      "inconsistent": 5,
+      "repair_win_rate": 0.5,
+      "repair_win_ci": [
+        0.31427131627763083,
+        0.6857286837223692
+      ]
+    }
+  },
+  "winner_agreement": {
+    "agree": 15,
+    "n": 24,
+    "ci": [
+      0.42709619037907065,
+      0.7884086656636855
+    ]
+  }
+}

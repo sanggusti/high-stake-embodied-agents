@@ -48,3 +48,35 @@ def test_replay_bundle_checks():
     assert set(row) >= {"key", "kind", "seed", "input", "generations",
                         "judgments"}
     assert set(row["generations"]) >= {"base", "sft", "dpo"}
+
+
+def test_gpu_replay_bundle_checks():
+    import replay_loop
+
+    out_dir = ROOT / "runs" / "issue-74" / "replays"
+    assert (out_dir / "aya74_gpu_replay.jsonl").exists()
+    manifest = json.load(open(out_dir / "manifest_gpu.json"))
+    assert manifest["rows"] == 48 and manifest["seed"] == 74
+    assert manifest["finetunes"] == ["repair"]
+    assert manifest["judges"] == ["hf-gemma", "hf-v41", "meta-ember"]
+    replay_loop.check_gpu_bundle(74)
+    row = json.loads(open(out_dir / "aya74_gpu_replay.jsonl").readline())
+    assert set(row) >= {"key", "kind", "seed", "finetune", "input",
+                        "generations", "judgments"}
+    assert row["key"].split(":")[2] == "repair"
+    assert set(row["generations"]) == {"base", "repair"}
+
+
+def test_t5_repair_reverses_dpo_regression():
+    analysis = json.load(open(ROOT / "runs" / "aya74" / "analysis.json"))
+    assert analysis["t5"]["dpo"] == 5  # the recorded regression
+    repair = json.load(
+        open(ROOT / "runs" / "aya74" / "analysis_t5_repair.json"))
+    assert repair["finetune"] == "repair"
+    for judge, cell in repair["t5"].items():
+        assert cell["pairs"] == 24
+        assert cell["repair"] > cell["base"]  # every HF judge flips
+    meta = json.load(
+        open(ROOT / "runs" / "aya74" / "agreement3_t5_repair.json"))
+    assert meta["t5"]["meta-ember"]["repair"] == 12
+    assert meta["t5"]["meta-ember"]["base"] == 5

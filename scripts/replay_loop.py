@@ -28,6 +28,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 ISSUES = {74: {"seed": 74, "run_dir": "runs/aya74",
                "checkpoints": ("base", "sft", "dpo")}}
+GPU_FINETUNES = ("repair",)
 
 
 def _sha16(path: Path) -> str:
@@ -125,6 +126,139 @@ def build_bundle(issue: int) -> dict:
     return manifest
 
 
+def build_gpu_bundle(issue: int,
+                     finetunes: tuple[str, ...] = GPU_FINETUNES) -> dict:
+    """Assemble the GPU-leg replay bundle (post-repair T5 duels).
+
+    One row per judged T5 prompt per finetune: input, base/finetune
+    generations, and every judge's reasoning + verdict. Keys are
+    namespaced ``T5:<order>:<finetune>:<pid>`` so they never collide
+    with the Phase-1 bundle.
+    """
+    from hsea.judge.templates import parse_pairwise
+
+    cfg = ISSUES[issue]
+    run = ROOT / cfg["run_dir"]
+    prompts = {json.loads(line)["key"]: json.loads(line)
+               for line in open(run / "eval_prompts.jsonl")}
+    comps: dict[str, dict[str, str]] = {}
+    for ckpt in ("base",) + tuple(finetunes):
+        comps[ckpt] = {}
+        for line in open(run / f"eval_{ckpt}.jsonl"):
+            rec = json.loads(line)
+            comps[ckpt][rec["key"]] = rec.get("completion", "")
+    rows = []
+    sources: dict[str, str] = {
+        "eval_prompts.jsonl": _sha16(run / "eval_prompts.jsonl"),
+        "eval_base.jsonl": _sha16(run / "eval_base.jsonl"),
+    }
+    for ft in finetunes:
+        sources[f"eval_{ft}.jsonl"] = _sha16(run / f"eval_{ft}.jsonl")
+        hf: dict[str, dict[str, dict]] = {}
+        for line in open(run / f"judgments_t5_{ft}.jsonl"):
+            row = json.loads(line)
+            hf.setdefault(row["key"], {})[row["judge"]] = row
+        sources[f"judgments_t5_{ft}.jsonl"] = \
+            _sha16(run / f"judgments_t5_{ft}.jsonl")
+        meta: dict[str, dict] = {}
+        for line in open(run / f"judgments_meta_t5_{ft}.jsonl"):
+            row = json.loads(line)
+            if "error" not in row:
+                meta[row["key"]] = row
+        sources[f"judgments_meta_t5_{ft}.jsonl"] = \
+            _sha16(run / f"judgments_meta_t5_{ft}.jsonl")
+        for key in sorted(hf):
+            _, order, pid = key.split(":", 2)
+            p = prompts[pid]
+            sides = {"base": comps["base"].get(pid, ""),
+                     ft: comps[ft].get(pid, "")}
+            ordered = [sides["base"], sides[ft]] if order == "orig" \
+                else [sides[ft], sides["base"]]
+            judgments = {}
+            for judge, rec in list(hf[key].items()) + \
+                    ([("meta-ember", meta[key])] if key in meta else []):
+                parsed = parse_pairwise(rec["text"])
+                judgments[judge] = {
+                    "model": rec["model"], "text": rec["text"],
+                    "reasoning": parsed.get("reasoning", ""),
+                    "verdict": parsed.get("verdict", ""),
+                    "score": parsed.get("score", ""),
+                    "prompt_tokens": rec.get("prompt_tokens", 0),
+                    "completion_tokens": rec.get("completion_tokens", 0),
+                }
+            rows.append({"key": f"T5:{order}:{ft}:{pid}", "kind": "T5",
+                         "seed": cfg["seed"], "finetune": ft,
+                         "input": {"situation": p["prompt"], "order": order,
+                                   "side_a": ordered[0],
+                                   "side_b": ordered[1]},
+                         "generations": sides, "judgments": judgments})
+    out_dir = ROOT / f"runs/issue-{issue}" / "replays"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    bundle = out_dir / f"aya{issue}_gpu_replay.jsonl"
+    with open(bundle, "w") as fh:
+        for row in rows:
+            fh.write(json.dumps(row) + "\n")
+    manifest = {
+        "issue": issue, "seed": cfg["seed"], "rows": len(rows),
+        "finetunes": list(finetunes),
+        "judges": sorted({j for r in rows for j in r["judgments"]}),
+        "sources": sources,
+    }
+    with open(out_dir / "manifest_gpu.json", "w") as fh:
+        json.dump(manifest, fh, indent=2)
+    print(f"gpu bundle: {len(rows)} rows -> {bundle}")
+    return manifest
+
+
+def check_gpu_bundle(issue: int,
+                     finetunes: tuple[str, ...] = GPU_FINETUNES) -> None:
+    """Re-derive GPU-leg T5 wins from the bundle; fail on drift."""
+    from hsea.judge.templates import parse_pairwise
+
+    run = ROOT / ISSUES[issue]["run_dir"]
+    out_dir = ROOT / f"runs/issue-{issue}" / "replays"
+    rows = [json.loads(line)
+            for line in open(out_dir / f"aya{issue}_gpu_replay.jsonl")]
+    for ft in finetunes:
+        ft_rows = {r["key"]: r for r in rows if r.get("finetune") == ft}
+        assert ft_rows, f"no gpu replay rows for {ft}"
+        spend = json.load(open(run / f"judge_spend_t5_{ft}.json"))
+        analysis = json.load(open(run / f"analysis_t5_{ft}.json"))
+        agree3 = json.load(open(run / f"agreement3_t5_{ft}.json"))
+
+        def wins(judge: str) -> dict:
+            tally = {ft: 0, "base": 0, "tie": 0, "inconsistent": 0}
+            pairs: dict[str, dict[str, str]] = {}
+            for k in ft_rows:
+                _, order, _, pid = k.split(":", 3)
+                pairs.setdefault(pid, {})[order] = parse_pairwise(
+                    ft_rows[k]["judgments"][judge]["text"])["verdict"] or ""
+            for orders in pairs.values():
+                o, s = orders.get("orig", ""), orders.get("swap", "")
+                flip = {"A": "B", "B": "A", "C": "C"}
+                if o not in flip or s != flip[o]:
+                    tally["inconsistent"] += 1
+                elif o == "C":
+                    tally["tie"] += 1
+                elif o == "B":
+                    tally[ft] += 1
+                else:
+                    tally["base"] += 1
+            return tally
+
+        for judge in spend["judges"]:
+            want = {k: analysis["t5"][judge][k]
+                    for k in (ft, "base", "tie", "inconsistent")}
+            got = wins(judge)
+            assert got == want, f"T5/{ft} {judge}: {got} != {want}"
+            print(f"T5/{ft} {judge}: {got} matches")
+        wantm = {k: agree3["t5"]["meta-ember"][k]
+                 for k in (ft, "base", "tie", "inconsistent")}
+        gotm = wins("meta-ember")
+        assert gotm == wantm, f"T5/{ft} meta: {gotm} != {wantm}"
+        print(f"T5/{ft} meta-ember: {gotm} matches")
+
+
 def check_bundle(issue: int) -> None:
     """Re-derive headline numbers from the bundle; fail on drift."""
     from hsea.judge.templates import (parse_judgment, parse_pairwise,
@@ -193,6 +327,7 @@ def check_bundle(issue: int) -> None:
     gotm = wins("meta-ember")
     assert gotm == wantm, f"T5 meta: {gotm} != {wantm}"
     print(f"T5 meta-ember: {gotm} matches")
+    check_gpu_bundle(issue)
     print("REPLAY CHECK OK")
 
 
@@ -214,6 +349,8 @@ tags: [replay, eval, disaster-response, hsea]
 
 Before/after example pairs: inputs, per-stage generations
 (base/sft/dpo), and every judge's reasoning + verdicts.
+`aya{issue}_gpu_replay.jsonl` extends the bundle with the GPU-leg
+post-repair T5 duels (base/repair generations + all three judges).
 Reproduced by `scripts/replay_loop.py --issue {issue} --check`
 in sanggusti/expert-spork. Research-only (NC stack).
 """
@@ -239,6 +376,7 @@ def main(argv: list[str] | None = None) -> None:
         check_bundle(args.issue)
     else:
         build_bundle(args.issue)
+        build_gpu_bundle(args.issue)
 
 
 if __name__ == "__main__":

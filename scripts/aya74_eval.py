@@ -56,7 +56,8 @@ from hsea.scorers.safety import compute_safety  # noqa: E402
 SEED = 74
 RUN_DIR = ROOT / "runs" / "aya74"
 REPORT_DIR = ROOT / "docs" / "reports"
-CHECKPOINTS = ("base", "sft", "dpo")
+CHECKPOINTS = ("base", "sft", "dpo", "repair", "kto", "ipo", "rft",
+               "grpo")
 
 JUDGE_A = "deepseek-ai/DeepSeek-V4.1-Flash"
 JUDGE_B = "google/gemma-3-27b-it"
@@ -691,6 +692,157 @@ def _judge_plan() -> list[tuple[str, str, str, str]]:
     return out
 
 
+def _judge_plan_t5(finetune: str) -> list[tuple[str, str, str, str]]:
+    """T5 base-vs-finetune duels over the 24 held-out dispatch rows.
+
+    Same swap-twice protocol as the Phase-1 T5 block (48 prompts);
+    keys keep the ``T5:<order>:<pid>`` shape and live in per-finetune
+    judgment files so the Phase-1 bundle is untouched.
+    """
+    prompts, completions = _load_completions()
+    assert "base" in completions and finetune in completions, \
+        f"need base + {finetune} completions for paired judging"
+    assert finetune != "base", "finetune must differ from base"
+
+    def excerpt(text: str, limit: int = 1500) -> str:
+        text = text or ""
+        if len(text) <= limit:
+            return text
+        return text[:limit] + f"\n[... truncated {len(text) - limit} chars ...]"
+
+    out: list[tuple[str, str, str, str]] = []
+    dispatch = [p for p in prompts if p["track"] == "dispatch"]
+    for p in dispatch:
+        situation = p["prompt"].split("\nDecide")[0].replace("Situation: ", "")
+        base_c = excerpt(completions["base"].get(p["key"], ""))
+        ft_c = excerpt(completions[finetune].get(p["key"], ""))
+        for order, (a, b) in (("orig", (base_c, ft_c)),
+                              ("swap", (ft_c, base_c))):
+            full = render_dispatch_pair(situation, a, b, seed=SEED)
+            s, u = _split(full, DISPATCH_SYSTEM)
+            out.append((f"T5:{order}:{p['key']}", "T5", s, u))
+    print(f"judge plan t5/{finetune}: {len(out)} prompts")
+    return out
+
+
+def _judge_spend_upper(plan: list[tuple[str, str, str, str]],
+                       n_judges: int) -> tuple[int, int, int, float]:
+    calls = len(plan) * n_judges
+    in_tokens = sum(estimate_tokens(s) + estimate_tokens(u)
+                    for _, _, s, u in plan) * n_judges
+    out_tokens = calls * OUT_TOKENS_BOUND
+    upper = (in_tokens * RATE_IN + out_tokens * RATE_OUT) / 1_000_000
+    return calls, in_tokens, out_tokens, upper
+
+
+def cmd_judge_t5_estimate(finetune: str) -> None:
+    """Upper-bound T5 duel cost for one finetune; aborts over cap."""
+    plan = _judge_plan_t5(finetune)
+    calls, in_tokens, out_tokens, upper = _judge_spend_upper(plan, 2)
+    print(f"prompts={len(plan)} calls={calls} "
+          f"in~{in_tokens} out<={out_tokens}")
+    print(f"upper-bound=${upper:.4f} cap=${SPEND_CAP:.2f}")
+    if upper > SPEND_CAP:
+        print("ABORT: estimate exceeds the hard cap")
+        raise SystemExit(2)
+    print("OK: estimate within cap")
+
+
+def cmd_judge_t5_run(finetune: str) -> None:
+    """Dual judges over the T5 plan -> judgments_t5_<ft>.jsonl."""
+    plan = _judge_plan_t5(finetune)
+    backends, mode = _judge_backends()
+    assert all(b["client"] is not None for b in backends), \
+        f"judge mode {mode} is missing a client"
+    print(f"judge mode: {mode} "
+          f"({', '.join(b['name'] for b in backends)})")
+    t0 = time.time()
+    rows: list[dict] = []
+    for key, kind, system, user in plan:
+        for backend in backends:
+            resp = backend["client"].chat.completions.create(
+                model=backend["model"], temperature=0.0,
+                max_tokens=OUT_TOKENS_BOUND,
+                messages=[{"role": "system", "content": system},
+                          {"role": "user", "content": user}],
+                **backend["kwargs"])
+            msg = resp.choices[0].message.content or ""
+            u = resp.usage
+            try:
+                cost = float(getattr(u, "estimated_cost", None) or 0.0)
+            except (TypeError, ValueError):
+                cost = None
+            rows.append({
+                "key": key, "kind": kind, "judge": backend["name"],
+                "model": backend["model"], "text": msg,
+                "prompt_tokens": int(u.prompt_tokens or 0),
+                "completion_tokens": int(u.completion_tokens or 0),
+                "estimated_cost": cost,
+            })
+            print(f"{key} {backend['name']} "
+                  f"in={u.prompt_tokens} out={u.completion_tokens} "
+                  f"${(cost or 0.0):.6f}", flush=True)
+    minutes = (time.time() - t0) / 60
+    total_cost = sum(r["estimated_cost"] or 0.0 for r in rows)
+    with open(RUN_DIR / f"judgments_t5_{finetune}.jsonl", "w") as fh:
+        for row in rows:
+            fh.write(json.dumps(row) + "\n")
+    meta = {"mode": mode, "finetune": finetune,
+            "judges": [b["name"] for b in backends],
+            "calls": len(rows),
+            "prompt_tokens": sum(r["prompt_tokens"] for r in rows),
+            "completion_tokens": sum(r["completion_tokens"] for r in rows),
+            "estimated_cost": total_cost, "minutes": minutes}
+    with open(RUN_DIR / f"judge_spend_t5_{finetune}.json", "w") as fh:
+        json.dump(meta, fh, indent=2)
+    print(json.dumps(meta, indent=2))
+
+
+def _t5_duel_wins(judgments: dict[str, dict[str, dict]], judge: str,
+                  finetune: str) -> dict:
+    """Swap-twice wins for base-vs-finetune (orig order base=A, ft=B)."""
+    wins = {finetune: 0, "base": 0, "tie": 0, "inconsistent": 0}
+    pairs: dict[str, dict[str, str]] = {}
+    for k in judgments:
+        if not k.startswith("T5:"):
+            continue
+        _, order, pid = k.split(":", 2)
+        pairs.setdefault(pid, {})[order] = parse_pairwise(
+            judgments[k][judge]["text"])["verdict"] or ""
+    for orders in pairs.values():
+        o, s = orders.get("orig", ""), orders.get("swap", "")
+        flip = {"A": "B", "B": "A", "C": "C"}
+        if o not in flip or s != flip[o]:
+            wins["inconsistent"] += 1
+        elif o == "C":
+            wins["tie"] += 1
+        elif o == "B":
+            wins[finetune] += 1
+        else:
+            wins["base"] += 1
+    n = len(pairs)
+    return {"pairs": n, **wins,
+            f"{finetune}_win_rate": wins[finetune] / n if n else None,
+            f"{finetune}_win_ci": wilson(wins[finetune], n),
+            "conflict_rate": wins["inconsistent"] / n if n else None}
+
+
+def cmd_analyze_t5(finetune: str) -> None:
+    """T5 wins per HF judge -> analysis_t5_<ft>.json."""
+    spend = json.load(open(RUN_DIR / f"judge_spend_t5_{finetune}.json"))
+    judgments: dict[str, dict[str, dict]] = {}
+    for line in open(RUN_DIR / f"judgments_t5_{finetune}.jsonl"):
+        row = json.loads(line)
+        judgments.setdefault(row["key"], {})[row["judge"]] = row
+    summary: dict = {"mode": spend["mode"], "finetune": finetune,
+                     "judges": spend["judges"], "t5": {}}
+    for judge in spend["judges"]:
+        summary["t5"][judge] = _t5_duel_wins(judgments, judge, finetune)
+    with open(RUN_DIR / f"analysis_t5_{finetune}.json", "w") as fh:
+        json.dump(summary, fh, indent=2)
+    print(json.dumps(summary, indent=2))
+
+
 def cmd_judge_estimate() -> None:
     """Upper-bound judge cost; aborts when over the cap."""
     plan = _judge_plan()
@@ -836,13 +988,13 @@ def cmd_plot() -> None:
     analysis = json.load(open(RUN_DIR / "analysis.json")) if \
         (RUN_DIR / "analysis.json").exists() else {}
 
-    fig, ax = plt.subplots(figsize=(9, 4.8))
+    fig, ax = plt.subplots(figsize=(10, 4.8))
     tracks = [("safety", "rate", "safety exact"),
               ("abstention", "rate", "abstention exact"),
               ("redteam", "asr", "red-team ASR (lower better)"),
               ("footage", "rate", "footage text-floor exact")]
     x = range(len(tracks))
-    width = 0.22
+    width = min(0.22, 0.8 / max(1, len(ckpts)))
     for i, ckpt in enumerate(ckpts):
         vals, lo, hi = [], [], []
         for track, field, _ in tracks:
@@ -856,13 +1008,13 @@ def cmd_plot() -> None:
                 ci_lo, ci_hi = cell["ci"]
                 lo.append(vals[-1] - ci_lo)
                 hi.append(ci_hi - vals[-1])
-        pos = [j + (i - 1) * width for j in x]
+        pos = [j + (i - (len(ckpts) - 1) / 2) * width for j in x]
         ax.bar(pos, vals, width, yerr=[lo, hi], capsize=3, label=ckpt)
     ax.set_xticks(list(x), [label for _, _, label in tracks], rotation=12,
                   ha="right")
     ax.set_ylim(0, 1.08)
     ax.set_ylabel("rate (Wilson 95% where shown)")
-    ax.set_title("Deterministic lanes: base vs SFT vs DPO (issue #74)")
+    ax.set_title("Deterministic lanes per checkpoint (issue #74)")
     ax.legend()
     fig.tight_layout()
     fig.savefig(REPORT_DIR / "issue-74-det-lanes.png", dpi=150)
@@ -904,6 +1056,30 @@ def cmd_plot() -> None:
         fig.savefig(REPORT_DIR / "issue-74-t5-duels.png", dpi=150)
         plt.close(fig)
 
+    t5r_path = RUN_DIR / "analysis_t5_repair.json"
+    t5m_path = RUN_DIR / "agreement3_t5_repair.json"
+    if t5r_path.exists():
+        t5r = json.load(open(t5r_path))["t5"]
+        t5m = json.load(open(t5m_path))["t5"] if t5m_path.exists() else {}
+        judges = list(t5r) + [j for j in t5m if j not in t5r]
+        fig, ax = plt.subplots(figsize=(8, 4.4))
+        labels = ["repair wins", "base wins", "tie", "inconsistent"]
+        keys = ["repair", "base", "tie", "inconsistent"]
+        x = range(len(labels))
+        width = min(0.22, 0.8 / max(1, len(judges)))
+        for i, judge in enumerate(judges):
+            cell = t5r.get(judge, t5m.get(judge, {}))
+            vals = [cell.get(k, 0) for k in keys]
+            pos = [j + (i - (len(judges) - 1) / 2) * width for j in x]
+            ax.bar(pos, vals, width, label=judge)
+        ax.set_xticks(list(x), labels)
+        ax.set_ylabel("dispatch pairs (n=24, swap-twice)")
+        ax.set_title("T5 dispatch duels: repair vs base per judge")
+        ax.legend(fontsize=8)
+        fig.tight_layout()
+        fig.savefig(REPORT_DIR / "issue-74-t5-repair.png", dpi=150)
+        plt.close(fig)
+
     log_path = RUN_DIR / "training_curves.json"
     if log_path.exists():
         curves = json.load(open(log_path))
@@ -911,12 +1087,16 @@ def cmd_plot() -> None:
                                  squeeze=False)
         for ax, (stage, points) in zip(axes[0], curves.items()):
             steps = [p[0] for p in points]
-            losses = [p[1] for p in points]
-            ax.plot(steps, losses, marker="o", markersize=3)
+            vals = [p[1] for p in points]
+            ax.plot(steps, vals, marker="o", markersize=3)
             ax.set_xlabel("logging step")
-            ax.set_ylabel("loss")
-            ax.set_title(f"{stage} training loss")
-        fig.suptitle("Training loss curves (Modal trainer log history)")
+            if stage.endswith("-reward"):
+                ax.set_ylabel("mean rule reward")
+                ax.set_title(f"{stage[:-7]} mean reward")
+            else:
+                ax.set_ylabel("loss")
+                ax.set_title(f"{stage} training loss")
+        fig.suptitle("Training curves (Modal trainer log history)")
         fig.tight_layout()
         fig.savefig(REPORT_DIR / "issue-74-loss-curves.png", dpi=150)
         plt.close(fig)
@@ -928,13 +1108,24 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("command", choices=["prompts", "prompts-xstest",
                                             "score", "score-xstest",
                                             "recompute", "judge-estimate",
-                                            "judge-run", "analyze", "plot"])
+                                            "judge-run", "analyze", "plot",
+                                            "judge-t5-estimate",
+                                            "judge-t5-run", "analyze-t5"])
+    parser.add_argument("--finetune", default="repair",
+                        help="finetune checkpoint for T5 duels")
     args = parser.parse_args(argv)
-    {"prompts": cmd_prompts, "prompts-xstest": cmd_prompts_xstest,
-     "score": cmd_score, "score-xstest": cmd_score_xstest,
-     "recompute": cmd_recompute, "judge-estimate": cmd_judge_estimate,
-     "judge-run": cmd_judge_run, "analyze": cmd_analyze,
-     "plot": cmd_plot}[args.command]()
+    if args.command == "judge-t5-estimate":
+        cmd_judge_t5_estimate(args.finetune)
+    elif args.command == "judge-t5-run":
+        cmd_judge_t5_run(args.finetune)
+    elif args.command == "analyze-t5":
+        cmd_analyze_t5(args.finetune)
+    else:
+        {"prompts": cmd_prompts, "prompts-xstest": cmd_prompts_xstest,
+         "score": cmd_score, "score-xstest": cmd_score_xstest,
+         "recompute": cmd_recompute, "judge-estimate": cmd_judge_estimate,
+         "judge-run": cmd_judge_run, "analyze": cmd_analyze,
+         "plot": cmd_plot}[args.command]()
 
 
 if __name__ == "__main__":

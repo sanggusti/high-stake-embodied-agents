@@ -660,6 +660,23 @@ def ipo(max_steps: int = -1, data: str = "repair") -> dict:
             "output": out_dir}
 
 
+def _gold_priority(chosen: str) -> str | None:
+    """Gold P1/P2/P3 from a flywheel chosen text.
+
+    Inline mirror of ``hsea.rlvr.rewards.priority_of``: the composed
+    aya74 DPO rows carry prompt/chosen/rejected (no raw situation /
+    priority keys), so RFT/GRPO read the prompt verbatim and recover
+    the gold priority from the chosen head (``PRIORITY N``).
+    """
+    import re
+
+    match = re.search(r"\bP\s*([123])\b|\bPRIORITY\s*([123])\b",
+                      chosen or "", re.IGNORECASE)
+    if not match:
+        return None
+    return f"P{match.group(1) or match.group(2)}"
+
+
 def _dispatch_reward(completions: list[str],
                      gold: list[str]) -> list[float]:
     """Inline mirror of hsea.rlvr.rewards.rule_reward_dispatch."""
@@ -723,15 +740,21 @@ def grpo(max_steps: int = 100, num_generations: int = 4) -> dict:
     raw = load_dataset("json", data_files=DPO_PATH, split="train")
     buckets: dict[str, list] = {}
     for rec in raw:
-        buckets.setdefault(rec.get("priority", "?"), []).append(rec)
+        if rec.get("source") != "flywheel-v2":
+            continue
+        gold = _gold_priority(rec["chosen"])
+        if gold is None:
+            continue
+        buckets.setdefault(gold, []).append(rec)
     rng = random.Random(SEED)
     sample = []
     for key in sorted(buckets):
-        sample.extend(buckets[key][: max(1, 200 // len(buckets))])
+        pool = buckets[key]
+        rng.shuffle(pool)
+        sample.extend(pool[: max(1, 200 // len(buckets))])
     rng.shuffle(sample)
-    rows = [{"prompt": f"Situation: {r['situation']}\n"
-                       f"Decide the dispatch priority and action.",
-             "gold": r["priority"]} for r in sample[:200]]
+    rows = [{"prompt": r["prompt"],
+             "gold": _gold_priority(r["chosen"])} for r in sample[:200]]
     from datasets import Dataset
     dataset = Dataset.from_list(rows)
     print(f"grpo prompts: {len(dataset)}")
@@ -755,7 +778,6 @@ def grpo(max_steps: int = 100, num_generations: int = 4) -> dict:
         save_total_limit=1,
         bf16=True,
         beta=0.04,
-        max_prompt_length=1024,
         max_completion_length=256,
         seed=SEED,
     )
@@ -790,24 +812,28 @@ def grpo(max_steps: int = 100, num_generations: int = 4) -> dict:
     timeout=7200,
 )
 def rft(n_prompts: int = 100, n_samples: int = 4) -> dict:
-    """RFT baseline: verifier-filtered SFT the GRPO pilot must beat.
+    """RFT sample phase: verifier-filtered kept set (aborts under 20).
 
     Samples ``n_samples`` completions per dispatch prompt (temp 0.7)
     from merged DPO, keeps verifier passes (priority exact + concrete
-    action + no footer), SFT 1 epoch on the kept set (aborts under 20
-    kept). Saves the ``rft`` adapter.
+    action + no footer), writes the kept set for ``rft_train``.
     """
     import json
     import os
     import random
 
+    os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF",
+                          "expandable_segments:True")
     import torch
     from datasets import Dataset, load_dataset
     from peft import PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from trl import SFTConfig, SFTTrainer
 
-    raw = load_dataset("json", data_files=DPO_PATH, split="train")
+    raw = [r for r in load_dataset("json", data_files=DPO_PATH,
+                                   split="train")
+           if r.get("source") == "flywheel-v2"
+           and _gold_priority(r["chosen"]) is not None]
     rng = random.Random(SEED)
     idx = rng.sample(range(len(raw)), min(n_prompts, len(raw)))
     tokenizer = AutoTokenizer.from_pretrained(f"{OUT_ROOT}/dpo")
@@ -825,31 +851,63 @@ def rft(n_prompts: int = 100, n_samples: int = 4) -> dict:
     kept = []
     for i in idx:
         rec = raw[i]
-        prompt = (f"Situation: {rec['situation']}\n"
-                  f"Decide the dispatch priority and action.")
+        prompt = rec["prompt"]
+        gold = _gold_priority(rec["chosen"])
         inputs = tokenizer.apply_chat_template(
             [{"role": "user", "content": prompt}],
             add_generation_prompt=True, return_tensors="pt",
             truncation=True, max_length=1024)["input_ids"].cuda()
-        with torch.no_grad():
-            outs = gen_model.generate(
-                inputs, do_sample=True, temperature=0.7,
-                num_return_sequences=n_samples, max_new_tokens=256,
-                pad_token_id=tokenizer.pad_token_id,
-                eos_token_id=tokenizer.eos_token_id)
-        for out in outs:
-            comp = tokenizer.decode(out[inputs.shape[1]:],
+        # Sequential samples: one sequence at a time keeps peak memory
+        # flat on 24GB inference GPUs (batched num_return_sequences
+        # OOMs the 8B merged model on A10G).
+        for _ in range(n_samples):
+            with torch.no_grad():
+                out = gen_model.generate(
+                    inputs, do_sample=True, temperature=0.7,
+                    num_return_sequences=1, max_new_tokens=256,
+                    pad_token_id=tokenizer.pad_token_id,
+                    eos_token_id=tokenizer.eos_token_id)
+            comp = tokenizer.decode(out[0][inputs.shape[1]:],
                                     skip_special_tokens=True)
-            if _dispatch_reward([comp], [rec["priority"]])[0] >= 1.0:
+            if _dispatch_reward([comp], [gold])[0] >= 1.0:
                 kept.append({"messages": [
                     {"role": "user", "content": prompt},
                     {"role": "assistant", "content": comp}]})
     print(f"rft kept {len(kept)}/{n_prompts * n_samples}")
     if len(kept) < 20:
         raise SystemExit(f"rft: only {len(kept)} kept, aborting")
-    del gen_model
-    torch.cuda.empty_cache()
+    kept_path = f"{OUT_ROOT}/rft_kept.jsonl"
+    with open(kept_path, "w") as fh:
+        for row in kept:
+            fh.write(json.dumps(row) + "\n")
+    models_vol.commit()
+    print(f"rft kept set written to {kept_path}")
+    return {"kept": len(kept), "output": kept_path}
 
+
+@app.function(
+    image=train_image,
+    gpu=TRAIN_GPU,
+    volumes={"/data": data_vol, "/models": models_vol,
+              "/root/.cache/huggingface": hf_cache_vol},
+    secrets=[hf_secret],
+    timeout=7200,
+)
+def rft_train() -> dict:
+    """RFT train phase: SFT 1 epoch over the verifier-kept set.
+
+    Runs on TRAIN_GPU: the 8B LoRA SFT phase OOMs on 24GB inference
+    GPUs even at micro-batch 1 (measured twice). Reads
+    ``/models/aya74/rft_kept.jsonl`` written by ``rft``.
+    """
+    import json
+
+    from datasets import load_dataset
+    from trl import SFTConfig, SFTTrainer
+
+    kept_path = f"{OUT_ROOT}/rft_kept.jsonl"
+    dataset = load_dataset("json", data_files=kept_path, split="train")
+    print(f"rft_train rows: {len(dataset)}")
     model, tokenizer = _merged_base("sft", "dpo")
     out_dir = f"{OUT_ROOT}/rft"
     args = SFTConfig(
@@ -869,7 +927,7 @@ def rft(n_prompts: int = 100, n_samples: int = 4) -> dict:
         seed=SEED,
     )
     trainer = SFTTrainer(
-        model=model, train_dataset=Dataset.from_list(kept), args=args,
+        model=model, train_dataset=dataset, args=args,
         peft_config=_lora_config(),
     )
     stats = trainer.train()
@@ -878,20 +936,23 @@ def rft(n_prompts: int = 100, n_samples: int = 4) -> dict:
     tokenizer.save_pretrained(out_dir)
     models_vol.commit()
     print(f"RFT adapter written to {out_dir}")
-    return {"kept": len(kept), "train_loss": stats.training_loss,
+    return {"rows": len(dataset), "train_loss": stats.training_loss,
             "output": out_dir}
 
 
 @app.local_entrypoint()
 def main(cmd: str = "verify", checkpoint: str = "dpo",
-         max_steps: int = -1, epochs: int = 3, limit: int = 0,
+         max_steps: int = -1, epochs: int = -1, limit: int = 0,
          include: str = "", prompts_path: str = "", data: str = "repair",
          n_prompts: int = 100, n_samples: int = 4,
          num_generations: int = 4):
+    # -1 resolves to the per-command default (sft 3 epochs, repair/kto
+    # 1 epoch, grpo 100 steps); explicit flags always win.
     if cmd == "verify":
         print(verify.remote())
     elif cmd == "sft":
-        print(sft.remote(max_steps=max_steps, epochs=epochs))
+        print(sft.remote(max_steps=max_steps,
+                         epochs=epochs if epochs > 0 else 3))
     elif cmd == "dpo":
         print(dpo.remote(max_steps=max_steps))
     elif cmd == "merge":
@@ -900,15 +961,18 @@ def main(cmd: str = "verify", checkpoint: str = "dpo",
         print(generate.remote(checkpoint=checkpoint, limit=limit,
                               include=include, prompts_path=prompts_path))
     elif cmd == "repair":
-        print(repair.remote(max_steps=max_steps, epochs=epochs))
+        print(repair.remote(max_steps=max_steps,
+                            epochs=epochs if epochs > 0 else 1))
     elif cmd == "kto":
-        print(kto.remote(max_steps=max_steps, epochs=epochs))
+        print(kto.remote(max_steps=max_steps,
+                         epochs=epochs if epochs > 0 else 1))
     elif cmd == "ipo":
         print(ipo.remote(max_steps=max_steps, data=data))
     elif cmd == "grpo":
-        print(grpo.remote(max_steps=max_steps,
+        print(grpo.remote(max_steps=max_steps if max_steps > 0 else 100,
                           num_generations=num_generations))
     elif cmd == "rft":
         print(rft.remote(n_prompts=n_prompts, n_samples=n_samples))
+        print(rft_train.remote())
     else:
         raise SystemExit(f"unknown cmd {cmd!r}")

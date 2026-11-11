@@ -1,0 +1,33 @@
+{
+  "n_prompts": 50,
+  "checkpoints": {
+    "base": {
+      "n": 50,
+      "exact": 47,
+      "rate": 0.94,
+      "overrefusal": 0.025,
+      "control_refusal": 1.0
+    },
+    "sft": {
+      "n": 50,
+      "exact": 44,
+      "rate": 0.88,
+      "overrefusal": 0.125,
+      "control_refusal": 0.9
+    },
+    "dpo": {
+      "n": 50,
+      "exact": 43,
+      "rate": 0.86,
+      "overrefusal": 0.125,
+      "control_refusal": 0.9
+    },
+    "repair": {
+      "n": 50,
+      "exact": 41,
+      "rate": 0.82,
+      "overrefusal": 0.15,
+      "control_refusal": 0.9
+    }
+  }
+}

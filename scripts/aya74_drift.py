@@ -36,6 +36,7 @@ from hsea.scorers.redteam import compute_redteam_scores  # noqa: E402
 RUN_DIR = ROOT / "runs" / "aya74"
 REPORT_DIR = ROOT / "docs" / "reports"
 CHECKPOINTS = ("base", "sft", "dpo")
+FINETUNES = ("sft", "dpo", "repair", "kto", "ipo", "rft", "grpo")
 SEED = 74
 
 ACTIONABLE_MARKERS = (
@@ -65,9 +66,13 @@ def _load() -> tuple[list[dict], dict[str, dict[str, str]]]:
     prompts = [json.loads(line)
                for line in open(RUN_DIR / "eval_prompts.jsonl")]
     completions: dict[str, dict[str, str]] = {}
-    for ckpt in CHECKPOINTS:
+    for ckpt in ("base",) + FINETUNES:
         path = RUN_DIR / f"eval_{ckpt}.jsonl"
-        assert path.exists(), f"missing {path}"
+        if not path.exists():
+            if ckpt == "base":
+                raise AssertionError(f"missing {path}")
+            print(f"WARNING: {path} missing, skipping {ckpt}")
+            continue
         completions[ckpt] = {}
         for line in open(path):
             rec = json.loads(line)
@@ -114,7 +119,7 @@ def agentharm_panel(prompts: list[dict],
               and p["gold"] == "comply"]
     panel: dict = {"misuse_n": len(misuse), "benign_n": len(benign),
                    "checkpoints": {}}
-    for ckpt in CHECKPOINTS:
+    for ckpt in completions:
         comps = completions[ckpt]
         harm = [harm_score(comps.get(p["key"], "")) for p in misuse]
         ok = sum(1 for p in benign
@@ -149,7 +154,7 @@ def overrefusal_panel(prompts: list[dict],
     }
     panel: dict = {"sets": {k: len(v) for k, v in sets.items()},
                    "checkpoints": {}}
-    for ckpt in CHECKPOINTS:
+    for ckpt in completions:
         comps = completions[ckpt]
         cell: dict = {}
         for name, rows in sets.items():
@@ -171,9 +176,11 @@ def overrefusal_panel(prompts: list[dict],
 def cmd_drift() -> None:
     prompts, completions = _load()
     profiles = {c: profile_for(c, prompts, completions[c])
-                for c in CHECKPOINTS}
+                for c in completions}
     reports = {}
-    for ft in ("sft", "dpo"):
+    for ft in completions:
+        if ft == "base":
+            continue
         report = compare_profiles(profiles["base"], profiles[ft],
                                   DriftThresholds())
         reports[ft] = report
@@ -184,7 +191,7 @@ def cmd_drift() -> None:
         "seed": SEED,
         "source": {"prompts": "runs/aya74/eval_prompts.jsonl",
                    "completions": [f"runs/aya74/eval_{c}.jsonl"
-                                   for c in CHECKPOINTS]},
+                                   for c in completions]},
         "reports": reports,
         "agentharm": agentharm_panel(prompts, completions),
         "overrefusal": overrefusal_panel(prompts, completions),
@@ -201,16 +208,17 @@ def cmd_plot() -> None:
 
     payload = json.load(open(RUN_DIR / "drift.json"))
     over = payload["overrefusal"]
+    ckpts = ["base"] + [c for c in payload["reports"] if c != "base"]
 
     fig, ax = plt.subplots(figsize=(9, 4.6))
     names = ["safety_benign", "agentharm_benign", "abstention_comply"]
     labels = ["safety benign", "agentharm benign", "abstention comply"]
     x = range(len(names))
-    width = 0.22
-    for i, ckpt in enumerate(CHECKPOINTS):
+    width = min(0.22, 0.8 / max(1, len(ckpts)))
+    for i, ckpt in enumerate(ckpts):
         vals = [over["checkpoints"][ckpt][n]["rate"] or 0.0
                 for n in names]
-        pos = [j + (i - 1) * width for j in x]
+        pos = [j + (i - (len(ckpts) - 1) / 2) * width for j in x]
         ax.bar(pos, vals, width, label=ckpt)
     ax.set_xticks(list(x), labels, rotation=10, ha="right")
     ax.set_ylim(0, 1.08)
@@ -223,7 +231,6 @@ def cmd_plot() -> None:
 
     ah = payload["agentharm"]
     fig, ax = plt.subplots(figsize=(7, 4.2))
-    ckpts = list(CHECKPOINTS)
     harm = [ah["checkpoints"][c]["harm_mean"] or 0.0 for c in ckpts]
     ben = [ah["checkpoints"][c]["benign_comply"] or 0.0 for c in ckpts]
     x = range(len(ckpts))
