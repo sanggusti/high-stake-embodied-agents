@@ -1,0 +1,11 @@
+{
+  "config": "ember-minimal",
+  "model": "muse-ember-1.0",
+  "calls": 174,
+  "errors": 0,
+  "prompt_tokens": 233746,
+  "completion_tokens": 40672,
+  "reasoning_tokens": 17922,
+  "computed_cost": 0.0437106,
+  "minutes": 3.4612749536832172
+}

@@ -1,0 +1,34 @@
+{
+  "issue": 74,
+  "stage": 4,
+  "seed": 74,
+  "footer_contract": "DECISION-unified (refuse|escalate|abstain|comply); abstention migrated off ACTION",
+  "dispatch_debias": "priority-prefix-strip on both pair sides",
+  "sft": {
+    "safety": 78,
+    "abstention": 80,
+    "dispatch_anchors": 200,
+    "wj_method": 80,
+    "total": 438
+  },
+  "dpo": {
+    "safety": 78,
+    "dispatch_debiased": 500,
+    "total": 578
+  },
+  "kto": {
+    "prompts": 80,
+    "total": 160,
+    "desirable": 80,
+    "undesirable": 80
+  },
+  "clearance": {
+    "wj_upstream": "allenai/wildjailbreak is access-gated (personal click-through; out of scope per license-clearance-24 \u00a73)",
+    "wj_method": "curator-written methodology subset, data/wildjailbreak-method/, 80 rows"
+  },
+  "held_out": [
+    "data/redteam/attacks.jsonl",
+    "data/dispatch-pairs/dpo.jsonl",
+    "data/xstest/lookalikes.jsonl"
+  ]
+}

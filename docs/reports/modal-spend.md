@@ -96,5 +96,43 @@ count against the same $100 cap as Modal GPU spend.
 62 judge-pilot-62 api 6.3 $0.02
 62m meta-probes api 0.3 $0.05
 62m meta-pilot api 8.45 $1.11
-TOTAL 15.43
+74 aya74-verify cpu 0.0 $0.00
+74 aya74-sft-smoke a100-80gb 4 $0.17
+74 aya74-dpo-smoke a100-80gb 5 $0.21
+74 aya74-sft-full a100-80gb 150 $6.24
+74 aya74-dpo-full a100-80gb 68 $2.83
+74 aya74-merge a10g 8 $0.15
+74 aya74-gen-base a10g 39 $0.72
+74 aya74-gen-sft a10g 21 $0.39
+74 aya74-gen-dpo a10g 21 $0.39
+74 aya74-gen-footage a10g 12 $0.22
+74 aya74-serve-l4 l4 8 $0.11
+74 aya74-serve-a10g a10g 7 $0.13
+74 aya74-judges api 29.0 $0.04
+74 aya74-meta-judge api 3.5 $0.04
+74 aya74-repair-smoke a100-80gb 4 $0.17
+74 aya74-repair-full a100-80gb 10 $0.42
+74 aya74-kto-smoke a100-80gb 4 $0.17
+74 aya74-kto-full a100-80gb 5 $0.21
+74 aya74-rft-keyerror a10g 1 $0.02
+74 aya74-rft-oom1 a10g 8 $0.15
+74 aya74-rft-probe a10g 2 $0.04
+74 aya74-rft-oom2 a10g 15 $0.28
+74 aya74-rft-oom3 a10g 15 $0.28
+74 aya74-ipo-smoke a100-80gb 3 $0.12
+74 aya74-ipo-full a100-80gb 5 $0.19
+74 aya74-gen-xstest3 a10g 15 $0.28
+74 aya74-grpo-smokefail a100-80gb 2 $0.08
+74 aya74-grpo-smoke a100-80gb 7 $0.29
+74 aya74-gen-repair a10g 7 $0.13
+74 aya74-gen-repair-xstest a10g 3 $0.06
+74 aya74-rft-sample a10g 15 $0.28
+74 aya74-rft-train a100-80gb 4 $0.17
+74 aya74-gen-dispatch3 a10g 5 $0.09
+74 aya74-grpo-full a100-80gb 50 $2.08
+74 aya74-gen-grpo-dispatch a10g 1 $0.02
+74 aya74-gen-kto-ipo a10g 19 $0.35
+74 aya74-judges-t5-hf api 8.7 $0.01
+74 aya74-judges-t5-meta api 1.1 $0.01
+TOTAL 32.97
 ```

@@ -1,0 +1,36 @@
+{
+  "mode": "hf-equivalent",
+  "finetune": "repair",
+  "judges": [
+    "hf-v41",
+    "hf-gemma"
+  ],
+  "t5": {
+    "hf-v41": {
+      "pairs": 24,
+      "repair": 20,
+      "base": 2,
+      "tie": 0,
+      "inconsistent": 2,
+      "repair_win_rate": 0.8333333333333334,
+      "repair_win_ci": [
+        0.6414652961213058,
+        0.9332143199927109
+      ],
+      "conflict_rate": 0.08333333333333333
+    },
+    "hf-gemma": {
+      "pairs": 24,
+      "repair": 13,
+      "base": 7,
+      "tie": 0,
+      "inconsistent": 4,
+      "repair_win_rate": 0.5416666666666666,
+      "repair_win_ci": [
+        0.35074553553106635,
+        0.7210894164831857
+      ],
+      "conflict_rate": 0.16666666666666666
+    }
+  }
+}

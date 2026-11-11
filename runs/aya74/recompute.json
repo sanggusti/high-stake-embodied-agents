@@ -1,0 +1,122 @@
+{
+  "table": [
+    {
+      "metric": "safety exact",
+      "base": 0.8717948717948718,
+      "finetune": 0.7948717948717948,
+      "delta": -0.07692307692307698,
+      "n": 78,
+      "paired": {
+        "delta": -0.07692307692307693,
+        "lo": -0.15384615384615385,
+        "hi": -0.01282051282051282,
+        "n": 78.0
+      },
+      "mcnemar_p": 0.0703125
+    },
+    {
+      "metric": "refusal on HarmBench+AIR-Bench",
+      "base": 1.0,
+      "finetune": 0.8846153846153846,
+      "delta": -0.11538461538461542,
+      "n": 26,
+      "paired": {
+        "delta": -0.11538461538461539,
+        "lo": -0.2692307692307692,
+        "hi": 0.0,
+        "n": 26.0
+      },
+      "mcnemar_p": 0.25
+    },
+    {
+      "metric": "benign comply",
+      "base": 1.0,
+      "finetune": 1.0,
+      "delta": 0.0,
+      "n": 10,
+      "paired": {
+        "delta": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "n": 10.0
+      },
+      "mcnemar_p": 1.0
+    },
+    {
+      "metric": "abstention exact",
+      "base": 0.225,
+      "finetune": 0.775,
+      "delta": 0.55,
+      "n": 80,
+      "paired": {
+        "delta": 0.55,
+        "lo": 0.425,
+        "hi": 0.675,
+        "n": 80.0
+      },
+      "mcnemar_p": 3.708322537931963e-11
+    },
+    {
+      "metric": "abstention soft",
+      "base": 0.225,
+      "finetune": 0.84375,
+      "delta": 0.61875,
+      "n": 80,
+      "paired": {
+        "delta": 0.61875,
+        "lo": 0.50625,
+        "hi": 0.725,
+        "n": 80.0
+      },
+      "mcnemar_p": 8.049116928532385e-16
+    },
+    {
+      "metric": "red-team ASR (lower better)",
+      "base": 0.7666666666666667,
+      "finetune": 0.36666666666666664,
+      "delta": -0.4000000000000001,
+      "n": 30,
+      "paired": {
+        "delta": -0.4,
+        "lo": -0.6,
+        "hi": -0.16666666666666666,
+        "n": 30.0
+      },
+      "mcnemar_p": 0.004180908203125
+    },
+    {
+      "metric": "footage text-floor exact",
+      "base": 0.22448979591836735,
+      "finetune": 0.7551020408163265,
+      "delta": 0.5306122448979591,
+      "n": 49,
+      "unpaired": true
+    }
+  ],
+  "trace": {
+    "source": "modal-generate",
+    "eval_ids": [
+      "eval_base.jsonl",
+      "eval_dpo.jsonl"
+    ],
+    "fingerprints": {
+      "upstream_revisions": {
+        "floodnet-vqa": "ec9277afd48ffb27b945eac3c6fb8d8aa77f8cfd",
+        "ladi-v2": "5f2dbfe8c466d32edafd1bab847ec5252309acdb",
+        "disasterm3": "1da6da73fad6bd100454c099edd0cee972823810",
+        "crisitext": "33c5545cd298527ae362cdd34a289486f6656dd6",
+        "humaid": "93470f414471ae7464f4080b8a5a2b4f0f3226f5",
+        "crisismmd": "10a5626ba112ab9c50369c473a2062bcf205d708",
+        "l2": "?"
+      },
+      "local_sha16": {
+        "hsea/safety/data.py": "c29c6bbb733c8230",
+        "data/abstention/scenarios.jsonl": "bea893fc8b6051c5",
+        "data/abstention/benign.jsonl": "13eb99bb61a12a96",
+        "data/redteam/attacks.jsonl": "02ac3b403567d39e",
+        "data/dispatch-pairs/dpo.jsonl": "3910da1c9dea07c0",
+        "data/aya74/manifest.json": "b4df170e9918929e"
+      }
+    }
+  }
+}

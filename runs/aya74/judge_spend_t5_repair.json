@@ -1,0 +1,13 @@
+{
+  "mode": "hf-equivalent",
+  "finetune": "repair",
+  "judges": [
+    "hf-v41",
+    "hf-gemma"
+  ],
+  "calls": 96,
+  "prompt_tokens": 160209,
+  "completion_tokens": 15799,
+  "estimated_cost": 0.014452647200000002,
+  "minutes": 8.656907665729523
+}
