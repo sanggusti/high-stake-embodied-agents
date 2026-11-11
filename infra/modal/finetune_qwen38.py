@@ -636,7 +636,7 @@ def train(probe: bool = False, epochs: int = EPOCHS,
         api.upload_file(repo_id=HF_REPO, path_in_repo="README.md",
                         path_or_fileobj=card.encode(),
                         commit_message="issue-8 model card")
-        hf_rev = api.resolve_ref(HF_REPO)
+        hf_rev = api.repo_info(HF_REPO).sha
         print(f"pushed {HF_REPO}@{hf_rev}", flush=True)
     else:
         print("no HF token in secret; push skipped", flush=True)

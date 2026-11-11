@@ -97,5 +97,7 @@ the same $50 cap as Modal GPU spend.
 8 sft-probe1 h200 10 $0.76
 8 sft-probe2 h100 4 $0.26
 8 sft-probe3 a100-80gb 12 $0.50
-TOTAL 15.79
+8 sft-probe4 a100-80gb 13 $0.54
+8 sft-1ep a100-80gb 126 $5.23
+TOTAL 21.56
 ```

@@ -503,7 +503,7 @@ def train(probe: bool = False, loss_type: str = "sigmoid_norm") -> dict:
         api.upload_file(repo_id=hf_repo, path_in_repo="README.md",
                         path_or_fileobj=card.encode(),
                         commit_message="issue-8 model card")
-        hf_rev = api.resolve_ref(hf_repo)
+        hf_rev = api.repo_info(hf_repo).sha
         print(f"pushed {hf_repo}@{hf_rev}", flush=True)
     else:
         print("no HF token in secret; push skipped", flush=True)
