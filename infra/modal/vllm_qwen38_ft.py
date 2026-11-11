@@ -41,7 +41,10 @@ def resolve_model_path() -> str:
 vllm_image = (
     modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
     .entrypoint([])
-    .uv_pip_install("vllm==0.21.0")
+    # transformers 5.22.2 (allowed by vllm 0.21.0's >=4.56 pin): the
+    # merged checkpoints carry model_type qwen3_5_text, which the
+    # default-resolved older transformers cannot parse.
+    .uv_pip_install("vllm==0.21.0", "transformers==5.22.2")
     .env({"HF_XET_HIGH_PERFORMANCE": "1"})
 )
 
