@@ -133,6 +133,12 @@ def serve():
         "32768",
         "--gpu-memory-utilization",
         "0.90",
+        # Mamba-block fix (2026-11-11): the hybrid tower needs one
+        # Mamba cache block per decode seq; bf16 weights leave only
+        # 280 blocks, so the 1024 default aborts cudagraph capture
+        # ("lower max_num_seqs to at most 280"). 256 with margin.
+        "--max-num-seqs",
+        "256",
         "--enable-lora",
         "--max-lora-rank",
         "64",

@@ -75,3 +75,34 @@ Side finding: vLLM logs `no matching PunicaWrapper ... visual.blocks.*
 will be ignored` at LoRA load. Harmless — SFT/DPO target the text
 tower only (`lora_regex_for` excludes vision), so there is no visual
 LoRA to drop; the warnings are vLLM scanning ineligible modules.
+
+## 2026-11-11: LoRA-serve Mamba-block hang (ap-SO2bmLSbHZVhKFX0S8ZFFN)
+
+Redeploy with the cold-start gate + base-parity flags: containers
+reached `Application startup complete` yet `/v1/models` hung with 0
+bytes, repeatedly, across Modal restarts. Full-log forensics found
+the deterministic root cause in EngineCore init:
+
+    ValueError: max_num_seqs (1024) exceeds available Mamba cache
+    blocks (280). Each decode sequence requires one Mamba cache
+    block, so CUDA graph capture cannot proceed. Please lower
+    max_num_seqs to at most 280 or increase gpu_memory_utilization.
+
+The hybrid qwen3_5 tower needs one Mamba state block per decode
+sequence; bf16 weights (52 GiB) at 0.90 util leave room for only
+280, while vLLM defaults to 1024. (The FP8 base serve never hit
+this: 31 GB weights leave ample block headroom.) The engine died
+in `_initialize_kv_caches`, the API server started anyway without
+a working engine (hence "startup complete" + hung requests), and
+Modal health-checks eventually recycled the containers — ~110 min
+over 3 containers, zero completions. Ledgered 110 min at h100 rate
+(+$7.15, conservative: per-task GPU class is unverifiable post-hoc
+via the CLI; the chain prefers a100-80gb, so true spend is likely
+~$2.60 lower). Fix: `--max-num-seqs 256` (error's own prescription,
+with margin). Side benefit: profiling warmup drops from the 465 s
+seen with 1024 seqs.
+
+Budget note: issue-8 slice now ~$29.37/$35
+(19.03 + 3.19 crash + 7.15 hang). The trim order in the plan WILL
+trigger for the remaining stages (dpo-eval + SafeTune + GRPO + RFT +
+final + judges on ~$5.60).
