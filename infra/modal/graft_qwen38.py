@@ -179,6 +179,14 @@ def graft(merged: str) -> dict:
         if os.path.exists(src_p):
             with open(src_p, "rb") as fh_in, open(dst_p, "wb") as fh_out:
                 fh_out.write(fh_in.read())
+    # Preprocessor files from base (vLLM's multimodal runner requires
+    # preprocessor_config.json; the text-only merge never had them).
+    for name in os.listdir(base_dir):
+        if name.startswith(("preprocessor", "image_processor",
+                            "video_processor", "processor")):
+            with open(f"{base_dir}/{name}", "rb") as fh_in, \
+                    open(f"{out_dir}/{name}", "wb") as fh_out:
+                fh_out.write(fh_in.read())
     for name in os.listdir(merged_dir):
         if name.startswith("tokenizer") or name.endswith(".jinja"):
             with open(f"{merged_dir}/{name}", "rb") as fh_in, \
