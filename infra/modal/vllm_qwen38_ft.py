@@ -1,21 +1,42 @@
-"""Modal-hosted Qwen3.8-27B flywheel-v2 SFT weights (issue #8).
+"""Modal-hosted Qwen3.8-27B flywheel-v2 stage weights (issue #8).
 
-Same factory as vllm_qwen38.py, but serves the merged bf16 LoRA weights
-from the flywheel-models volume instead of the stock FP8 checkpoint.
-Shorter context than base (32K vs 262K): merged bf16 weights are ~55 GB,
-so the KV budget shrinks to fit one A100-80GB.
+Same factory as vllm_qwen38.py, but serves a per-stage merged bf16
+checkpoint from the flywheel-models volume instead of the stock FP8
+checkpoint. Shorter context than base (32K vs 262K): merged bf16
+weights are ~55 GB, so the KV budget shrinks to fit one A100-80GB.
 
-Requires a finished ``infra/modal/finetune_qwen38.py`` run (writes
-``MODEL_PATH``). inspect-ai reaches it as ``openai-api/modal/<name>``
-with ``MODAL_BASE_URL=<serve_url>/v1``.
+Which stage to serve comes from the ``/models/ACTIVE_CHECKPOINT``
+pointer file (one line: the merged dir), written before each eval
+window, e.g.::
+
+    echo /models/qwen38-flywheel-v2-dpo-merged > /tmp/active_checkpoint
+    modal volume put dmb-flywheel-models /tmp/active_checkpoint ACTIVE_CHECKPOINT
+    modal deploy infra/modal/vllm_qwen38_ft.py
+
+Requires a finished training stage (writes the merged dir + adapter).
+inspect-ai reaches it as ``openai-api/modal/<name>`` with
+``MODAL_BASE_URL=<serve_url>/v1``.
 """
 
 import modal
 
-MODEL_PATH = "/models/qwen38-flywheel-v2-merged"
+POINTER_PATH = "/models/ACTIVE_CHECKPOINT"
+DEFAULT_MODEL_PATH = "/models/qwen38-flywheel-v2-merged"
 APP_NAME = "dmb-vllm-qwen38-ft"
 # inspect-ai model id: openai-api/modal/qwen38-flywheel-v2.
 SERVED_NAME = "qwen38-flywheel-v2"
+
+
+def resolve_model_path() -> str:
+    """Stage merged dir from the pointer file (default: SFT merge)."""
+    try:
+        with open(POINTER_PATH) as fh:
+            line = fh.read().strip()
+            if line:
+                return line
+    except OSError:
+        pass
+    return DEFAULT_MODEL_PATH
 
 vllm_image = (
     modal.Image.from_registry("nvidia/cuda:12.9.0-devel-ubuntu22.04", add_python="3.12")
@@ -48,13 +69,16 @@ def serve():
     import os
     import subprocess
 
-    if not os.path.isdir(MODEL_PATH):
+    model_path = resolve_model_path()
+    if not os.path.isdir(model_path):
         raise RuntimeError(
-            f"{MODEL_PATH} missing: run finetune_qwen38.py first")
+            f"{model_path} missing: run the training stage first, then "
+            f"write its merged dir to {POINTER_PATH}")
+    print(f"serving {model_path} as {SERVED_NAME}", flush=True)
     cmd = [
         "vllm",
         "serve",
-        MODEL_PATH,
+        model_path,
         "--served-model-name",
         SERVED_NAME,
         "--host",
