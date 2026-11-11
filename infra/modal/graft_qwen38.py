@@ -179,12 +179,28 @@ def graft(merged: str) -> dict:
         if os.path.exists(src_p):
             with open(src_p, "rb") as fh_in, open(dst_p, "wb") as fh_out:
                 fh_out.write(fh_in.read())
-    # Preprocessor files from base (vLLM's multimodal runner requires
-    # preprocessor_config.json; the text-only merge never had them).
+    # Preprocessor files (vLLM's multimodal runner requires
+    # preprocessor_config.json): prefer the cache snapshot, else fetch
+    # from the hub (training downloads never fetched them).
+    have_pre, have_vid = False, False
     for name in os.listdir(base_dir):
         if name.startswith(("preprocessor", "image_processor",
                             "video_processor", "processor")):
             with open(f"{base_dir}/{name}", "rb") as fh_in, \
+                    open(f"{out_dir}/{name}", "wb") as fh_out:
+                fh_out.write(fh_in.read())
+            have_pre = have_pre or name == "preprocessor_config.json"
+            have_vid = have_vid or name == "video_preprocessor_config.json"
+    if not (have_pre and have_vid):
+        from huggingface_hub import hf_hub_download  # noqa: PLC0415
+
+        for name, have in (("preprocessor_config.json", have_pre),
+                           ("video_preprocessor_config.json", have_vid)):
+            if have:
+                continue
+            src_p = hf_hub_download(BASE_REPO, name,
+                                    revision=BASE_REVISION)
+            with open(src_p, "rb") as fh_in, \
                     open(f"{out_dir}/{name}", "wb") as fh_out:
                 fh_out.write(fh_in.read())
     for name in os.listdir(merged_dir):
