@@ -46,7 +46,6 @@ HF_REPO = "sanggusti/qwen38-flywheel-v2-grpo"
 
 DATASET_PATH = "/data/flywheel-v2/grpo_prompts.jsonl"
 ADAPTER_DIR = "/models/qwen38-flywheel-v2-grpo"
-OUTPUT_DIR = "/models/qwen38-flywheel-v2-grpo-merged"
 
 LORA_R = 32
 LORA_ALPHA = 64
@@ -497,19 +496,10 @@ def train(probe: bool = False) -> dict:
     trainer.save_model(ADAPTER_DIR)
     models_vol.commit()
 
+    # No merge: merge_and_unload on bnb 4-bit linears saves packed
+    # uint8 weights + quant satellites (unservable). Stages serve
+    # via vLLM LoRA on the bf16 base (vllm_qwen38_ft.py).
     merged = False
-    try:
-        print("merging adapter into bf16 base...", flush=True)
-        full = trainer.model.merge_and_unload()
-        full.save_pretrained(OUTPUT_DIR, max_shard_size="5GB")
-        tokenizer.save_pretrained(OUTPUT_DIR)
-        models_vol.commit()
-        merged = True
-        print(f"merged model written to {OUTPUT_DIR}", flush=True)
-    except Exception as exc:  # noqa: BLE001 (OOM fallback: adapter-only)
-        print(f"merge skipped ({type(exc).__name__}: {exc}); "
-              f"adapter kept at {ADAPTER_DIR}", flush=True)
-
     minutes = (time.time() - t0) / 60
     commit = os.environ.get("HSEA_COMMIT", "unknown")
     logs = trainer.state.log_history or [{}]
@@ -543,7 +533,7 @@ def train(probe: bool = False) -> dict:
         "s_per_it": round(s_per_it, 2),
         "adapter": ADAPTER_DIR,
         "merged": merged,
-        "output": OUTPUT_DIR if merged else ADAPTER_DIR,
+        "output": ADAPTER_DIR,
         "hf_repo": HF_REPO if hf_rev else None,
         "hf_rev": hf_rev,
         "gpu_name": gpu_name,

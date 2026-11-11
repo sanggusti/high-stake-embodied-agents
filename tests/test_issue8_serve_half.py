@@ -49,24 +49,23 @@ def _load_serve():
 serve = _load_serve()
 
 
-def test_resolve_defaults_to_sft_merge(tmp_path, monkeypatch):
+def test_resolve_defaults_to_dpo_adapter(tmp_path, monkeypatch):
     monkeypatch.setattr(serve, "POINTER_PATH", str(tmp_path / "missing"))
-    assert serve.resolve_model_path() == serve.DEFAULT_MODEL_PATH
+    assert serve.resolve_adapter() == serve.DEFAULT_ADAPTER
 
 
 def test_resolve_reads_pointer(tmp_path, monkeypatch):
-    pointer = tmp_path / "ACTIVE_CHECKPOINT"
-    pointer.write_text("/models/qwen38-flywheel-v2-dpo-merged\n")
+    pointer = tmp_path / "ACTIVE_ADAPTER"
+    pointer.write_text("/models/qwen38-flywheel-v2-dpo\n")
     monkeypatch.setattr(serve, "POINTER_PATH", str(pointer))
-    assert serve.resolve_model_path() == \
-        "/models/qwen38-flywheel-v2-dpo-merged"
+    assert serve.resolve_adapter() == "/models/qwen38-flywheel-v2-dpo"
 
 
 def test_resolve_blank_pointer_falls_back(tmp_path, monkeypatch):
-    pointer = tmp_path / "ACTIVE_CHECKPOINT"
+    pointer = tmp_path / "ACTIVE_ADAPTER"
     pointer.write_text("  \n")
     monkeypatch.setattr(serve, "POINTER_PATH", str(pointer))
-    assert serve.resolve_model_path() == serve.DEFAULT_MODEL_PATH
+    assert serve.resolve_adapter() == serve.DEFAULT_ADAPTER
 
 
 def test_dpo_half_stratified_and_deterministic():
