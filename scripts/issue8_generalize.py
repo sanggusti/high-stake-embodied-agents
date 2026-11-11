@@ -159,10 +159,16 @@ def bon_gain(prompt_rows: list[dict], greedy: list[str],
     }
 
 
-def cmd_bon(url: str, model: str, tag: str) -> None:
-    """Greedy vs best-of-8 on GRPO prompts; write bon_<tag>.json."""
+def cmd_bon(url: str, model: str, tag: str, limit: int = 0) -> None:
+    """Greedy vs best-of-8 on GRPO prompts; write bon_<tag>.json.
+
+    ``limit`` caps prompts (seed-8 file order) for serve-window cost;
+    0 means all 487. Base/final both use limit=100 (recorded).
+    """
     prompts = [json.loads(line)
                for line in open(RUN_DIR / "grpo_prompts.jsonl")]
+    if limit > 0:
+        prompts = prompts[:limit]
     client = _client(url)
     greedy, samples = [], []
     for rec in prompts:
@@ -186,11 +192,13 @@ def main(argv: list[str] | None = None) -> None:
         p.add_argument("--url", required=True)
         p.add_argument("--model", required=True)
         p.add_argument("--tag", required=True)
+        if name == "bon":
+            p.add_argument("--limit", type=int, default=0)
     args = parser.parse_args(argv)
     if args.cmd == "ood":
         cmd_ood(args.url, args.model, args.tag)
     else:
-        cmd_bon(args.url, args.model, args.tag)
+        cmd_bon(args.url, args.model, args.tag, args.limit)
 
 
 if __name__ == "__main__":
