@@ -183,5 +183,6 @@ count against the same $150 cap as Modal GPU spend.
 8 safetune-eval+rft a100-80gb 179 $7.43
 8 ipo-eval+rft200 h200 101 $7.64
 8 rft-sample-st h100 14.4 $0.95
-TOTAL 120.98
+8 rft-train a100-80gb 4.8 $0.20
+TOTAL 121.18
 ```
