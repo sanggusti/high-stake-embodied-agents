@@ -280,3 +280,160 @@ routed to review.
 | D6 | serving | one LoRA server | three merged-weight servers | vLLM LoRA path crashes on Cohere2 (0.21.0 and 0.34 nightly); merged weights evaluate the same checkpoints |
 | D7 | mission sims | flywheel_test held-out seeds | not run | text-only base has no tool calling; sims would measure the no-call floor at high token cost (see #4 precedent) |
 | D8 | judged sample | all triggered rows | seeded caps (12/cell safety+abstention+redteam, 14 footage, 6 dispatch situations) | playbook budget rule 5.4: shrink the sample, never halve the protocol |
+
+## 9. Stage 3: drift audit (SafeTune harness over base/SFT/DPO)
+
+`scripts/aya73_drift.py drift` builds SafeTune profiles from the
+follow-up greedy generations (322 rows per checkpoint: safety 78 +
+abstention 80 + redteam 30 + xstest 50 + dispatch 24 + footage 60)
+and runs the ported #10 harness (`hsea/safety/drift.py`,
+`hsea/verdicts.py::safetune_verdict`). No GPU, no API: pure local
+recompute. Full tables in `runs/aya73-followup/drift.json`.
+
+Harness path (read before comparing to §3): Phase 1 ran served
+vLLM + inspect `generate()` defaults (sampled); the follow-up runs
+greedy (`temperature=0.0`) vLLM-offline batches with the same
+engine, chat template, and scorers (D9). Dispatch parity on base is
+20/24 identical completions, so the engine matches and the residual
+level shifts are greedy-vs-sampled plus batching. Directions
+reproduce Phase 1 exactly: safety climbs monotonically, abstention
+peaks at SFT and retreats at DPO, redteam ASR is worst at DPO.
+
+| metric | base | sft | dpo | tol | sft status | dpo status |
+|---|---|---|---|---|---|---|
+| violation_rate | 0.460 | 0.140 | 0.020 | 0.02 | ok | ok |
+| refusal_rate | 0.450 | 0.800 | 0.950 | 0.02 | ok | ok |
+| benign_compliance | 0.636 | 1.000 | 1.000 | 0.05 | ok | ok |
+| ece | 0.469 | 0.050 | 0.022 | 0.03 | ok | ok |
+| harmbench.refusal | 0.357 | 0.714 | 0.929 | 0.02 | fail | fail |
+| airbench.refusal | 0.500 | 0.833 | 0.917 | 0.02 | fail | fail |
+| agentharm.misuse_refusal | 0.500 | 0.750 | 1.000 | 0.00 | fail | ok |
+| agentharm.benign | 0.750 | 1.000 | 1.000 | 0.05 | ok | ok |
+| abstention_rate | 0.500 | 0.833 | 0.833 | 0.05 | ok | ok |
+| safeagent.correct | 0.300 | 0.800 | 0.900 | 0.05 | ok | ok |
+| escalation_recall | 0.000 | 0.800 | 0.400 | 0.05 | ok | fail |
+| severity_asr.weighted | 0.725 | 0.800 | 0.900 | 0.02 | severe | severe |
+
+Verdict: Recover for SFT (3 fail + 2 severe) and Recover for DPO
+(3 fail + 4 severe). Read the verdict in two layers. Genuine
+regressions vs base: severity-weighted ASR (+0.075 SFT, +0.175
+DPO), driven by medium-severity redteam rows (0.417 to 0.833/0.750)
+plus high/low slips at DPO — the §3 ASR regression in drift form.
+Absolute-bar gaps: HarmBench/AIR-Bench refusal and escalation
+recall improve hugely over base (0.357 to 0.714/0.929, 0.500 to
+0.833/0.917, 0.000 to 0.800/0.400) but still miss the 0.95/0.95/0.60
+bars, so they read fail while moving the right way. Everything else
+holds or improves: violation rate falls 0.460 to 0.140/0.020, ECE
+falls 0.469 to 0.050/0.022, benign compliance reaches 1.0. Gate 2
+(drift at least Steer) stays open: repair must close the ASR
+regression and the bar gaps.
+
+AgentHarm harm-score (graded 0/0.5/1 rubric over the 8 misuse rows,
+shared with #74): base 0.0625 (one 0.5 row, no actionable rows),
+SFT and DPO 0.0. Paired benign compliance: base 6/8, SFT/DPO 8/8.
+
+![AgentHarm](issue-73-agentharm.png)
+
+Over-refusal counter-metric on every benign set: safety benign 5/10
+base to 10/10 both finetunes, agentharm benign 6/8 to 8/8,
+abstention comply 0/40 to 32/40 (SFT) and 17/40 (DPO), xstest safe
+15/40 to 33/40 (SFT) and 28/40 (DPO). The base over-defers
+(abstain footers with CONFIDENCE: 0 on trigger-word prompts); the
+finetunes learn the comply contract instead of refusal creep.
+
+![Over-refusal](issue-73-overrefusal.png)
+
+XSTest (50-row lookalike pack, `data/xstest/`):
+
+| checkpoint | exact | over-refusal (safe) | control refusal |
+|---|---|---|---|
+| base | 18/50 (0.36) | 25/40 (0.625) | 3/10 (0.3) |
+| sft | 43/50 (0.86) | 7/40 (0.175) | 10/10 (1.0) |
+| dpo | 38/50 (0.76) | 12/40 (0.300) | 10/10 (1.0) |
+
+Base is uncalibrated both ways (over-defers safe rows, complies
+through 7/10 unsafe controls); SFT/DPO learn both sides, with mild
+over-refusal creep from SFT (7) to DPO (12). Controls hold 10/10 on
+both finetunes. Source: `runs/aya73-followup/xstest_scores.json`.
+
+Verdict-drift panel (the §5 mechanism, re-measured): multi-ACTION
+rate base 0/80, SFT 69/80, DPO 60/80; first-verdict accuracy SFT
+0.663, DPO 0.662; last-verdict accuracy SFT 0.638, DPO 0.492. The
+SFT 69/80 multi count matches Phase 1 exactly; DPO drifts further
+(first-to-last drop 0.170 vs SFT 0.025). Repair targets this gap
+plus the ASR regression.
+
+![Verdict drift](issue-73-verdict-drift.png)
+
+## 10. Stage 4: SafeTune repair + KTO (methods + training)
+
+`scripts/compose_aya73_repair.py` (seed 73) composes the constrained
+re-tune mix that targets the two Phase-1 symptoms directly, keeping
+#73's gate discipline (HarmBench + AIR-Bench NEVER train;
+abstention eval split NEVER trains; the ACTION footer is KEPT
+because the scorer parses ACTION last-wins and #74 showed DECISION
+migration does not take):
+
+- 26 safety demos (the Phase-1 non-gate train half, DECISION format)
+  + 28 single-verdict abstention cal demos (ACTION format).
+- 200 footer-free dispatch anchors (stratified P1/P2/P3 flywheel
+  chosen, raw-situation user text = Phase-1 shape) hold the
+  no-footer dispatch format; greedy dispatch already sags at SFT
+  (rule reward 0.229 vs base 0.446) via footer leakage.
+- WJ-method disaster mix: 40 misuse (refuse) + 40 lookalike (comply)
+  curator-written rows (D7, shared with #74) against the ASR
+  regression; disjoint from the XSTest eval pack (asserted).
+- 500 debiased dispatch DPO pairs (PRIORITY-headline strip on BOTH
+  sides, 100% verified) + 26 safety pairs for the IPO arm.
+- KTO split: 28 cal golds (desirable) + 28 wrong-label violations +
+  17 REAL DPO drift completions mined from G0 cal generations
+  (undesirable) = 73 rows.
+
+Totals: `repair_sft.jsonl` 334 rows, `repair_dpo.jsonl` 526,
+`kto.jsonl` 73. Manifest: `data/aya73/repair_manifest.json`.
+
+Training legs (`repair`, `kto` in
+`infra/modal/finetune_aya73_followup.py`, cold-start from merged
+DPO + fresh LoRA, LR 5e-5) executed on Modal L4: repair 1 epoch
+(42 steps, loss 1.80 to 0.75, healthy, no collapse), KTO 1 epoch
+(10 steps, loss 0.50 to 0.44). Eval results pending G1.
+
+## 11. Stage 5 + IPO/ORPO (methods + training)
+
+`hsea/rlvr/rewards.py` ships the verifiable rewards as pure tested
+functions (SWE-RL field-match, R1 rule shaping, RFT verifier,
+Search-R1 tool-span masking); the Modal app inlines byte-parity
+mirrors (pinned by test).
+
+- `rft`: verifier-filtered baseline (100 prompts x 4 samples at
+  temp 0.7 from merged DPO, keep rule-reward at least 1.0, SFT 1
+  epoch). Executed: keeps 101/400 (25.2% pass rate, far above #74's
+  7.5%: #73 DPO dispatch never collapsed), SFT loss 1.82.
+- `grpo`: TRL GRPO pilot, 100 steps, 4 generations, cold-start from
+  merged repair, 198 stratified dispatch prompts, single-turn so no
+  tool span takes loss. Executed: stable throughout (KL under
+  0.002, zero clipped steps), in-train mean rule reward flat
+  0.285 to 0.295 (sampled generations are noisy; the gate is greedy
+  GRPO-beats-RFT on held-out dispatch), no ReMax fallback needed.
+- `ipo`: bake-off arm, `loss_type="ipo"` over merged SFT on the 526
+  debiased repair pairs, 1 epoch (66 steps). Executed: loss 24.6 to
+  0.02, the same separation-collapse pattern as DPO (pair accuracy
+  saturates). The `data="full"` strict bake-off (7,054 pairs, est.
+  upper about $0.95) stays unrun; the pilot already shows the
+  separation pattern.
+- `orpo`: single-stage ablation from BASE (research §2.3 edge-lane
+  recipe) over the full 7,054-pair Phase-1 DPO mix, beta 0.1, 1
+  epoch. TRL 1.17 ships no ORPO, so this leg uses a dependency-free
+  custom HF Trainer subclass (SFT loss + odds-ratio loss, two
+  forwards per step; loss math and a CPU end-to-end Trainer run
+  covered by `tests/test_aya73_orpo.py`). Executed: 882 steps, loss
+  3.82 to 0.0001 — total separation, the strongest overfit warning
+  in the loop (DPO ended 0.0027, IPO 0.02). What it learned
+  behaviorally is a G1 question.
+
+Every Modal function carries a GPU fallback chain (L4-first; no
+strict single class, pinned by `tests/test_aya73_followup_modal.py`).
+
+Eval results (G1 generations), judge-backed T5/adjudication rounds,
+Gate 2 re-grade, GRPO-beats-RFT verdict, and per-stage before/after
+pairs land in §12-§14 once G1 completes.
