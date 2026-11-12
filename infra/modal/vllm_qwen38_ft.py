@@ -19,6 +19,12 @@ Which adapter comes from the ``/models/ACTIVE_ADAPTER`` pointer file
 inspect-ai reaches it as ``openai-api/modal/qwen38-flywheel-v2``
 (the LoRA name) with ``MODAL_BASE_URL=<serve_url>/v1``.
 
+Two-stage windows (2026-11-12): writing a second adapter dir to
+``/models/ACTIVE_ADAPTER2`` serves it alongside as
+``qwen38-stage-b`` (``--max-loras 2``), so two stages share one
+cold start. Absent/empty pointer = single-LoRA proven config.
+Delete the pointer (``modal volume rm``) to revert a window.
+
 Cold-start forensics (2026-11-11): the first deploy's task 1 crashed
 in BASE weight load (fused-qkv shape assert) while task 2, identical
 code/weights 25 min later, loaded fine from the warm HF cache
@@ -36,10 +42,12 @@ import modal
 BASE_MODEL = "Qwen/Qwen3.8-27B"
 BASE_REVISION = "37561816e66b5b9153b1b64c10968c18c1e6f4a0"
 POINTER_PATH = "/models/ACTIVE_ADAPTER"
+POINTER2_PATH = "/models/ACTIVE_ADAPTER2"
 DEFAULT_ADAPTER = "/models/qwen38-flywheel-v2-dpo"
 APP_NAME = "dmb-vllm-qwen38-lora"
 # LoRA name (what inspect-ai requests) + base rename (unused).
 SERVED_NAME = "qwen38-flywheel-v2"
+SERVED2_NAME = "qwen38-stage-b"
 BASE_SERVED_NAME = "qwen38-base-bf16"
 
 vllm_image = (
@@ -68,6 +76,20 @@ def resolve_adapter() -> str:
     return DEFAULT_ADAPTER
 
 
+def resolve_adapter2() -> str | None:
+    """Optional second adapter (2-LoRA windows share one startup).
+
+    Returns None when the pointer file is absent/empty: the deploy
+    then serves one LoRA exactly like the proven config.
+    """
+    try:
+        with open(POINTER2_PATH) as fh:
+            line = fh.read().strip()
+            return line or None
+    except OSError:
+        return None
+
+
 @app.function(
     image=vllm_image,
     # Binding (issue #8 forensics): fallback chain, never single class.
@@ -91,6 +113,11 @@ def serve():
         raise RuntimeError(
             f"{adapter} missing: run the training stage first, then "
             f"write its adapter dir to {POINTER_PATH}")
+    adapter2 = resolve_adapter2()
+    if adapter2 and not os.path.isdir(adapter2):
+        raise RuntimeError(
+            f"{adapter2} missing: fix {POINTER2_PATH} or delete it "
+            f"for a single-LoRA window")
     # Cold-start gate (2026-11-11 forensics): fully materialize +
     # inventory the pinned snapshot BEFORE vLLM starts, so a retry
     # never reads a half-downloaded cache (task-1 shape assert).
@@ -115,7 +142,9 @@ def serve():
         raise RuntimeError(f"snapshot {snap} incomplete: {missing[:5]}")
     print(f"serving base {BASE_MODEL}@{BASE_REVISION[:8]} "
           f"({len(set(weight_map.values()))} shards verified) + LoRA "
-          f"{adapter} as {SERVED_NAME}", flush=True)
+          f"{adapter} as {SERVED_NAME}"
+          + (f" + LoRA {adapter2} as {SERVED2_NAME}" if adapter2 else ""),
+          flush=True)
     # Exact ledgering (2026-11-12): log the placed GPU class so serve
     # windows bill actuals instead of h100-conservative. Read-only.
     try:
@@ -158,14 +187,14 @@ def serve():
         "--max-lora-rank",
         "64",
         "--max-loras",
-        "1",
+        "2" if adapter2 else "1",
         "--lora-modules",
         f"{SERVED_NAME}={adapter}",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8000",
     ]
+    if adapter2:
+        # NOTE: separate argv item (vLLM takes nargs+= modules).
+        cmd.append(f"{SERVED2_NAME}={adapter2}")
+    cmd += ["--host", "0.0.0.0", "--port", "8000"]
     # Popen-and-return, exactly like the working base serve: the
     # function returns while vLLM keeps serving the port.
     subprocess.Popen(cmd)

@@ -38,6 +38,7 @@ SUMMARY = RUN_DIR / "summary.json"
 
 BASE_MODEL = "openai-api/modal/Qwen/Qwen3.8-27B-FP8"
 FT_MODEL = "openai-api/modal/qwen38-flywheel-v2"
+FT_MODEL_B = "openai-api/modal/qwen38-stage-b"
 
 MATRIX: tuple[tuple[str, str, dict[str, str], str], ...] = (
     ("evals/flywheel_test.py", "flywheel_test", {}, "mission_score"),
@@ -73,13 +74,15 @@ def _inspect_env(base_url: str, extra: dict[str, str]) -> dict[str, str]:
 
 
 def run_matrix(base_url: str, ft_url: str, only: str = "all",
-               ft_tag: str = "ft") -> dict:
+               ft_tag: str = "ft", ft_model: str = FT_MODEL) -> dict:
     """Run the base/stage matrix; returns the manifest dict.
 
     ``only`` runs just one side (``base`` or the stage tag); ``ft_tag``
     names the stage side (``ft`` default, or ``sft``/``dpo``/
-    ``safetune``/``grpo`` per stage). Existing manifest entries are
-    kept, so stages accumulate across serve windows.
+    ``safetune``/``grpo`` per stage). ``ft_model`` selects the LoRA
+    name on a 2-LoRA window (``FT_MODEL_B`` for the second stage).
+    Existing manifest entries are kept, so stages accumulate across
+    serve windows.
     """
     RUN_DIR.mkdir(parents=True, exist_ok=True)
     if MANIFEST.exists():
@@ -91,7 +94,7 @@ def run_matrix(base_url: str, ft_url: str, only: str = "all",
     for model, url in (("base", base_url), (ft_tag, ft_url)):
         if only != "all" and only != model:
             continue
-        model_id = BASE_MODEL if model == "base" else FT_MODEL
+        model_id = BASE_MODEL if model == "base" else ft_model
         for task_file, alias, extra, scorer in MATRIX:
             if f"{model}/{alias}" in manifest.get("runs", {}):
                 print(f"[{model}] {alias}: already in manifest, skipping",
@@ -289,11 +292,14 @@ def main(argv: list[str] | None = None) -> None:
                        help="run only 'base' or the stage side")
     p_run.add_argument("--ft-tag", default="ft",
                        help="stage tag for manifest keys")
+    p_run.add_argument("--ft-model", default=FT_MODEL,
+                       help="LoRA model id for the stage side")
     sub.add_parser("summarize", help="aggregate manifest logs")
     sub.add_parser("sanity", help="gold-vs-gold scorer check")
     args = parser.parse_args(argv)
     if args.cmd == "run":
-        run_matrix(args.base_url, args.ft_url, args.only, args.ft_tag)
+        run_matrix(args.base_url, args.ft_url, args.only, args.ft_tag,
+                   args.ft_model)
     elif args.cmd == "summarize":
         summary = summarize_manifest()
         print(json.dumps(summary, indent=2)[:3000])

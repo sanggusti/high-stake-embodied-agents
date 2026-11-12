@@ -68,6 +68,26 @@ def test_resolve_blank_pointer_falls_back(tmp_path, monkeypatch):
     assert serve.resolve_adapter() == serve.DEFAULT_ADAPTER
 
 
+def test_resolve_adapter2_missing_is_none(tmp_path, monkeypatch):
+    monkeypatch.setattr(serve, "POINTER2_PATH", str(tmp_path / "missing"))
+    assert serve.resolve_adapter2() is None
+
+
+def test_resolve_adapter2_reads_pointer(tmp_path, monkeypatch):
+    pointer = tmp_path / "ACTIVE_ADAPTER2"
+    pointer.write_text("/models/qwen38-flywheel-v2-dpo-ipo\n")
+    monkeypatch.setattr(serve, "POINTER2_PATH", str(pointer))
+    assert (serve.resolve_adapter2()
+            == "/models/qwen38-flywheel-v2-dpo-ipo")
+
+
+def test_resolve_adapter2_blank_is_none(tmp_path, monkeypatch):
+    pointer = tmp_path / "ACTIVE_ADAPTER2"
+    pointer.write_text("  \n")
+    monkeypatch.setattr(serve, "POINTER2_PATH", str(pointer))
+    assert serve.resolve_adapter2() is None
+
+
 def test_dpo_half_stratified_and_deterministic():
     first = half_mod.build_half()
     second = half_mod.build_half()
