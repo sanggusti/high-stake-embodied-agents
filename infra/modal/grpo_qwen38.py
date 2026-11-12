@@ -124,6 +124,21 @@ def classify_gpu(gpu_name: str) -> str:
     return "A100-80GB"
 
 
+def loss_curve(trainer) -> list[dict]:
+    """Step/loss(/reward) series from log_history (JSON-safe, plots)."""
+    curve = []
+    for entry in trainer.state.log_history or []:
+        if "loss" not in entry and "reward" not in entry:
+            continue
+        point: dict = {"step": int(entry.get("step", 0))}
+        if "loss" in entry:
+            point["loss"] = float(entry["loss"])
+        if "reward" in entry:
+            point["reward"] = float(entry["reward"])
+        curve.append(point)
+    return curve
+
+
 def parse_priority(text) -> str | None:
     """First P1/P2/P3 (or PRIORITY n) mention, or None."""
     import re
@@ -528,6 +543,7 @@ def train(probe: bool = False) -> dict:
     return {
         "prompts": len(rows),
         "mean_reward": mean_reward,
+        "loss_curve": loss_curve(trainer),
         "steps": stats.global_step,
         "minutes": round(minutes, 1),
         "s_per_it": round(s_per_it, 2),

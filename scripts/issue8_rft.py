@@ -50,29 +50,47 @@ def _client(base_url: str):
 
 
 def cmd_sample(url: str, model: str, n: int, limit: int,
-               temperature: float = 1.0) -> None:
-    """Sample N completions per prompt from the served checkpoint."""
+               temperature: float = 1.0, workers: int = 1) -> None:
+    """Sample N completions per prompt from the served checkpoint.
+
+    ``workers`` parallelizes the requests (server bills by wall time,
+    so concurrency cuts GPU cost ~linearly to ~8 workers).
+    """
+    import concurrent.futures  # noqa: PLC0415
+
     prompts = [json.loads(line) for line in open(PROMPTS)][:limit]
     client = _client(url)
     t0 = time.time()
+    jobs = [(rec, k) for rec in prompts for k in range(n)]
+
+    def _one(job):
+        rec, k = job
+        resp = client.chat.completions.create(
+            model=model, temperature=temperature, max_tokens=256,
+            messages=[
+                {"role": "system", "content": rec["system"]},
+                {"role": "user", "content": rec["prompt"]},
+            ])
+        return {"id": rec["id"], "k": k,
+                "completion": resp.choices[0].message.content or "",
+                "gold": rec["gold"]}
+
     total = 0
     with open(SAMPLES, "w") as fh:
-        for rec in prompts:
-            for k in range(n):
-                resp = client.chat.completions.create(
-                    model=model, temperature=temperature, max_tokens=256,
-                    messages=[
-                        {"role": "system", "content": rec["system"]},
-                        {"role": "user", "content": rec["prompt"]},
-                    ])
-                text = resp.choices[0].message.content or ""
-                fh.write(json.dumps({
-                    "id": rec["id"], "k": k, "completion": text,
-                    "gold": rec["gold"],
-                }) + "\n")
+        if workers <= 1:
+            for job in jobs:
+                fh.write(json.dumps(_one(job)) + "\n")
                 total += 1
                 if total % 50 == 0:
-                    print(f"sampled {total}/{len(prompts) * n}", flush=True)
+                    print(f"sampled {total}/{len(jobs)}", flush=True)
+        else:
+            with concurrent.futures.ThreadPoolExecutor(
+                    max_workers=workers) as pool:
+                for row in pool.map(_one, jobs):
+                    fh.write(json.dumps(row) + "\n")
+                    total += 1
+                    if total % 50 == 0:
+                        print(f"sampled {total}/{len(jobs)}", flush=True)
     minutes = (time.time() - t0) / 60
     print(f"samples={total} minutes={minutes:.1f} -> {SAMPLES}")
 
@@ -138,12 +156,13 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--n", type=int, default=DEFAULT_N)
     p.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
     p.add_argument("--temperature", type=float, default=1.0)
+    p.add_argument("--workers", type=int, default=1)
     sub.add_parser("filter", help="verifier-filter into SFT rows")
     sub.add_parser("report", help="print the RFT report")
     args = parser.parse_args(argv)
     if args.cmd == "sample":
         cmd_sample(args.url, args.model, args.n, args.limit,
-                   args.temperature)
+                   args.temperature, args.workers)
     elif args.cmd == "filter":
         cmd_filter()
     elif args.cmd == "report":

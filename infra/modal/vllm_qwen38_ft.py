@@ -116,6 +116,15 @@ def serve():
     print(f"serving base {BASE_MODEL}@{BASE_REVISION[:8]} "
           f"({len(set(weight_map.values()))} shards verified) + LoRA "
           f"{adapter} as {SERVED_NAME}", flush=True)
+    # Exact ledgering (2026-11-12): log the placed GPU class so serve
+    # windows bill actuals instead of h100-conservative. Read-only.
+    try:
+        gpu_name = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
+            capture_output=True, text=True, timeout=30).stdout.strip()
+        print(f"ledger gpu_name={gpu_name}", flush=True)
+    except Exception as exc:  # noqa: BLE001 - ledger hint only
+        print(f"ledger gpu_name=unknown ({exc})", flush=True)
     cmd = [
         "vllm",
         "serve",

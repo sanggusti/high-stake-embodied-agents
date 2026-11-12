@@ -142,6 +142,17 @@ def classify_gpu(gpu_name: str) -> str:
     return "A100-80GB"
 
 
+def loss_curve(trainer) -> list[dict]:
+    """Step/loss series from trainer log_history (JSON-safe, for plots)."""
+    curve = []
+    for entry in trainer.state.log_history or []:
+        if "loss" not in entry:
+            continue
+        curve.append({"step": int(entry.get("step", 0)),
+                      "loss": float(entry["loss"])})
+    return curve
+
+
 def normalize_content(content) -> str:
     """Flatten one message content to a plain string (stage-1 salvage)."""
     if isinstance(content, str):
@@ -481,6 +492,7 @@ def train(probe: bool = False, dataset_path: str = DATASET_PATH,
     return {
         "pairs": len(rows),
         "train_loss": stats.training_loss,
+        "loss_curve": loss_curve(trainer),
         "steps": stats.global_step,
         "minutes": round(minutes, 1),
         "s_per_it": round(s_per_it, 2),

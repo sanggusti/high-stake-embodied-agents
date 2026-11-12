@@ -43,6 +43,11 @@ from hsea.judge.templates import (  # noqa: E402
     render_safety,
 )
 from judge_pilot import JUDGE_A, JUDGE_B, cohen_kappa  # noqa: E402
+from hsea.judge.providers import (  # noqa: E402
+    META_BASE_URL,
+    META_JUDGE_CONFIGS,
+    META_RATES,
+)
 
 SEED = 8
 RUN_DIR = ROOT / "runs" / "issue-8"
@@ -50,6 +55,11 @@ INPUTS = RUN_DIR / "judge_inputs.jsonl"
 JUDGMENTS = RUN_DIR / "judgments.jsonl"
 SUMMARY = RUN_DIR / "judge_summary.json"
 SPEND = RUN_DIR / "judge_spend.json"
+META_JUDGMENTS = RUN_DIR / "judgments_meta.jsonl"
+META_SPEND = RUN_DIR / "judge_spend_meta.json"
+META_CONFIG = "ember-minimal"
+META_SPEND_CAP = 2.00
+META_MAX_RETRIES = 3
 
 HF_BASE_URL = "https://router.huggingface.co/v1"
 RATE_IN = 0.30
@@ -292,13 +302,118 @@ def cmd_analyze() -> None:
     print(json.dumps(summary, indent=2)[:4000])
 
 
+def _meta_key() -> str:
+    key = os.environ.get("META_AI_API_KEY")
+    if not key and (ROOT / ".env").exists():
+        for line in open(ROOT / ".env"):
+            if line.startswith("META_AI_API_KEY="):
+                key = line.split("=", 1)[1].strip().strip("'\"")
+    if not key:
+        raise SystemExit("missing META_AI_API_KEY (env or .env)")
+    return key
+
+
+def cmd_meta_estimate() -> None:
+    """Upper-bound Meta cost over the same prompts; aborts over cap."""
+    prompts = _prompts()
+    cfg = META_JUDGE_CONFIGS[META_CONFIG]
+    rates = META_RATES[str(cfg["model"])]
+    in_tokens = sum(estimate_tokens(s) + estimate_tokens(u)
+                    for _, s, u, _ in prompts)
+    out_tokens = len(prompts) * int(cfg["max_tokens"])
+    upper = (in_tokens * rates["input"]
+             + out_tokens * rates["output"]) / 1_000_000
+    print(f"config={META_CONFIG} prompts={len(prompts)} "
+          f"in~{in_tokens} out<={out_tokens}")
+    print(f"upper-bound=${upper:.4f} cap=${META_SPEND_CAP:.2f}")
+    if upper > META_SPEND_CAP:
+        print("ABORT: estimate exceeds the hard cap")
+        raise SystemExit(2)
+    print("OK: estimate within cap")
+
+
+def _meta_call(client, model: str, effort: str, max_out: int,
+               system: str, user: str) -> dict:
+    last: Exception | None = None
+    for attempt in range(META_MAX_RETRIES):
+        try:
+            t0 = time.time()
+            resp = client.chat.completions.create(
+                model=model, temperature=0.0, max_tokens=max_out,
+                messages=[{"role": "system", "content": system},
+                          {"role": "user", "content": user}],
+                reasoning_effort=effort)
+            dt = time.time() - t0
+            u = resp.usage
+            det = u.completion_tokens_details
+            return {
+                "text": resp.choices[0].message.content or "",
+                "finish": resp.choices[0].finish_reason,
+                "prompt_tokens": int(u.prompt_tokens or 0),
+                "completion_tokens": int(u.completion_tokens or 0),
+                "reasoning_tokens": int(
+                    getattr(det, "reasoning_tokens", 0) or 0),
+                "latency_s": round(dt, 1),
+            }
+        except Exception as exc:  # noqa: BLE001, retry then record
+            last = exc
+            time.sleep(2.0 * (attempt + 1))
+    return {"error": f"{type(last).__name__}: {str(last)[:200]}"}
+
+
+def cmd_meta_run() -> None:
+    """Call ember-minimal over all prompts; ledger every call."""
+    from openai import OpenAI
+
+    prompts = _prompts()
+    cfg = META_JUDGE_CONFIGS[META_CONFIG]
+    model = str(cfg["model"])
+    effort = str(cfg["reasoning_effort"])
+    max_out = int(cfg["max_tokens"])
+    rates = META_RATES[model]
+    client = OpenAI(api_key=_meta_key(), base_url=META_BASE_URL)
+    t0 = time.time()
+    rows: list[dict] = []
+    for key, system, user, _rec in prompts:
+        out = _meta_call(client, model, effort, max_out, system, user)
+        if "error" in out:
+            print(f"{key} ERROR {out['error']}", flush=True)
+            rows.append({"key": key, "judge": META_CONFIG, "text": "",
+                         "error": out["error"], "prompt_tokens": 0,
+                         "completion_tokens": 0, "estimated_cost": 0.0})
+            continue
+        cost = (out["prompt_tokens"] * rates["input"]
+                + out["completion_tokens"] * rates["output"]) / 1e6
+        rows.append({"key": key, "judge": META_CONFIG, "text": out["text"],
+                     "prompt_tokens": out["prompt_tokens"],
+                     "completion_tokens": out["completion_tokens"],
+                     "reasoning_tokens": out["reasoning_tokens"],
+                     "estimated_cost": cost})
+        print(f"{key} {META_CONFIG} in={out['prompt_tokens']} "
+              f"out={out['completion_tokens']} "
+              f"reason={out['reasoning_tokens']} ${cost:.6f}", flush=True)
+    minutes = (time.time() - t0) / 60
+    total_cost = sum(r["estimated_cost"] or 0.0 for r in rows)
+    with open(META_JUDGMENTS, "w") as fh:
+        for row in rows:
+            fh.write(json.dumps(row) + "\n")
+    meta = {"config": META_CONFIG, "calls": len(rows),
+            "prompt_tokens": sum(r["prompt_tokens"] for r in rows),
+            "completion_tokens": sum(r["completion_tokens"] for r in rows),
+            "estimated_cost": total_cost, "minutes": minutes}
+    META_SPEND.write_text(json.dumps(meta, indent=2))
+    print(json.dumps(meta, indent=2))
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command",
-                        choices=["sample", "estimate", "run", "analyze"])
+                        choices=["sample", "estimate", "run", "analyze",
+                                 "meta-estimate", "meta-run"])
     args = parser.parse_args(argv)
     {"sample": cmd_sample, "estimate": cmd_estimate, "run": cmd_run,
-     "analyze": cmd_analyze}[args.command]()
+     "analyze": cmd_analyze, "meta-estimate": cmd_meta_estimate,
+     "meta-run": cmd_meta_run}[args.command]()
 
 
 if __name__ == "__main__":

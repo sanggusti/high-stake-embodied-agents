@@ -123,6 +123,17 @@ def classify_gpu(gpu_name: str) -> str:
         return "A100-80GB"
     return "A100-80GB"
 
+
+def loss_curve(trainer) -> list[dict]:
+    """Step/loss series from trainer log_history (JSON-safe, for plots)."""
+    curve = []
+    for entry in trainer.state.log_history or []:
+        if "loss" not in entry:
+            continue
+        curve.append({"step": int(entry.get("step", 0)),
+                      "loss": float(entry["loss"])})
+    return curve
+
 # UltraFeedback-ADAPT debias (survey §7.1): drop pairs whose length
 # ratio is so extreme the pair teaches length, not priority. Measured
 # max on flywheel-v2 is 1.92, so this drops 0 rows today while
@@ -501,6 +512,7 @@ def train(probe: bool = False, loss_type: str = "sigmoid_norm") -> dict:
         "pairs": len(rows),
         "debias_dropped": dropped,
         "train_loss": stats.training_loss,
+        "loss_curve": loss_curve(trainer),
         "steps": stats.global_step,
         "minutes": round(minutes, 1),
         "s_per_it": round(s_per_it, 2),

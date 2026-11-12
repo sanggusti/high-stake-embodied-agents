@@ -645,7 +645,7 @@ totals from `runs/judge-pilot-62/spend.json`). At these rates a
 dual-judge 1,000-row track rerun costs about $0.27, and a swap-twice
 dual-judge pass over all 24 curation pairs costs about $0.01.
 
-Budget rule (binding, tied to the shared $100 ledger):
+Budget rule (binding, tied to the shared $150 ledger):
 
 1. Estimate before every judged run: render all prompts, bound output
    tokens, multiply by the top listed rate; abort when the upper bound
