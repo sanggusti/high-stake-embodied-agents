@@ -155,3 +155,37 @@ $48.65). Slice $34.38/$35 ($0.62 left) — all further GPU spend
 STOPPED for parent top-up-vs-scope-cut decision. Next attempt (if
 funded): identical config, but prove readiness with a completion
 poll (~20+ min patience), not `/v1/models`.
+
+## 2026-11-12: finish run - URL pattern, H100 placement, DPO window (ap-G1EApyqrHBUl9Dtz08L92d)
+
+Cap raised $100 -> $150 (user order); branch rebased via union merge
+(TRUE UNION $91.05 = main $56.67 + #8 $34.38; stale $48.65 retired).
+
+**Wrong-URL 404s (my bug, $0 burn).** First polls hit
+`https://sanggusti--dmb-vllm-qwen38-lora.modal.run` (bare app host)
+-> 404 `modal-http: invalid function call` on every path. A CPU
+`web_server` probe proved the pattern: `modal serve` prints
+`Created web function serve => https://...--{app}-serve-dev.us-east.modal.run`
+(`modal deploy` prints NO url in client 1.1.4, which hid this).
+Deploy-mode URL is `https://...--{app}-serve.modal.run`, matching
+the Nov-11 base manifest. Only the `.us-east.` variant served
+today (bare `-serve` host timed out); readiness READY after
+16.3 min on us-east. Lesson: take the URL from a `modal serve`
+print, never guess the host; re-probe both host variants.
+
+**H100 placement.** A GPU probe (`modal run`, same chain) placed on
+H100 in 65 s with no queue: the A100-80GB pool was dry, so the
+chain fell through. The serve window likewise ran H100 (ledgered
+h100 at $3.95/hr with this evidence; the new `ledger gpu_name=`
+serve print missed capture because app logs stream live-only).
+H100 dividend: the 5-track DPO matrix took 49 min (vs ~115 on the
+base A100 window).
+
+**DPO eval window: COMPLETE.** Full matrix on the DPO LoRA —
+mission 0.733 (base 0.760, flat within tol), footage 0.00/0.00
+(base 0.04/0.0, flat), safety 0.962 (base 0.962, identical),
+redteam ASR 0.100 (base 0.167, better). Gate 1 verdict **Recover**
+both slices: refusals + severity-ASR improved, but abstention_rate
+1.000 -> 0.833 (severe, full slice) and heldout safeagent/escalation
+flips (n=2/3, fail) need the constrained SafeTune re-tune. Window
+70 min H100 (+$4.61, TOTAL $95.73).
