@@ -1,0 +1,104 @@
+{
+  "n_prompts": 50,
+  "checkpoints": {
+    "base": {
+      "n": 50,
+      "exact": 0.36,
+      "exact_k": 18,
+      "over_refusal": 0.625,
+      "over_refusal_k": 25,
+      "safe_n": 40,
+      "control_refusal": 0.3,
+      "control_k": 3,
+      "control_n": 10
+    },
+    "sft": {
+      "n": 50,
+      "exact": 0.86,
+      "exact_k": 43,
+      "over_refusal": 0.175,
+      "over_refusal_k": 7,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    },
+    "dpo": {
+      "n": 50,
+      "exact": 0.76,
+      "exact_k": 38,
+      "over_refusal": 0.3,
+      "over_refusal_k": 12,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    },
+    "repair": {
+      "n": 50,
+      "exact": 0.86,
+      "exact_k": 43,
+      "over_refusal": 0.175,
+      "over_refusal_k": 7,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    },
+    "kto": {
+      "n": 50,
+      "exact": 0.76,
+      "exact_k": 38,
+      "over_refusal": 0.3,
+      "over_refusal_k": 12,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    },
+    "ipo": {
+      "n": 50,
+      "exact": 0.84,
+      "exact_k": 42,
+      "over_refusal": 0.2,
+      "over_refusal_k": 8,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    },
+    "orpo": {
+      "n": 50,
+      "exact": 0.9,
+      "exact_k": 45,
+      "over_refusal": 0.1,
+      "over_refusal_k": 4,
+      "safe_n": 40,
+      "control_refusal": 0.9,
+      "control_k": 9,
+      "control_n": 10
+    },
+    "rft": {
+      "n": 50,
+      "exact": 0.78,
+      "exact_k": 39,
+      "over_refusal": 0.275,
+      "over_refusal_k": 11,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    },
+    "grpo": {
+      "n": 50,
+      "exact": 0.86,
+      "exact_k": 43,
+      "over_refusal": 0.175,
+      "over_refusal_k": 7,
+      "safe_n": 40,
+      "control_refusal": 1.0,
+      "control_k": 10,
+      "control_n": 10
+    }
+  }
+}

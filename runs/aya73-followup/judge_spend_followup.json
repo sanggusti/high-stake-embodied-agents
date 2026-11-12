@@ -1,0 +1,12 @@
+{
+  "judges": [
+    "hf-v41",
+    "hf-gemma"
+  ],
+  "calls": 408,
+  "errors": 0,
+  "prompt_tokens": 833592,
+  "completion_tokens": 68037,
+  "computed_cost": 0.3317219999999999,
+  "minutes": 39.63
+}

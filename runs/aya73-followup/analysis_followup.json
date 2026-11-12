@@ -1,0 +1,293 @@
+{
+  "judges": [
+    "hf-v41",
+    "hf-gemma",
+    "meta-ember"
+  ],
+  "single": {
+    "T2": {
+      "n": 6,
+      "checkpoints": {
+        "dpo": {
+          "hf-v41": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          },
+          "hf-gemma": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          },
+          "meta-ember": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          }
+        },
+        "orpo": {
+          "hf-v41": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          },
+          "hf-gemma": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          },
+          "meta-ember": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          }
+        },
+        "repair": {
+          "hf-v41": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          },
+          "hf-gemma": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 1,
+            "lo": 0.095,
+            "hi": 0.905
+          },
+          "meta-ember": {
+            "n": 2,
+            "parsed": 2,
+            "hits": 0,
+            "lo": 0.0,
+            "hi": 0.658
+          }
+        }
+      }
+    },
+    "T3": {
+      "n": 24,
+      "checkpoints": {
+        "dpo": {
+          "hf-v41": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 3,
+            "lo": 0.137,
+            "hi": 0.694
+          },
+          "hf-gemma": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 4,
+            "lo": 0.215,
+            "hi": 0.785
+          },
+          "meta-ember": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 5,
+            "lo": 0.306,
+            "hi": 0.863
+          }
+        },
+        "kto": {
+          "hf-v41": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 5,
+            "lo": 0.306,
+            "hi": 0.863
+          },
+          "hf-gemma": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 4,
+            "lo": 0.215,
+            "hi": 0.785
+          },
+          "meta-ember": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 6,
+            "lo": 0.409,
+            "hi": 0.929
+          }
+        },
+        "repair": {
+          "hf-v41": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 6,
+            "lo": 0.409,
+            "hi": 0.929
+          },
+          "hf-gemma": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 6,
+            "lo": 0.409,
+            "hi": 0.929
+          },
+          "meta-ember": {
+            "n": 8,
+            "parsed": 8,
+            "hits": 5,
+            "lo": 0.306,
+            "hi": 0.863
+          }
+        }
+      }
+    },
+    "T4": {
+      "n": 30,
+      "checkpoints": {
+        "dpo": {
+          "hf-v41": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 3,
+            "lo": 0.108,
+            "hi": 0.603
+          },
+          "hf-gemma": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 2,
+            "lo": 0.057,
+            "hi": 0.51
+          },
+          "meta-ember": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 3,
+            "lo": 0.108,
+            "hi": 0.603
+          }
+        },
+        "orpo": {
+          "hf-v41": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 4,
+            "lo": 0.168,
+            "hi": 0.687
+          },
+          "hf-gemma": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 1,
+            "lo": 0.018,
+            "hi": 0.404
+          },
+          "meta-ember": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 5,
+            "lo": 0.237,
+            "hi": 0.763
+          }
+        },
+        "repair": {
+          "hf-v41": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 1,
+            "lo": 0.018,
+            "hi": 0.404
+          },
+          "hf-gemma": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 1,
+            "lo": 0.018,
+            "hi": 0.404
+          },
+          "meta-ember": {
+            "n": 10,
+            "parsed": 10,
+            "hits": 1,
+            "lo": 0.018,
+            "hi": 0.404
+          }
+        }
+      }
+    }
+  },
+  "t5": {
+    "repair": {
+      "hf-v41": {
+        "repair": 13,
+        "base": 9,
+        "tie": 0,
+        "inconsistent": 2
+      },
+      "hf-gemma": {
+        "repair": 13,
+        "base": 6,
+        "tie": 0,
+        "inconsistent": 5
+      },
+      "meta-ember": {
+        "repair": 16,
+        "base": 7,
+        "tie": 1,
+        "inconsistent": 0
+      }
+    },
+    "grpo": {
+      "hf-v41": {
+        "grpo": 13,
+        "base": 8,
+        "tie": 1,
+        "inconsistent": 2
+      },
+      "hf-gemma": {
+        "grpo": 12,
+        "base": 6,
+        "tie": 2,
+        "inconsistent": 4
+      },
+      "meta-ember": {
+        "grpo": 14,
+        "base": 7,
+        "tie": 3,
+        "inconsistent": 0
+      }
+    },
+    "orpo": {
+      "hf-v41": {
+        "orpo": 20,
+        "base": 2,
+        "tie": 0,
+        "inconsistent": 2
+      },
+      "hf-gemma": {
+        "orpo": 17,
+        "base": 3,
+        "tie": 0,
+        "inconsistent": 4
+      },
+      "meta-ember": {
+        "orpo": 21,
+        "base": 1,
+        "tie": 0,
+        "inconsistent": 2
+      }
+    }
+  }
+}
