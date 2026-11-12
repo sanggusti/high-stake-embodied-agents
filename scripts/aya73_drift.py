@@ -9,32 +9,33 @@ Commands (run from the repo root):
     python scripts/aya73_drift.py drift   # tables + verdicts -> drift.json
     python scripts/aya73_drift.py plot    # docs/reports/issue-73-drift-*.png
 
-The AgentHarm harm-score rubric is shared with issue #74
-(``aya74_drift.harm_score``); ``tests/test_aya73_drift.py`` pins
-parity so the two lanes never fork silently.
+Profiles, panels, and the AgentHarm harm-score rubric delegate to
+the shared SafeTune harness (``hsea/safety/harness.py``, #10); only
+the loop-specific verdict-drift panel and plots stay local.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import statistics
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "scripts"))
 
-from aya74_drift import harm_score  # noqa: E402
 from hsea.safety.drift import (  # noqa: E402
     DriftThresholds,
     compare_profiles,
     drift_table_markdown,
-    profile_from_vectors,
 )
-from hsea.safety.metrics import classify_response, parse_confidence  # noqa: E402
-from hsea.scorers.redteam import compute_redteam_scores  # noqa: E402
+from hsea.safety.harness import (  # noqa: E402
+    agentharm_panel,
+    harm_score,  # noqa: F401 (re-export: shared-with-74 parity test)
+    load_generations,
+    overrefusal_panel,
+    profile_for_checkpoint,
+)
 
 RUN_DIR = ROOT / "runs" / "aya73-followup"
 REPORT_DIR = ROOT / "docs" / "reports"
@@ -44,117 +45,14 @@ SEED = 73
 
 
 def _load() -> tuple[list[dict], dict[str, dict[str, str]]]:
-    prompts = [json.loads(line)
-               for line in open(RUN_DIR / "eval_prompts.jsonl")]
-    completions: dict[str, dict[str, str]] = {}
-    for ckpt in CHECKPOINTS:
-        path = RUN_DIR / f"eval_{ckpt}.jsonl"
-        if not path.exists():
-            if ckpt == "base":
-                raise AssertionError(f"missing {path}")
-            print(f"WARNING: {path} missing, skipping {ckpt}")
-            continue
-        completions[ckpt] = {}
-        for line in open(path):
-            rec = json.loads(line)
-            completions[ckpt][rec["key"]] = rec.get("completion", "")
-    return prompts, completions
+    return load_generations(RUN_DIR, CHECKPOINTS)
 
 
 def profile_for(ckpt: str, prompts: list[dict],
                 comps: dict[str, str]) -> dict:
     """SafeTune profile for one checkpoint (safety + red-team severity)."""
-    preds, labels, confs, benches = [], [], [], []
-    for p in prompts:
-        if p["track"] != "safety":
-            continue
-        comp = comps.get(p["key"], "")
-        preds.append(classify_response(comp))
-        labels.append(p["gold"])
-        conf = parse_confidence(comp)
-        confs.append(conf / 100.0 if conf is not None else None)
-        benches.append(p["meta"]["bench"])
-    sev: dict[str, list[float]] = {"high": [], "medium": [], "low": []}
-    for p in prompts:
-        if p["track"] != "redteam":
-            continue
-        v = compute_redteam_scores(comps.get(p["key"], ""),
-                                   p["meta"]["family"],
-                                   p["meta"]["severity"],
-                                   p["meta"].get("markers", []))
-        sev[p["meta"]["severity"]].append(float(v["asr"]))
-    severity_asr = {s: (statistics.mean(v) if v else None)
-                    for s, v in sev.items()}
-    return profile_from_vectors(preds, labels, confs, benches,
-                                severity_asr)
-
-
-def agentharm_panel(prompts: list[dict],
-                    completions: dict[str, dict[str, str]]) -> dict:
-    """Misuse harm-score + paired benign compliance per checkpoint."""
-    misuse = [p for p in prompts if p["track"] == "safety"
-              and p["meta"]["bench"] == "agentharm"
-              and p["gold"] == "refuse"]
-    benign = [p for p in prompts if p["track"] == "safety"
-              and p["meta"]["bench"] == "agentharm"
-              and p["gold"] == "comply"]
-    panel: dict = {"misuse_n": len(misuse), "benign_n": len(benign),
-                   "checkpoints": {}}
-    for ckpt in completions:
-        comps = completions[ckpt]
-        harm = [harm_score(comps.get(p["key"], "")) for p in misuse]
-        ok = sum(1 for p in benign
-                 if classify_response(comps.get(p["key"], "")) == "comply")
-        panel["checkpoints"][ckpt] = {
-            "harm_mean": sum(harm) / len(harm) if harm else None,
-            "harm_dist": {str(k): harm.count(k) for k in (0.0, 0.5, 1.0)},
-            "benign_comply": ok / len(benign) if benign else None,
-        }
-    return panel
-
-
-def overrefusal_panel(prompts: list[dict],
-                      completions: dict[str, dict[str, str]]) -> dict:
-    """Over-refusal counter-metric on every benign set per checkpoint."""
-    from hsea.scorers.abstention import compute_abstention_scores
-    from hsea.scorers.xstest import compute_xstest
-
-    sets = {
-        "safety_benign": [p for p in prompts if p["track"] == "safety"
-                          and p["meta"]["bench"] == "benign"],
-        "agentharm_benign": [p for p in prompts if p["track"] == "safety"
-                             and p["meta"]["bench"] == "agentharm"
-                             and p["gold"] == "comply"],
-        "abstention_comply": [p for p in prompts
-                              if p["track"] == "abstention"
-                              and p["gold"] == "comply"],
-        "xstest_safe": [p for p in prompts if p["track"] == "xstest"
-                        and p["gold"] == "comply"],
-    }
-    panel: dict = {"sets": {k: len(v) for k, v in sets.items()},
-                   "checkpoints": {}}
-    for ckpt in completions:
-        comps = completions[ckpt]
-        cell: dict = {}
-        for name, rows in sets.items():
-            if name == "abstention_comply":
-                ok = sum(1 for p in rows
-                         if compute_abstention_scores(
-                             comps.get(p["key"], ""),
-                             p["gold"])["abst_exact"] == 1.0)
-            elif name == "xstest_safe":
-                ok = sum(1 for p in rows
-                         if compute_xstest(comps.get(p["key"], ""),
-                                           p["gold"])["xstest_correct"]
-                         == 1.0)
-            else:
-                ok = sum(1 for p in rows
-                         if classify_response(
-                             comps.get(p["key"], "")) == "comply")
-            cell[name] = {"n": len(rows), "ok": ok,
-                          "rate": ok / len(rows) if rows else None}
-        panel["checkpoints"][ckpt] = cell
-    return panel
+    del ckpt  # checkpoint identity plays no role in the profile
+    return profile_for_checkpoint(prompts, comps)
 
 
 def abstention_drift_panel(prompts: list[dict],

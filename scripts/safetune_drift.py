@@ -17,7 +17,14 @@ runs (or add red-team severity runs)::
 
 No checkpoint yet? ``synth`` writes deterministic scripted runs
 (good base / degraded / mild) so the verdict logic can be validated
-for $0 before any finetune exists.
+for $0 before any finetune exists. Loop-style recorded generations
+(``eval_prompts.jsonl`` + ``eval_<ckpt>.jsonl`` per checkpoint, as in
+``runs/aya74/``)::
+
+    .venv/bin/python scripts/safetune_drift.py audit \\
+        --run-dir runs/aya74 \\
+        --checkpoints base,sft,dpo,repair,kto,ipo --seed 74 \\
+        --out /tmp/st-audit.json --plot
 """
 
 from __future__ import annotations
@@ -41,6 +48,7 @@ from hsea.safety.drift import (  # noqa: E402
     drift_table_markdown,
     profile_from_vectors,
 )
+from hsea.safety.harness import audit_run_dir, audit_tables_markdown  # noqa: E402
 
 BAR_METRICS = (
     ("violation_rate", "violation rate"),
@@ -148,20 +156,8 @@ def _bars(ax, labels, base_vals, ft_vals, title, ylabel="rate"):
     ax.grid(axis="y", alpha=0.3)
 
 
-def cmd_plot(args: argparse.Namespace) -> int:
-    import matplotlib  # noqa: PLC0415
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt  # noqa: PLC0415
-
-    runs_dir = Path(args.runs_dir)
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    base_p = load_profile(runs_dir, args.base, args.base_rt)
-    ft_p = load_profile(runs_dir, args.ft, args.ft_rt)
-    report = compare_profiles(base_p, ft_p, DriftThresholds())
-
+def bar_series(base_p: dict, ft_p: dict) -> tuple[list, list, list]:
+    """(labels, base_vals, ft_vals) for the drift bar chart."""
     labels, bvals, fvals = [], [], []
     for key, nice in BAR_METRICS:
         b, f = base_p["overall"].get(key), ft_p["overall"].get(key)
@@ -178,29 +174,37 @@ def cmd_plot(args: argparse.Namespace) -> int:
         labels.append(f"ASR {sev}")
         bvals.append(b if b is not None else 0.0)
         fvals.append(f if f is not None else 0.0)
-    fig, ax = plt.subplots(figsize=(9, 4.5))
-    _bars(ax, labels, bvals, fvals,
-          f"SafeTune drift: {args.base} vs {args.ft} "
-          f"(verdict: {report['verdict']})")
-    fig.tight_layout()
-    bars_path = out_dir / f"{args.prefix}-drift-bars.png"
-    fig.savefig(bars_path, dpi=120)
-    plt.close(fig)
-    print(f"wrote {bars_path}")
+    return labels, bvals, fvals
 
-    # Delta-vs-tolerance lollipop over headline metrics + extra pairs.
-    pairs = [(args.base, args.ft, args.label or
-              f"{args.base} vs {args.ft}")]
-    for spec in args.extra or []:
-        b, f, *rest = spec.split(":")
-        pairs.append((b, f, rest[0] if rest else f"{b} vs {f}"))
+
+def plot_drift_bars(out_path: Path, labels: list, bvals: list,
+                    fvals: list, title: str) -> None:
+    import matplotlib  # noqa: PLC0415
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt  # noqa: PLC0415
+
+    fig, ax = plt.subplots(figsize=(9, 4.5))
+    _bars(ax, labels, bvals, fvals, title)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=120)
+    plt.close(fig)
+    print(f"wrote {out_path}")
+
+
+def plot_delta_tol(out_path: Path,
+                   labeled_reports: list[tuple[str, dict]]) -> None:
+    """Delta-vs-tolerance lollipop, one panel per (label, report)."""
+    import matplotlib  # noqa: PLC0415
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt  # noqa: PLC0415
+
     headline = ("violation_rate", "ece", "severity_asr.weighted")
-    fig, axes = plt.subplots(1, len(pairs), figsize=(4.5 * len(pairs), 4.0),
+    fig, axes = plt.subplots(1, len(labeled_reports),
+                             figsize=(4.5 * len(labeled_reports), 4.0),
                              squeeze=False)
-    for ax, (b, f, lab) in zip(axes[0], pairs):
-        bp = load_profile(runs_dir, b, args.base_rt if b == args.base else None)
-        fp = load_profile(runs_dir, f, args.ft_rt if f == args.ft else None)
-        rep = compare_profiles(bp, fp, DriftThresholds())
+    for ax, (lab, rep) in zip(axes[0], labeled_reports):
         by_metric = {r["metric"]: r for r in rep["rows"]}
         names, deltas, tols, colors = [], [], [], []
         for m in headline:
@@ -224,10 +228,74 @@ def cmd_plot(args: argparse.Namespace) -> int:
         ax.set_xlabel("delta (ft - base)")
         ax.grid(axis="x", alpha=0.3)
     fig.tight_layout()
-    tol_path = out_dir / f"{args.prefix}-delta-tol.png"
-    fig.savefig(tol_path, dpi=120)
+    fig.savefig(out_path, dpi=120)
     plt.close(fig)
-    print(f"wrote {tol_path}")
+    print(f"wrote {out_path}")
+
+
+def cmd_plot(args: argparse.Namespace) -> int:
+    runs_dir = Path(args.runs_dir)
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    base_p = load_profile(runs_dir, args.base, args.base_rt)
+    ft_p = load_profile(runs_dir, args.ft, args.ft_rt)
+    report = compare_profiles(base_p, ft_p, DriftThresholds())
+
+    labels, bvals, fvals = bar_series(base_p, ft_p)
+    plot_drift_bars(out_dir / f"{args.prefix}-drift-bars.png",
+                    labels, bvals, fvals,
+                    f"SafeTune drift: {args.base} vs {args.ft} "
+                    f"(verdict: {report['verdict']})")
+
+    # Delta-vs-tolerance lollipop over headline metrics + extra pairs.
+    pairs = [(args.base, args.ft, args.label or
+              f"{args.base} vs {args.ft}")]
+    for spec in args.extra or []:
+        b, f, *rest = spec.split(":")
+        pairs.append((b, f, rest[0] if rest else f"{b} vs {f}"))
+    labeled = []
+    for b, f, lab in pairs:
+        bp = load_profile(runs_dir, b, args.base_rt if b == args.base else None)
+        fp = load_profile(runs_dir, f, args.ft_rt if f == args.ft else None)
+        labeled.append((lab, compare_profiles(bp, fp, DriftThresholds())))
+    plot_delta_tol(out_dir / f"{args.prefix}-delta-tol.png", labeled)
+    return 0
+
+
+def cmd_audit(args: argparse.Namespace) -> int:
+    """One-command audit over a recorded run directory (shared harness)."""
+    from hsea.safety.harness import (  # noqa: PLC0415
+        load_generations,
+        profile_for_checkpoint,
+    )
+
+    run_dir = Path(args.run_dir)
+    ckpts = tuple(c.strip() for c in args.checkpoints.split(",") if c.strip())
+    payload = audit_run_dir(run_dir, ckpts, DriftThresholds(),
+                            seed=args.seed)
+    print(audit_tables_markdown(payload), end="")
+    if args.out:
+        out = Path(args.out)
+        out.write_text(json.dumps(payload, indent=2))
+        print(f"wrote {out}")
+    if args.plot:
+        out_dir = Path(args.out_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        prompts, completions = load_generations(run_dir, ckpts)
+        profiles = {c: profile_for_checkpoint(prompts, completions[c])
+                    for c in completions}
+        base_p = profiles["base"]
+        for ckpt, report in payload["reports"].items():
+            labels, bvals, fvals = bar_series(base_p, profiles[ckpt])
+            plot_drift_bars(
+                out_dir / f"{args.prefix}-{ckpt}-bars.png",
+                labels, bvals, fvals,
+                f"SafeTune drift: base vs {ckpt} "
+                f"(verdict: {report['verdict']})")
+        labeled = [(f"base vs {c}", r)
+                   for c, r in payload["reports"].items()]
+        plot_delta_tol(out_dir / f"{args.prefix}-delta-tol.png", labeled)
     return 0
 
 
@@ -364,6 +432,20 @@ def main() -> None:
     synth.add_argument("--runs-dir", default="runs")
     synth.add_argument("--tag", default="st")
     synth.set_defaults(func=cmd_synth)
+
+    audit = sub.add_parser("audit", help="Audit a recorded run directory.")
+    audit.add_argument("--run-dir", required=True,
+                       help="Run dir with eval_prompts.jsonl + eval_<ckpt>.jsonl.")
+    audit.add_argument("--checkpoints", required=True,
+                       help="Comma-separated checkpoints, base first.")
+    audit.add_argument("--seed", type=int, default=None)
+    audit.add_argument("--out", default=None,
+                       help="Write the audit payload JSON here.")
+    audit.add_argument("--plot", action="store_true",
+                       help="Also write per-checkpoint bar charts + tol panel.")
+    audit.add_argument("--out-dir", default="docs/reports")
+    audit.add_argument("--prefix", default="issue-10-safetune")
+    audit.set_defaults(func=cmd_audit)
 
     args = parser.parse_args()
     sys.exit(args.func(args))

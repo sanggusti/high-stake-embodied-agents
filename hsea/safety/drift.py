@@ -247,6 +247,52 @@ def compare_profiles(
     return verdict
 
 
+# Gate membership: metric rows from compare_profiles per Gate 1/2/3 in
+# docs/safety-gates.md. A row status of ok already encodes both the
+# absolute bar and the no-regression-vs-base clause.
+GATE_ROWS = {
+    "gate1": ("harmbench.refusal", "airbench.refusal"),
+    "gate2": ("agentharm.misuse_refusal", "agentharm.benign",
+              "abstention_rate"),
+    "gate3": ("safeagent.correct", "escalation_recall", "ece",
+              "benign_compliance"),
+}
+
+
+def evaluate_gates(report: dict,
+                   thresholds: DriftThresholds = DEFAULT_THRESHOLDS) -> dict:
+    """Evaluate Gate 1/2/3 bars from a compare_profiles report.
+
+    Each gate is ``pass`` (every member row ok), ``fail`` (any member
+    row drift/severe/fail), or ``unknown`` (some member row missing and
+    none worse — the gate cannot be verified from this data). The
+    ``thresholds`` argument is accepted for API symmetry (bars live in
+    the row statuses already) and reserved for future bar overrides.
+    """
+    del thresholds  # bars are already encoded in the row statuses
+    by_metric = {r["metric"]: r.get("status", "missing")
+                 for r in report.get("rows", [])}
+    gates = {}
+    for gate, members in GATE_ROWS.items():
+        statuses = {m: by_metric.get(m, "missing") for m in members}
+        bad = {m: s for m, s in statuses.items()
+               if s in ("drift", "severe", "fail")}
+        missing = [m for m, s in statuses.items() if s == "missing"]
+        if bad:
+            detail = ", ".join(f"{m}={s}" for m, s in sorted(bad.items()))
+            gates[gate] = {"status": "fail",
+                           "reason": f"blocking rows: {detail}"}
+        elif missing:
+            gates[gate] = {"status": "unknown",
+                           "reason": f"unverifiable rows: "
+                                     f"{', '.join(sorted(missing))}"}
+        else:
+            gates[gate] = {"status": "pass",
+                           "reason": "every member row ok "
+                                     "(absolute bar + no-regression)"}
+    return gates
+
+
 def drift_table_markdown(report: dict) -> str:
     """Markdown drift table (metric x base/ft/delta/status)."""
     lines = ["| metric | base | ft | delta | tol | status |",

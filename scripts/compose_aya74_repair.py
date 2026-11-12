@@ -46,6 +46,7 @@ from compose_aya74 import (  # noqa: E402
     safety_demo,
     safety_violation,
 )
+from hsea.safety.repair import stratified_sample  # noqa: E402
 
 SEED = 74
 N_DISPATCH_SFT = 200
@@ -84,25 +85,13 @@ def load_jsonl(path: Path) -> list[dict]:
 
 
 def stratified(rows: list[dict], n: int, seed: int = SEED) -> list[dict]:
-    """Proportional sample by ``priority`` (P1/P2/P3), seeded."""
-    rng = random.Random(seed)
-    buckets: dict[str, list[dict]] = {}
-    for rec in rows:
-        buckets.setdefault(rec.get("priority", "?"), []).append(rec)
-    for bucket in buckets.values():
-        rng.shuffle(bucket)
-    total = len(rows)
-    quotas = {k: max(1, round(n * len(v) / total))
-              for k, v in buckets.items()}
-    while sum(quotas.values()) > n:
-        biggest = max(quotas, key=quotas.get)  # type: ignore[arg-type]
-        quotas[biggest] -= 1
-    out = []
-    for key in sorted(buckets):
-        out.extend(buckets[key][:quotas[key]])
-    rng.shuffle(out)
-    assert len(out) == n, f"stratified {len(out)} != {n}"
-    return out
+    """Proportional sample by ``priority`` (P1/P2/P3), seeded.
+
+    Delegates to the shared SafeTune harness
+    (``hsea.safety.repair.stratified_sample``); this name stays for
+    backward compatibility (tests + ``compose_aya73_repair``).
+    """
+    return stratified_sample(rows, n, seed)
 
 
 def dispatch_prompt(situation: str) -> str:
