@@ -1,9 +1,11 @@
 # LLM-as-judge playbook: graded judgments with reasoning (issue #62)
 
-Status: protocol complete, pilot complete (see the companion report).
+Status: protocol complete, pilot complete, Meta calibration
+complete (see the companion reports).
 Scope: all five judged tracks (footage, safety, abstention, red-team,
 dispatch pairs) plus the sim-track boundary.
-Companion report: [issue-62-judge-playbook](reports/issue-62-judge-playbook.md).
+Companion reports: [issue-62-judge-playbook](reports/issue-62-judge-playbook.md),
+[issue-62-meta-judge](reports/issue-62-meta-judge.md).
 Single source: `hsea/judge/templates.py` (renderers + parser + tests).
 
 ## 0. How to use this doc
@@ -643,7 +645,7 @@ totals from `runs/judge-pilot-62/spend.json`). At these rates a
 dual-judge 1,000-row track rerun costs about $0.27, and a swap-twice
 dual-judge pass over all 24 curation pairs costs about $0.01.
 
-Budget rule (binding, tied to the shared $50 ledger):
+Budget rule (binding, tied to the shared $100 ledger):
 
 1. Estimate before every judged run: render all prompts, bound output
    tokens, multiply by the top listed rate; abort when the upper bound
@@ -770,4 +772,56 @@ row was sampled, else the template-expected verdict; full pilot rows in
 - Bradley and Terry, Rank analysis of incomplete block designs,
   Biometrika 1952 (via Chiang et al.); Elo, The Rating of Chessplayers
   (via Chiang et al., §4).
+
+## 9. Meta provider and cost guidance
+
+The approved second vendor for dual-judge duty is the Meta Model API
+(OpenAI-compatible, `https://api.meta.ai/v1`, key `META_AI_API_KEY`).
+Single source for endpoints, rates, and calibrated configs is
+`hsea/judge/providers.py` (pure config plus arithmetic, no API calls;
+tests in `tests/test_judge_providers.py`). Unlike the §3 template
+blocks, the rate numbers below are hand-maintained: refresh them from
+the pricing links before any large run. Full evidence is the
+companion report
+[issue-62-meta-judge](reports/issue-62-meta-judge.md), which replayed
+all 60 pilot prompts through three Meta configs.
+
+Rates (USD per 1M tokens, checked 2026-11-10; reasoning bills as
+output, which dominates judge cost):
+
+| Model | Input | Output | Cached input |
+|---|---|---|---|
+| muse-ember-1.0 | $0.10 | $0.50 | $0.004 |
+| muse-spark-1.3/1.2/1.1 | $1.25 | $4.25 | $0.15 |
+| muse-wonder-1.0 | $4.00 | $20.00 | $0.20 |
+
+Calibrated configs (temperature 0.0, blind identity, seed 62, same
+schemas as §2):
+
+| Config | Model | reasoning_effort | max_tokens | Measured $/1k | Core gold-match |
+|---|---|---|---|---|---|
+| ember-minimal (default) | muse-ember-1.0 | minimal | 600 | $0.25 | 31/40 |
+| ember-low | muse-ember-1.0 | low | 1200 | $0.45 | 31/40 |
+| wonder-low (tie-break only) | muse-wonder-1.0 | low | 1200 | $17.83 | 31/40 |
+
+Guidance (binding):
+
+1. Default Meta judge is ember-minimal: it ties the dearer configs on
+   gold-match, aligns best with both HF judges, parses clean, and
+   costs 1.9x the HF router reference. Use it as the second-family
+   partner or the third-judge tie-breaker.
+2. Never run a Muse judge at default effort: HEAVY reasoning emits
+   hundreds of billed output tokens before any verdict text, with no
+   measured quality gain over low or minimal.
+3. Budget max_tokens for reasoning PLUS the verdict text. Low effort
+   emits 450-600 reasoning tokens on judge prompts; a 600 cap
+   truncates the verdict, and even 1200 truncated one ember-low row in
+   60 (mid-word, finish `length`). Either budget 1600+ at low effort
+   or drop to minimal, which held 40/40 parses at a 600 cap.
+4. wonder-low is third-judge duty on high-stakes rows only (137x the
+   HF reference cost). spark-low is unapproved until a calibration run
+   measures it; never quote its projected $4.39/1k as observed.
+5. Estimate before every Meta run (`judge_meta_pilot.py estimate`
+   implements the upper bound from listed rates) and ledger every
+   cent per §5 rule 3.
 

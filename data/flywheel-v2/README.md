@@ -63,4 +63,4 @@ Blind re-verification (no network, no writes):
 ## HF revision pin
 
 - Dataset: `sanggusti/dmb-flywheel-v2` (gated)
-- Pinned revision: `b44237e145af1f0d9cfa3f22ec36f77d22ca5393` (HEAD; the card copy on the Hub lags this line by its own upload commit)
+- Pinned revision: `07c4e27919e8ddabbb358dda3c54ea24a6e7dd66` (HEAD; the card copy on the Hub lags this line by its own upload commit)

@@ -1,0 +1,12 @@
+{
+  "config": "ember-minimal",
+  "model": "muse-ember-1.0",
+  "finetune": "repair",
+  "calls": 48,
+  "errors": 0,
+  "prompt_tokens": 78903,
+  "completion_tokens": 12358,
+  "reasoning_tokens": 5408,
+  "computed_cost": 0.014069299999999998,
+  "minutes": 1.0976199467976888
+}

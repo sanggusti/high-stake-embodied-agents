@@ -1,0 +1,16 @@
+{
+  "issue": 73,
+  "seed": 73,
+  "rows": 199,
+  "extract_verified": 71,
+  "judges": [
+    "hf-v41",
+    "wonder-low"
+  ],
+  "sources": {
+    "inputs.jsonl": "088b262203830441",
+    "sanity_inputs.jsonl": "f40906b99e939f4b",
+    "judgments.jsonl": "8a88448328a7cce2",
+    "agreement.json": "a41b1f3c66fad159"
+  }
+}

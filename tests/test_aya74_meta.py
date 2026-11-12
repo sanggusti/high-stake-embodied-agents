@@ -1,0 +1,82 @@
+"""Stage 6 + replay tests (#74): 3-way agreement pins, replay check."""
+
+import json
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+
+def test_meta_judge_spend_pinned():
+    spend = json.load(open(ROOT / "runs" / "aya74" / "judge_spend_meta.json"))
+    assert spend["config"] == "ember-minimal"
+    assert spend["calls"] == 174 and spend["errors"] == 0
+    assert spend["computed_cost"] == pytest.approx(0.0437, abs=0.001)
+    rows = [json.loads(line) for line in
+            open(ROOT / "runs" / "aya74" / "judgments_meta.jsonl")]
+    assert len(rows) == 174
+
+
+def test_three_way_agreement_pins():
+    agree = json.load(open(ROOT / "runs" / "aya74" / "agreement3.json"))
+    assert agree["judges"] == ["hf-v41", "hf-gemma", "meta-ember"]
+    t2 = agree["single"]["T2"]["pairs"]
+    assert t2["hf-v41-vs-meta-ember"]["agree"] == 42
+    assert agree["single"]["T2"]["bar_pass"] is True
+    assert agree["single"]["T1"]["bar_pass"] is True
+    # T3/T4: meta-vs-gemma dips under the 0.80 pair bar (recorded).
+    assert agree["single"]["T3"]["bar_pass"] is False
+    assert agree["single"]["T4"]["bar_pass"] is False
+    t5 = agree["t5"]["meta-ember"]
+    assert (t5["dpo"], t5["base"], t5["inconsistent"]) == (4, 19, 1)
+
+
+def test_replay_bundle_checks():
+    import replay_loop
+
+    out_dir = ROOT / "runs" / "issue-74" / "replays"
+    assert (out_dir / "aya74_replay.jsonl").exists()
+    manifest = json.load(open(out_dir / "manifest.json"))
+    assert manifest["rows"] == 174 and manifest["seed"] == 74
+    assert manifest["judges"] == ["hf-gemma", "hf-v41", "meta-ember"]
+    replay_loop.check_bundle(74)
+    row = json.loads(open(out_dir / "aya74_replay.jsonl").readline())
+    assert set(row) >= {"key", "kind", "seed", "input", "generations",
+                        "judgments"}
+    assert set(row["generations"]) >= {"base", "sft", "dpo"}
+
+
+def test_gpu_replay_bundle_checks():
+    import replay_loop
+
+    out_dir = ROOT / "runs" / "issue-74" / "replays"
+    assert (out_dir / "aya74_gpu_replay.jsonl").exists()
+    manifest = json.load(open(out_dir / "manifest_gpu.json"))
+    assert manifest["rows"] == 48 and manifest["seed"] == 74
+    assert manifest["finetunes"] == ["repair"]
+    assert manifest["judges"] == ["hf-gemma", "hf-v41", "meta-ember"]
+    replay_loop.check_gpu_bundle(74)
+    row = json.loads(open(out_dir / "aya74_gpu_replay.jsonl").readline())
+    assert set(row) >= {"key", "kind", "seed", "finetune", "input",
+                        "generations", "judgments"}
+    assert row["key"].split(":")[2] == "repair"
+    assert set(row["generations"]) == {"base", "repair"}
+
+
+def test_t5_repair_reverses_dpo_regression():
+    analysis = json.load(open(ROOT / "runs" / "aya74" / "analysis.json"))
+    assert analysis["t5"]["dpo"] == 5  # the recorded regression
+    repair = json.load(
+        open(ROOT / "runs" / "aya74" / "analysis_t5_repair.json"))
+    assert repair["finetune"] == "repair"
+    for judge, cell in repair["t5"].items():
+        assert cell["pairs"] == 24
+        assert cell["repair"] > cell["base"]  # every HF judge flips
+    meta = json.load(
+        open(ROOT / "runs" / "aya74" / "agreement3_t5_repair.json"))
+    assert meta["t5"]["meta-ember"]["repair"] == 12
+    assert meta["t5"]["meta-ember"]["base"] == 5

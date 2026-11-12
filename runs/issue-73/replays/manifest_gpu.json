@@ -1,0 +1,31 @@
+{
+  "issue": 73,
+  "seed": 73,
+  "rows": 204,
+  "finetunes": [
+    "repair",
+    "grpo",
+    "orpo"
+  ],
+  "judges": [
+    "hf-gemma",
+    "hf-v41",
+    "meta-ember"
+  ],
+  "sources": {
+    "plan_followup.json": "adcd7065ecd34c7f",
+    "judgments_followup.jsonl": "783c93791f8d0cd0",
+    "judgments_followup_meta.jsonl": "ec8073aa7962dbb4",
+    "analysis_followup.json": "3a6e49680b64c801",
+    "agreement3_followup.json": "87b0fbe276ce7b90",
+    "eval_base.jsonl": "55e3f483d562b7b3",
+    "eval_dpo.jsonl": "5fcb4862ed6d94d7",
+    "eval_grpo.jsonl": "f72eab44591f9097",
+    "eval_ipo.jsonl": "f914a6456b2f6d71",
+    "eval_kto.jsonl": "cd316b2d6a25970d",
+    "eval_orpo.jsonl": "2a3f1d51f0b738a9",
+    "eval_repair.jsonl": "2a130f8b849d2751",
+    "eval_rft.jsonl": "d5324c0bac4a3c31",
+    "eval_sft.jsonl": "880e6d957a453573"
+  }
+}

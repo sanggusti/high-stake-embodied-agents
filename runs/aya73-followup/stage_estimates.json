@@ -1,0 +1,59 @@
+{
+  "budget": {
+    "union_total_at_start": 87.52,
+    "followup_cap": 10.0,
+    "hard_union_cap": 100.0,
+    "note": "NO-GO any leg where 87.52+followup_spent+leg_upper>100; #8 frozen at $34.38 (halted)"
+  },
+  "legs": {
+    "g0_gen_base_sft_dpo": {
+      "class": "l4",
+      "note": "vLLM offline batched, 3x322 rows; merged sft/dpo reused from /work/merged",
+      "upper_min": 35,
+      "upper_usd": 0.47
+    },
+    "grpo_full": {
+      "class": "l4",
+      "upper_min": 30,
+      "upper_usd": 0.4,
+      "note": "measured 12s/step over 100 steps; smoke 5 steps passed"
+    },
+    "grpo_smoke": {
+      "class": "l4",
+      "note": "5 steps, measures min/step for the full-run gate",
+      "upper_min": 20,
+      "upper_usd": 0.27
+    },
+    "judges": {
+      "note": "ember-minimal primary + HF dual pair; T5 duels + adjudication samples",
+      "upper_usd": 1.0
+    },
+    "kto_finalize_note": "kto.jsonl re-uploaded after finalize-kto appends G0 drift negatives",
+    "orpo": {
+      "class": "l4",
+      "upper_min": 125,
+      "upper_usd": 1.7,
+      "note": "measured 0.121 steps/s over 882 steps (2 forwards/step); smoke 10 steps passed"
+    },
+    "rft": {
+      "class": "l4",
+      "note": "400 temp-0.7 samples + SFT on kept",
+      "upper_min": 20,
+      "upper_usd": 0.27
+    },
+    "stage4_repair_kto_ipo": {
+      "class": "l4",
+      "note": "334 SFT + ~84 KTO + 526 IPO rows, DPO/SFT-rate derived + cold start",
+      "upper_min": 25,
+      "upper_usd": 0.35
+    },
+    "verify": {
+      "class": "cpu",
+      "upper_usd": 0.0
+    }
+  },
+  "rates": {
+    "l4_per_min": 0.0134
+  },
+  "total_upper_usd": 4.46
+}
