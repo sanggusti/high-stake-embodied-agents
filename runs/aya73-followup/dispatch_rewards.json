@@ -1,0 +1,26 @@
+{
+  "n_prompts": 24,
+  "checkpoints": {
+    "base": {
+      "n": 24,
+      "mean_reward": 0.4458333333333333,
+      "priority_exact": 0.5,
+      "no_footer_rate": 0.2916666666666667,
+      "verifier_pass": 0.08333333333333333
+    },
+    "sft": {
+      "n": 24,
+      "mean_reward": 0.2291666666666667,
+      "priority_exact": 0.20833333333333334,
+      "no_footer_rate": 0.20833333333333334,
+      "verifier_pass": 0.041666666666666664
+    },
+    "dpo": {
+      "n": 24,
+      "mean_reward": 0.3875,
+      "priority_exact": 0.3333333333333333,
+      "no_footer_rate": 0.6666666666666666,
+      "verifier_pass": 0.25
+    }
+  }
+}
