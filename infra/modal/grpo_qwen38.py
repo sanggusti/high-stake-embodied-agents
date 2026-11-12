@@ -465,7 +465,8 @@ def train(probe: bool = False) -> dict:
         save_steps=steps,
         save_total_limit=1,
         bf16=True,
-        max_length=MAX_SEQ_LENGTH,
+        # NOTE: no max_length (absent in TRL 1.7.1 GRPOConfig; prompts
+        # are short dispatch situations, truncation never binds).
         beta=BETA,
         temperature=TEMPERATURE,
         seed=SEED,
