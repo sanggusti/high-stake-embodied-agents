@@ -175,5 +175,7 @@ count against the same $150 cap as Modal GPU spend.
 8 webtest-cpu-probe cpu 10 $0.00
 8 gpu-place-probe h100 1.1 $0.07
 8 dpo-eval-window h100 70 $4.61
-TOTAL 95.73
+8 safetune-fail-triton h100 2 $0.13
+8 safetune-probe h100 6.1 $0.40
+TOTAL 96.26
 ```

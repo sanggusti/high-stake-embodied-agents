@@ -74,7 +74,9 @@ GPU_RATES = {"A100-80GB": 2.49, "H100": 3.95, "H200": 4.54}
 ESTIMATE_S_PER_IT = 7.0
 PROBE_STEPS = 50
 ABORT_FACTOR = 2.0
-STAGE_BUDGET_USD = 3.0
+# 2026-11-12: $3.0 was A100 math; the A100 pool is dry (probe-placed
+# H100 twice), forcing $3.95/hr. $4.0 keeps the same run + margin.
+STAGE_BUDGET_USD = 4.0
 
 
 ABORT_CHECK_STEPS = 50
