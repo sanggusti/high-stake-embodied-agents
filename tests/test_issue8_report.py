@@ -77,3 +77,21 @@ def test_render_report_tables(tmp_path, monkeypatch):
     assert "0.500 | 0.600 | +0.100 (up)" in md
     assert "Closes" not in md  # body text lives in the PR, not the report
     assert "issue-8-before-after.png" in md
+
+
+def test_plot_loss_curves_mixed_legacy_and_reward(tmp_path, monkeypatch):
+    monkeypatch.setattr(rep, "REPORT_DIR", tmp_path)
+    monkeypatch.setenv("MPLCONFIGDIR", str(tmp_path))
+    trains = {
+        "dpo": {"train_loss": 0.02, "steps": 875},  # legacy: marker only
+        "safetune": {"train_loss": 0.3, "steps": 174,
+                     "loss_curve": [{"step": 50, "loss": 0.9},
+                                    {"step": 100, "loss": 0.5},
+                                    {"step": 174, "loss": 0.3}]},
+        "grpo": {"mean_reward": 0.6, "steps": 30,
+                 "loss_curve": [{"step": 10, "loss": 0.4, "reward": 0.5},
+                                {"step": 30, "loss": 0.2, "reward": 0.6}]},
+    }
+    path = rep.plot_loss_curves(trains)
+    assert path.exists()
+    assert path.stat().st_size > 0

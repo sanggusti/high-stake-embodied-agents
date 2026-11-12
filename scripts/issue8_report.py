@@ -5,7 +5,7 @@ Full-loop report (stages base -> dpo -> safetune -> grpo). Reads
 + ``judge_spend.json`` (judge-backed), ``train_<stage>.json`` (Modal
 training results), ``drift_<stage>.json`` (gate audits),
 ``ood_<tag>.json`` / ``bon_<tag>.json`` (generalization), and
-``rft_report.json`` (RLVR baseline). Writes five PNGs plus
+``rft_report.json`` (RLVR baseline). Writes six PNGs plus
 ``docs/reports/issue-8-full-loop.md``. House style: matplotlib Agg,
 150 dpi, claim titles, traced footers.
 
@@ -33,11 +33,12 @@ from judge_pilot import wilson  # noqa: E402
 RUN_DIR = ROOT / "runs" / "issue-8"
 REPORT_DIR = ROOT / "docs" / "reports"
 REPORT_MD = REPORT_DIR / "issue-8-full-loop.md"
-STAGES = ("dpo", "safetune", "grpo", "rft")
+STAGES = ("dpo", "ipo", "safetune", "grpo", "rft")
 
-COLORS = {"base": "#4C78A8", "dpo": "#F58518", "safetune": "#54A24B",
-          "grpo": "#E45756", "rft": "#79706E", "ft": "#F58518"}
-LABELS = {"base": "base Qwen3.8-27B-FP8", "dpo": "DPO",
+COLORS = {"base": "#4C78A8", "dpo": "#F58518", "ipo": "#9D755D",
+          "safetune": "#54A24B", "grpo": "#E45756", "rft": "#79706E",
+          "ft": "#F58518"}
+LABELS = {"base": "base Qwen3.8-27B-FP8", "dpo": "DPO", "ipo": "IPO",
           "safetune": "SafeTune", "grpo": "GRPO", "rft": "RFT",
           "ft": "finetune"}
 
@@ -231,6 +232,58 @@ def _delta_line(base: float, ft: float) -> str:
     return f"{base:.3f} | {ft:.3f} | {delta:+.3f} ({verb})"
 
 
+def plot_loss_curves(trains: dict) -> Path:
+    """Per-stage training loss vs step (final-loss markers for legacy).
+
+    Stages trained before loss-curve capture (SFT/DPO, 2026-11-11)
+    contribute only their recorded final loss as an end-marker;
+    newer stages plot the full log_history curve. GRPO reward (when
+    logged) rides the secondary axis.
+    """
+    _style()
+    order = ("sft", "dpo", "ipo", "safetune", "rft", "grpo")
+    fig, ax = plt.subplots(figsize=(8.5, 4.4))
+    ax2 = None
+    for stage in order:
+        t = trains.get(stage)
+        if not t:
+            continue
+        curve = t.get("loss_curve") or []
+        color = COLORS.get(stage, "#333333")
+        label = LABELS.get(stage, stage)
+        if curve:
+            steps = [p["step"] for p in curve]
+            losses = [p["loss"] for p in curve if "loss" in p]
+            if losses:
+                ax.plot(steps[:len(losses)], losses, marker="",
+                        color=color, label=label)
+            rewards = [(p["step"], p["reward"]) for p in curve
+                       if "reward" in p]
+            if rewards:
+                if ax2 is None:
+                    ax2 = ax.twinx()
+                ax2.plot([s for s, _ in rewards],
+                         [r for _, r in rewards], linestyle="--",
+                         color=color, label=f"{label} reward")
+        elif t.get("train_loss") is not None:
+            ax.scatter([t.get("steps", 0)], [t["train_loss"]],
+                       color=color, s=60, marker="D",
+                       label=f"{label} (final only)")
+    ax.set_xlabel("global step")
+    ax.set_ylabel("training loss")
+    if ax2 is not None:
+        ax2.set_ylabel("rule reward (dashed)")
+    ax.set_title("Training curves: loss falls, GRPO reward rises")
+    lines1, labels1 = ax.get_legend_handles_labels()
+    if ax2 is not None:
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax.legend(lines1 + lines2, labels1 + labels2, fontsize=7, ncol=2)
+    else:
+        ax.legend(fontsize=7, ncol=2)
+    return _save(fig, "issue-8-loss-curves.png",
+                 "src: runs/issue-8/train_<stage>.json (diamonds: legacy final-loss)")
+
+
 def plot_progression(summary: dict) -> Path:
     """Headline metrics across base -> logged stages (full matrices)."""
     _style()
@@ -300,7 +353,7 @@ def _stage_table(summary: dict) -> str:
 def _train_table(trains: dict) -> str:
     rows = ["| stage | loss/reward | steps | min | gpu | adapter |",
             "|---|---|---|---|---|---|"]
-    for stage in ("sft", "dpo", "safetune", "grpo", "rft"):
+    for stage in ("sft", "dpo", "ipo", "safetune", "grpo", "rft"):
         t = trains.get(stage)
         if not t:
             continue
@@ -375,8 +428,12 @@ frozen), seed 8. SFT: r32/alpha64, 1 epoch (slice-forced; protocol
 says 3), eff batch 8, lr 2e-4 cosine, max 2048, no packing. DPO:
 length-normalized (`sigmoid_norm`, beta 0.1), 1 epoch, lr 5e-5.
 SafeTune: safety-mix repair to Gate 2. GRPO: G=4 rule-reward pilot
-vs the E-RFT baseline. Data fixes at load (pinned data untouched):
-disasterm3 fragment lists joined, tool-call turns preserved.
+vs the E-RFT baseline. IPO: bake-off arm on the identical DPO config
+(§2.2 insurance vs DPO overfit on templated pairs). Data fixes at
+load (pinned data untouched): disasterm3 fragment lists joined,
+tool-call turns preserved.
+
+![training loss curves](issue-8-loss-curves.png)
 
 ## Before/after (held-out, base vs {stage})
 
@@ -566,7 +623,7 @@ def main(argv: list[str] | None = None) -> None:
     summary = json.loads((RUN_DIR / "summary.json").read_text())
     judges = json.loads((RUN_DIR / "judge_summary.json").read_text())
     trains = {st: _read(f"train_{st}.json")
-              for st in ("sft", "dpo", "safetune", "grpo", "rft")}
+              for st in ("sft", "dpo", "ipo", "safetune", "grpo", "rft")}
     trains = {k: v for k, v in trains.items() if v}
     spend = json.loads((RUN_DIR / "judge_spend.json").read_text())
     manifest = json.loads((RUN_DIR / "eval_manifest.json").read_text())
@@ -575,6 +632,7 @@ def main(argv: list[str] | None = None) -> None:
     plot_safety_bench(summary, judges, args.final)
     plot_judge_agreement(judges)
     plot_progression(summary)
+    plot_loss_curves(trains)
     REPORT_MD.write_text(render_report(summary, judges, trains, spend,
                                        manifest, args.final,
                                        _build_extra()))
