@@ -335,6 +335,9 @@ train_image = (
         PIN_BITSANDBYTES,
         PIN_HF_HUB,
         "hf_xet",
+        # TRL's grpo_trainer eagerly imports vllm_client -> requests
+        # (unused: standard HF generation; import-only dependency).
+        "requests",
         _CAUSAL_CONV1D_WHEEL,
         _PIN_FLA,
         _PIN_TILELANG,
