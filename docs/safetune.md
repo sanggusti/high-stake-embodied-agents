@@ -12,14 +12,50 @@ One-command base-vs-checkpoint safety comparison. Every finetune PR
 .venv/bin/python scripts/safetune_drift.py drift \
     --base <base-run> --ft <ft-run> \
     [--base-rt <rt-run> --ft-rt <rt-run>]
+
+# Audit loop-style recorded generations (base + every finetune at once)
+.venv/bin/python scripts/safetune_drift.py audit \
+    --run-dir runs/<loop> --checkpoints base,sft,dpo[,...] \
+    --seed <n> --out /tmp/st-audit.json --plot
 ```
 
 Implementation: metrics in `hsea/safety/drift.py` (pure functions over
-safety profiles), verdict mapping in `hsea/verdicts.py`
-(`safetune_verdict`), CLI + plots in `scripts/safetune_drift.py`.
-Inputs are recorded runs (`runs/<id>/safety_summary.json` +
-`scores.json` from `scripts/run_safety.py`, severity ASR from
-`scripts/redteam_report.py` runs).
+safety profiles, plus `evaluate_gates` for the Gate 1/2/3 bars),
+verdict mapping in `hsea/verdicts.py` (`safetune_verdict`), the shared
+generations→profiles→verdicts pipeline in `hsea/safety/harness.py`
+(`audit_run_dir`), repair-mix contracts in `hsea/safety/repair.py`,
+CLI + plots in `scripts/safetune_drift.py`. Inputs are recorded runs
+(`runs/<id>/safety_summary.json` + `scores.json` from
+`scripts/run_safety.py`, severity ASR from `scripts/redteam_report.py`
+runs) or loop-style generation dirs (`eval_prompts.jsonl` +
+`eval_<ckpt>.jsonl`, as in `runs/aya74/`).
+
+## Shared-harness consolidation
+
+The per-loop drift scripts (`scripts/aya73_drift.py`,
+`scripts/aya74_drift.py`) delegate to the shared harness; only
+loop-specific mechanism panels (aya73's verdict-drift) and plots stay
+local. Shared pieces, all proven on the recorded loop artifacts:
+
+| Piece | Shared home | Provenance |
+|---|---|---|
+| Generation loading, SafeTune profiles | `harness.load_generations`, `profile_for_checkpoint` | aya73/aya74 drift, byte-identical recompute |
+| Drift rows + Harden/Recover/Steer | `drift.compare_profiles`, `verdicts.safetune_verdict` | partial #10, both loops |
+| Gate 1/2/3 evaluation | `drift.evaluate_gates` | new formalization of `docs/safety-gates.md` |
+| AgentHarm harm-score rubric (0/0.5/1) | `harness.harm_score` | aya74, both lanes |
+| AgentHarm + over-refusal panels | `harness.agentharm_panel`, `overrefusal_panel` | both loops (XSTest inline vs split layouts) |
+| XSTest lane | `harness.xstest_panel` | both loops, both over-refusal definitions |
+| Stratified repair sampling | `repair.stratified_sample` | aya74 compose, byte-identical regen |
+| KTO label contract + trainer defaults | `repair.validate_kto_rows`, `KTO_DEFAULTS` | both loops (Modal legs mirror inline) |
+| Footer audit, held-out disjointness | `repair.audit_footers`, `assert_held_out_disjoint` | aya74 unification, both mixes |
+
+Two loop forks are reconciled, not papered over. XSTest
+over-refusal: aya74 counts hard refusals only, aya73 counts any
+deferral on a safe lookalike; the panel reports both
+(`overrefusal` + `deferral`) and reproduces each loop's recorded
+scores under its own definition. Footers: aya74 unified on
+`DECISION:`, aya73's mix predates unification (28 legacy `ACTION:`
+demos, pinned); new mixes must audit strict-clean.
 
 ## Drift axes
 
@@ -84,13 +120,17 @@ report).
 
 ## Finetune-workflow wiring
 
-#8/#9-style PRs must attach, in the PR body under "SafeTune drift":
+#8/#9-style PRs must attach a drift report as defined in
+`docs/safetune-drift-report.md` (template + filled aya74 example),
+in the PR body under "SafeTune drift":
 
-1. The `drift` markdown table (base run id + ft run id + eval-log
-   pointers from `runs/<id>/config.json`).
-2. The verdict line.
-3. The two PNGs (`*-drift-bars.png`, `*-delta-tol.png`), or links to
-   the issue report carrying them.
+1. Provenance (checkpoint ids, prompts/completions files, seed,
+   harness command).
+2. The drift markdown table(s) + verdict line(s).
+3. The Gate 1/2/3 evaluation.
+4. The benign panels (AgentHarm, over-refusal, XSTest when present).
+5. The PNGs (per-finetune `*-bars.png` + `*-delta-tol.png`), or links
+   to the issue report carrying them.
 
 Merge rule: **Harden** → may merge (gates green); **Steer** → merge
 only with the steering/demos landed in the same PR; **Recover** →

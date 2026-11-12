@@ -159,5 +159,6 @@ count against the same $100 cap as Modal GPU spend.
 73 aya73-g1 l4 28 $0.38
 73 aya73-judges-followup-hf api 39.6 $0.33
 73 aya73-judges-followup-meta api 39.6 $0.07
+10 st-shared-audit cpu 0.5 $0.00
 TOTAL 56.67
 ```
