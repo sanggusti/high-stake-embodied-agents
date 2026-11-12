@@ -50,7 +50,8 @@ ADAPTER_DIR = "/models/qwen38-flywheel-v2-grpo"
 LORA_R = 32
 LORA_ALPHA = 64
 LORA_DROPOUT = 0.05
-PILOT_STEPS = 60
+# 2026-11-12: 60 -> 30 (sanctioned slow-path trim; slice discipline).
+PILOT_STEPS = 30
 BATCH_SIZE = 4
 NUM_GENERATIONS = 4
 MAX_COMPLETION_LENGTH = 256
@@ -399,24 +400,30 @@ def train(probe: bool = False) -> dict:
     if not os.path.isdir(PARENT_ADAPTER_DIR):
         raise RuntimeError(
             f"{PARENT_ADAPTER_DIR} missing: run stage-4 SafeTune first")
-    rows: list[dict] = []
-    for line_no, line in enumerate(open(DATASET_PATH), start=1):
-        if line.strip():
-            rec = json.loads(line)
-            rows.append({
-                "prompt": [
-                    {"role": "system", "content": rec["system"]},
-                    {"role": "user", "content": rec["prompt"]},
-                ],
-                "gold": rec["gold"],
-            })
-    print(f"prompts: {len(rows)}", flush=True)
-
     tokenizer = AutoTokenizer.from_pretrained(
         BASE_MODEL, revision=BASE_REVISION, trust_remote_code=True
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+
+    rows: list[dict] = []
+    for line_no, line in enumerate(open(DATASET_PATH), start=1):
+        if line.strip():
+            rec = json.loads(line)
+            # No-think regime (2026-11-12): Qwen3.8 reasons out loud
+            # (~200-600 tokens) before the contract answer, so 256-token
+            # generations truncate to CoT-only and the rule rewards see
+            # zeros. Pre-render with enable_thinking=False; TRL takes
+            # the strings as-is. RFT samples the identical regime
+            # (same-verifier apples-to-apples); evals keep thinking
+            # (scorers parse the answer anywhere in the tail).
+            text = tokenizer.apply_chat_template(
+                [{"role": "system", "content": rec["system"]},
+                 {"role": "user", "content": rec["prompt"]}],
+                tokenize=False, add_generation_prompt=True,
+                enable_thinking=False)
+            rows.append({"prompt": text, "gold": rec["gold"]})
+    print(f"prompts: {len(rows)} (no-think pre-rendered)", flush=True)
 
     quant = BitsAndBytesConfig(
         load_in_4bit=True,

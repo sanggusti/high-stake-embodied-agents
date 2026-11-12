@@ -180,5 +180,6 @@ count against the same $150 cap as Modal GPU spend.
 8 safetune-train a100-80gb 21.1 $0.88
 8 ipo-train h200 71.1 $5.38
 8 ftserve-2lora-oom h100 37 $2.44
-TOTAL 104.96
+8 safetune-eval+rft a100-80gb 179 $7.43
+TOTAL 112.39
 ```

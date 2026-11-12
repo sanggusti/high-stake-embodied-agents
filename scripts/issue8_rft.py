@@ -50,11 +50,16 @@ def _client(base_url: str):
 
 
 def cmd_sample(url: str, model: str, n: int, limit: int,
-               temperature: float = 1.0, workers: int = 1) -> None:
+               temperature: float = 1.0, workers: int = 1,
+               no_think: bool = False) -> None:
     """Sample N completions per prompt from the served checkpoint.
 
     ``workers`` parallelizes the requests (server bills by wall time,
     so concurrency cuts GPU cost ~linearly to ~8 workers).
+    ``no_think`` passes ``enable_thinking=False`` through vLLM's
+    ``chat_template_kwargs``: Qwen3.8's spoken reasoning (~200-600
+    tokens) otherwise fills the 256-token budget and the verifier
+    sees CoT-only truncations (measured 4.4% pass with thinking).
     """
     import concurrent.futures  # noqa: PLC0415
 
@@ -62,15 +67,20 @@ def cmd_sample(url: str, model: str, n: int, limit: int,
     client = _client(url)
     t0 = time.time()
     jobs = [(rec, k) for rec in prompts for k in range(n)]
+    extra = ({"chat_template_kwargs": {"enable_thinking": False}}
+             if no_think else None)
 
     def _one(job):
         rec, k = job
-        resp = client.chat.completions.create(
-            model=model, temperature=temperature, max_tokens=256,
-            messages=[
-                {"role": "system", "content": rec["system"]},
-                {"role": "user", "content": rec["prompt"]},
-            ])
+        kwargs: dict = {"model": model, "temperature": temperature,
+                        "max_tokens": 256,
+                        "messages": [
+                            {"role": "system", "content": rec["system"]},
+                            {"role": "user", "content": rec["prompt"]},
+                        ]}
+        if extra is not None:
+            kwargs["extra_body"] = extra
+        resp = client.chat.completions.create(**kwargs)
         return {"id": rec["id"], "k": k,
                 "completion": resp.choices[0].message.content or "",
                 "gold": rec["gold"]}
@@ -157,12 +167,14 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
     p.add_argument("--temperature", type=float, default=1.0)
     p.add_argument("--workers", type=int, default=1)
+    p.add_argument("--no-think", action="store_true",
+                   help="disable spoken reasoning via template kwargs")
     sub.add_parser("filter", help="verifier-filter into SFT rows")
     sub.add_parser("report", help="print the RFT report")
     args = parser.parse_args(argv)
     if args.cmd == "sample":
         cmd_sample(args.url, args.model, args.n, args.limit,
-                   args.temperature, args.workers)
+                   args.temperature, args.workers, args.no_think)
     elif args.cmd == "filter":
         cmd_filter()
     elif args.cmd == "report":
