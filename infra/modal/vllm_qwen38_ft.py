@@ -13,7 +13,8 @@ Which adapter comes from the ``/models/ACTIVE_ADAPTER`` pointer file
 (one line: the adapter dir), written before each eval window, e.g.::
 
     echo /models/qwen38-flywheel-v2-dpo > /tmp/active_adapter
-    modal volume put dmb-flywheel-models /tmp/active_adapter ACTIVE_ADAPTER
+    modal volume put --force dmb-flywheel-models /tmp/active_adapter ACTIVE_ADAPTER
+    modal volume get dmb-flywheel-models ACTIVE_ADAPTER /tmp/check && cat /tmp/check
     modal deploy infra/modal/vllm_qwen38_ft.py
 
 inspect-ai reaches it as ``openai-api/modal/qwen38-flywheel-v2``
@@ -24,6 +25,12 @@ Two-stage windows (2026-11-12): writing a second adapter dir to
 ``qwen38-stage-b`` (``--max-loras 2``), so two stages share one
 cold start. Absent/empty pointer = single-LoRA proven config.
 Delete the pointer (``modal volume rm``) to revert a window.
+CAUTION (2026-11-12, ap-HU4e): the first 2-LoRA attempt OOM'd in
+cudagraph profiling (``cudagraph_specialize_lora`` doubles graph
+memory; 0.90 util leaves no headroom with 52 GiB bf16 weights).
+Do NOT retry 2-LoRA without lowering ``gpu_memory_utilization``
+AND re-checking the Mamba-block floor (fewer blocks at lower
+util vs ``max_num_seqs 256``). Single-LoRA windows stay default.
 
 Cold-start forensics (2026-11-11): the first deploy's task 1 crashed
 in BASE weight load (fused-qkv shape assert) while task 2, identical
