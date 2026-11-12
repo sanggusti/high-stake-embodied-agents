@@ -146,5 +146,14 @@ count against the same $100 cap as Modal GPU spend.
 73 aya73-probes api 1.0 $0.00
 73 aya73-judge-run1 api 8.0 $0.37
 73 aya73-judge-run2 api 33.8 $5.32
-TOTAL 53.14
+73 aya73-g0-smoke l4 4 $0.05
+73 aya73-g0 l4 8 $0.11
+73 aya73-stage4-smoke l4 5 $0.07
+73 aya73-stage4-full l4 9 $0.12
+73 aya73-orpo-smokes l4 8 $0.11
+73 aya73-grpo-smoke l4 3 $0.04
+73 aya73-rft-smoke l4 6 $0.08
+73 aya73-rft-full l4 48 $0.64
+73 aya73-grpo-full l4 28 $0.38
+TOTAL 54.74
 ```
