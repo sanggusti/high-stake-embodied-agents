@@ -1,0 +1,24 @@
+{
+  "seed": 73,
+  "hf_dataset": "sanggusti/dmb-flywheel-v2",
+  "hf_revision": "9ea14ba63cda2b1f180ff4858a51ba99590f1ebf",
+  "sources": {
+    "flywheel-sft": "5b944648ad57ef04",
+    "flywheel-dpo": "a322461981f87298"
+  },
+  "counts": {
+    "sft_train": 8667,
+    "sft_flywheel": 8613,
+    "sft_safety": 26,
+    "sft_abstention": 28,
+    "dpo_train": 7054,
+    "dpo_flywheel": 7000,
+    "dpo_safety": 26,
+    "dpo_abstention": 28,
+    "eval_safety": 78,
+    "eval_abstention": 52,
+    "eval_redteam": 30,
+    "eval_footage": 60,
+    "eval_dispatch": 24
+  }
+}

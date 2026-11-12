@@ -43,8 +43,8 @@ vendor API; edge = laptop/on-device class).
 | gpt-oss-120b / 20b | OpenAI | 117B/5.1B, 21B/3.6B MoE | T only (reasoning) | 128K | Apache 2.0 | Modal (20b MXFP4); 120b 1×80GB | reasoning/text baseline |
 | Kimi K2.6 | Moonshot | 1T MoE / 32B active | T+I (MoonViT) | 256K | modified MIT | HFInf / API only | frontier agent baseline (watch: K2 API retires Dec 2026) |
 | Phi-4-reasoning-vision-15B | Microsoft | 15B | T+I (reasoning) | 16K | MIT | Modal vLLM | reasoning-VLM baseline |
-| SmolVLM-256M / 500M | HF (HuggingFaceTB) | 256M / 500M | T+I | [UNVERIFIED] | Apache 2.0 [verify on card] | edge | extreme-edge VLM floor |
-| SmolLM3-3B | HF (HuggingFaceTB) | 3B | T (hybrid reasoning) | long [UNVERIFIED] | Apache 2.0 [verify on card] | Modal / edge | small text baseline |
+| SmolVLM-256M / 500M | HF (HuggingFaceTB) | 256M / 500M | T+I | 8K (256M verified; 500M [UNVERIFIED]) | Apache 2.0 (256M verified on card) | edge | extreme-edge VLM floor |
+| SmolLM3-3B | HF (HuggingFaceTB) | 3B | T (hybrid reasoning) | 64K trained (→128K YARN) | Apache 2.0 (verified on card) | Modal / edge | small text baseline |
 | Llama 4 Scout / Maverick | Meta | 109B / ~400B MoE | T+I | 10M / 1M | Llama Community License | HFInf only; **HF-gated (401)** — same blocker as before | baseline only if gating resolved |
 | InternVL3.5 | OpenGVLab | 1B–38B dense, to 241B-A28B | T+I+V | [UNVERIFIED] | mixed — verify PER CHECKPOINT | Modal (small dense) | alt VLM (license diligence needed) |
 
@@ -156,7 +156,9 @@ vendor API; edge = laptop/on-device class).
 - **SmolLM3-3B** (Jul 2025, hybrid reasoning, multilingual, long ctx),
   **SmolVLM2-2.2B** (Feb 2025 — still current, no SmolVLM3), plus brand-new
   **SmolVLM-256M/500M-Instruct** (Nov 2026, "world's smallest VLM").
-  Presumed Apache 2.0 — verify per card. Extreme-edge floor for the bench.
+  License + ctx verified on card 2026-11-10 (issue #4): SmolLM3-3B and
+  SmolVLM-256M-Instruct are Apache-2.0 (64K trained / 8K ctx); 500M
+  still unverified. Extreme-edge floor for the bench.
 
 ### OpenAI / Meta / others
 - **gpt-oss-120b/20b** (Aug 5, 2025, Apache 2.0, 128K, text-only MoE
@@ -213,7 +215,8 @@ data/recipes help).
    floor + Cohere multilingual baseline.
 6. **SmolVLM-256M-Instruct** — *extreme-edge VLM floor.* Nov 2026, fits
    anywhere (edge NPUs, cheap GPUs), establishes the minimum viable
-   vision-language score for drone evals. Verify license + ctx on card.
+   vision-language score for drone evals. License (Apache-2.0) + ctx (8K)
+   verified on card 2026-11-10 (issue #4).
    Role: edge baseline (pairs with Tiny Aya: text floor vs vision floor).
    - Runner-up swap: **Phi-4-reasoning-vision-15B** (MIT, reasoning+vision,
      Modal-friendly) if the bench wants a mid-size reasoning VLM instead
@@ -303,10 +306,10 @@ V4.1-Flash / Mistral Large 3 as optional frontier reference points).
   are multi-sourced.
 - DeepSeek V4.1-Flash param counts + context (V4-Pro 1.6T/49B/1M/MIT is
   solid; Flash specifics thin).
-- SmolLM3/SmolVLM license + context (presumed Apache 2.0 — confirm on
-  HuggingFaceTB cards); InternVL3.5 per-checkpoint licenses; Gemma 4
-  QAT quant availability on Modal (GGUF/QAT quants exist via
-  Unsloth/Ollama — vLLM path needs a check).
+- SmolVLM-500M license + context (256M + SmolLM3 resolved 2026-11-10,
+  issue #4: both Apache-2.0, 8K / 64K); InternVL3.5 per-checkpoint
+  licenses; Gemma 4 QAT quant availability on Modal (GGUF/QAT quants
+  exist via Unsloth/Ollama — vLLM path needs a check).
 - Llama 4.5 (one source claims Jun 2026; contradicted by several "no new
   Llama generation" sources) — treated as nonexistent.
 - GLM-5.x, Liquid LFM2, Granite Vision, StepFun, MiniMax, Muse Glimmer

@@ -1,0 +1,18 @@
+{
+  "issue": 74,
+  "seed": 74,
+  "rows": 174,
+  "judges": [
+    "hf-gemma",
+    "hf-v41",
+    "meta-ember"
+  ],
+  "sources": {
+    "eval_prompts.jsonl": "32e9facdbb79a130",
+    "eval_base.jsonl": "8a00e06a4c69fa6d",
+    "eval_sft.jsonl": "1ed5d0fd02b828f3",
+    "eval_dpo.jsonl": "2defa7df70363504",
+    "judgments.jsonl": "5a0631850d326ce5",
+    "judgments_meta.jsonl": "2c7ecbf441acfbc1"
+  }
+}

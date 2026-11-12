@@ -1,0 +1,20 @@
+{
+  "issue": 74,
+  "seed": 74,
+  "rows": 48,
+  "finetunes": [
+    "repair"
+  ],
+  "judges": [
+    "hf-gemma",
+    "hf-v41",
+    "meta-ember"
+  ],
+  "sources": {
+    "eval_prompts.jsonl": "32e9facdbb79a130",
+    "eval_base.jsonl": "8a00e06a4c69fa6d",
+    "eval_repair.jsonl": "eb6924caa1ecf74e",
+    "judgments_t5_repair.jsonl": "a8d258102f4e6896",
+    "judgments_meta_t5_repair.jsonl": "397993443f930767"
+  }
+}

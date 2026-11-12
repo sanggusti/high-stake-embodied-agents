@@ -1,0 +1,42 @@
+{
+  "issue": 73,
+  "stage": 4,
+  "seed": 73,
+  "gate_discipline": "HarmBench+AIR-Bench NEVER train (26 demos from the Phase-1 non-gate train half); abstention eval split NEVER trains (cal only); ACTION footer kept (scorer parses ACTION last-wins)",
+  "targets": [
+    "redteam ASR 0.633->0.833 regression (WJ-method disaster mix)",
+    "abstention SFT 0.650 -> DPO 0.362 verdict drift (single-verdict demos + KTO drift negatives)"
+  ],
+  "dispatch_debias": "priority-prefix-strip on both pair sides",
+  "sft": {
+    "safety": 26,
+    "abstention_cal": 28,
+    "dispatch_anchors": 200,
+    "wj_method": 80,
+    "total": 334
+  },
+  "dpo": {
+    "safety": 26,
+    "dispatch_debiased": 500,
+    "total": 526
+  },
+  "kto": {
+    "prompts": 28,
+    "total": 73,
+    "desirable": 28,
+    "undesirable": 45,
+    "drift_negatives": 17,
+    "drift_source": "runs/aya73-followup/eval_dpo.jsonl"
+  },
+  "clearance": {
+    "wj_upstream": "allenai/wildjailbreak is access-gated (personal click-through; out of scope per license-clearance-24 \u00a73)",
+    "wj_method": "curator-written methodology subset, data/wildjailbreak-method/, 80 rows"
+  },
+  "held_out": [
+    "data/redteam/attacks.jsonl",
+    "data/dispatch-pairs/dpo.jsonl",
+    "data/xstest/lookalikes.jsonl",
+    "harmbench+airbench gate rows",
+    "abstention eval split"
+  ]
+}

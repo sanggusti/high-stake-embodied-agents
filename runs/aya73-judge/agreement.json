@@ -1,0 +1,265 @@
+{
+  "safety": {
+    "tinyaya73-base": {
+      "n": 13,
+      "parsed": 13,
+      "hits": 5,
+      "lo": 0.177,
+      "hi": 0.645
+    },
+    "tinyaya73-sft": {
+      "n": 17,
+      "parsed": 17,
+      "hits": 4,
+      "lo": 0.096,
+      "hi": 0.473
+    },
+    "tinyaya73-dpo": {
+      "n": 18,
+      "parsed": 18,
+      "hits": 8,
+      "lo": 0.246,
+      "hi": 0.663
+    },
+    "gold": {
+      "n": 8,
+      "parsed": 8,
+      "hits": 8,
+      "lo": 0.676,
+      "hi": 1.0
+    }
+  },
+  "abstention": {
+    "tinyaya73-base": {
+      "n": 13,
+      "parsed": 10,
+      "hits": 4,
+      "lo": 0.168,
+      "hi": 0.687
+    },
+    "tinyaya73-sft": {
+      "n": 15,
+      "parsed": 14,
+      "hits": 9,
+      "lo": 0.388,
+      "hi": 0.837
+    },
+    "tinyaya73-dpo": {
+      "n": 13,
+      "parsed": 13,
+      "hits": 6,
+      "lo": 0.232,
+      "hi": 0.709
+    },
+    "gold": {
+      "n": 6,
+      "parsed": 3,
+      "hits": 2,
+      "lo": 0.208,
+      "hi": 0.939
+    }
+  },
+  "redteam": {
+    "tinyaya73-base": {
+      "n": 12,
+      "parsed": 12,
+      "hits": 3,
+      "lo": 0.089,
+      "hi": 0.532
+    },
+    "tinyaya73-sft": {
+      "n": 13,
+      "parsed": 13,
+      "hits": 2,
+      "lo": 0.043,
+      "hi": 0.422
+    },
+    "tinyaya73-dpo": {
+      "n": 12,
+      "parsed": 12,
+      "hits": 1,
+      "lo": 0.015,
+      "hi": 0.354
+    }
+  },
+  "footage": {
+    "tinyaya73-base": {
+      "n": 6,
+      "parsed": 6,
+      "hits": 3,
+      "lo": 0.188,
+      "hi": 0.812
+    },
+    "tinyaya73-sft": {
+      "n": 2,
+      "parsed": 2,
+      "hits": 1,
+      "lo": 0.095,
+      "hi": 0.905
+    },
+    "tinyaya73-dpo": {
+      "n": 7,
+      "parsed": 7,
+      "hits": 6,
+      "lo": 0.487,
+      "hi": 0.974
+    },
+    "gold": {
+      "n": 6,
+      "parsed": 6,
+      "hits": 6,
+      "lo": 0.61,
+      "hi": 1.0
+    }
+  },
+  "dispatch": {
+    "wins": {
+      "tinyaya73-base-vs-tinyaya73-dpo": {
+        "first": 3,
+        "second": 2,
+        "tie": 1,
+        "n": 6
+      },
+      "tinyaya73-base-vs-tinyaya73-sft": {
+        "first": 2,
+        "second": 2,
+        "tie": 2,
+        "n": 6
+      },
+      "tinyaya73-sft-vs-tinyaya73-dpo": {
+        "first": 2,
+        "second": 2,
+        "tie": 2,
+        "n": 6
+      }
+    },
+    "conflict_rate": 0.222
+  },
+  "rescue": {
+    "safety/tinyaya73-base": {
+      "det0": [
+        4,
+        12
+      ],
+      "det1": [
+        1,
+        1
+      ]
+    },
+    "safety/tinyaya73-sft": {
+      "det0": [
+        1,
+        12
+      ],
+      "det1": [
+        3,
+        5
+      ]
+    },
+    "safety/tinyaya73-dpo": {
+      "det0": [
+        5,
+        12
+      ],
+      "det1": [
+        3,
+        6
+      ]
+    },
+    "abstention/tinyaya73-base": {
+      "det0": [
+        3,
+        9
+      ],
+      "det1": [
+        1,
+        1
+      ]
+    },
+    "abstention/tinyaya73-sft": {
+      "det0": [
+        1,
+        6
+      ],
+      "det1": [
+        3,
+        3
+      ]
+    },
+    "abstention/tinyaya73-dpo": {
+      "det0": [
+        4,
+        10
+      ],
+      "det1": [
+        0,
+        1
+      ]
+    },
+    "redteam/tinyaya73-base": {
+      "det0": [
+        1,
+        1
+      ],
+      "det1": [
+        2,
+        11
+      ]
+    },
+    "redteam/tinyaya73-sft": {
+      "det0": [
+        0,
+        1
+      ],
+      "det1": [
+        2,
+        12
+      ]
+    },
+    "redteam/tinyaya73-dpo": {
+      "det0": [
+        0,
+        1
+      ],
+      "det1": [
+        1,
+        11
+      ]
+    },
+    "footage/tinyaya73-base": {
+      "det0": [
+        2,
+        5
+      ],
+      "det1": [
+        1,
+        1
+      ]
+    },
+    "footage/tinyaya73-sft": {
+      "det0": [
+        1,
+        2
+      ],
+      "det1": [
+        0,
+        0
+      ]
+    },
+    "footage/tinyaya73-dpo": {
+      "det0": [
+        6,
+        7
+      ],
+      "det1": [
+        0,
+        0
+      ]
+    }
+  },
+  "spot": {
+    "n": 24,
+    "agree": 19,
+    "kappa": 0.752
+  }
+}

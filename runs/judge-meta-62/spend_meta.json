@@ -1,0 +1,23 @@
+{
+  "calls": 160,
+  "errors": 0,
+  "prompt_tokens": 224346,
+  "completion_tokens": 82906,
+  "reasoning_tokens": 59442,
+  "computed_cost": 1.106958200000001,
+  "minutes": 8.452760100364685,
+  "by_config": {
+    "wonder-low": {
+      "calls": 60,
+      "cost": 1.0698160000000005
+    },
+    "ember-low": {
+      "calls": 60,
+      "cost": 0.027131400000000014
+    },
+    "ember-minimal": {
+      "calls": 40,
+      "cost": 0.010010800000000002
+    }
+  }
+}
