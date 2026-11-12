@@ -105,8 +105,15 @@ def detect_fused() -> str:
         fla_v = getattr(fla, "__version__", "?")
     except ImportError:
         fla_v = None
+    try:
+        import tilelang  # noqa: PLC0415
+
+        tl_v = getattr(tilelang, "__version__", "?")
+    except ImportError:
+        tl_v = None
     if cc1d and fla_v:
-        return f"fused prebuilt (causal-conv1d {cc1d}, fla {fla_v})"
+        return (f"fused prebuilt (causal-conv1d {cc1d}, fla {fla_v}, "
+                f"tilelang {tl_v})")
     if cc1d or fla_v:
         return f"PARTIAL kernels (cc1d={cc1d}, fla={fla_v})"
     return "reference impl (no prebuilt kernels)"
@@ -266,6 +273,11 @@ _CAUSAL_CONV1D_WHEEL = (
     "-cp312-cp312-linux_x86_64.whl"
 )
 _PIN_FLA = "flash-linear-attention[cuda]==0.6.0"
+# Hopper (H100/H200) escape hatch (2026-11-12): fla 0.6.0 refuses its
+# Triton gated-bwd kernel on sm_90 with Triton < 3.7.1 (wrong
+# results, see fla#640) and prescribes tilelang. abi3 manylinux
+# wheel, JIT-compiles in the devel image. Validated by probe.
+_PIN_TILELANG = "tilelang==0.1.15"
 
 train_image = (
     modal.Image.from_registry("nvidia/cuda:12.8.0-devel-ubuntu22.04", add_python="3.12")
@@ -286,6 +298,7 @@ train_image = (
         "hf_xet",
         _CAUSAL_CONV1D_WHEEL,
         _PIN_FLA,
+        _PIN_TILELANG,
     )
     .env({"HF_XET_HIGH_PERFORMANCE": "1"})
 )
