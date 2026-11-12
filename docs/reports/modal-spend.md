@@ -156,5 +156,8 @@ count against the same $100 cap as Modal GPU spend.
 73 aya73-rft-full l4 48 $0.64
 73 aya73-grpo-full l4 28 $0.38
 73 aya73-orpo-full l4 86 $1.15
-TOTAL 55.89
+73 aya73-g1 l4 28 $0.38
+73 aya73-judges-followup-hf api 39.6 $0.33
+73 aya73-judges-followup-meta api 39.6 $0.07
+TOTAL 56.67
 ```

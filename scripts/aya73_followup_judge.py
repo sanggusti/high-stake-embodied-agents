@@ -15,6 +15,8 @@ Commands (keys from env or .env):
   python scripts/aya73_followup_judge.py plan      # -> plan_followup.json
   python scripts/aya73_followup_judge.py estimate  # upper-bound, cap $1 HARD
   python scripts/aya73_followup_judge.py run       # call judges, ledger calls
+  python scripts/aya73_followup_judge.py topup     # judge plan keys lacking
+                                                 # any judge (resume/add rows)
   python scripts/aya73_followup_judge.py respot    # rescue HF errors/unparsed
   python scripts/aya73_followup_judge.py analyze   # tallies + agreement
   python scripts/aya73_followup_judge.py plot      # agreement + T5 bars
@@ -70,6 +72,11 @@ MAX_RETRIES = 3
 META_CONFIG = "ember-minimal"
 HF_MAX = 1200  # v41 overruns 600 (Phase-1 respot evidence)
 SAMPLE_CAP = 12
+# Singles caps sized so the crude upper (every response at max
+# tokens) fits the $1 hard cap: T5 144 + T4 24 + T3 24 + T2 6 = 198.
+T4_CAP = 8
+T3_CAP = 8
+T2_GATE_ONLY = True  # gate misses only; no non-gate top-up
 T5_ARMS = ("repair", "grpo", "orpo")
 
 TRACK_LABELS = {"T2": SAFETY_LABELS, "T3": ABSTENTION_LABELS,
@@ -151,7 +158,7 @@ def build_plan() -> list[dict]:
         comps["dpo"].get(p["key"], ""), p["meta"]["family"],
         p["meta"]["severity"], p["meta"]["markers"])["asr"] == 1.0]
     rng.shuffle(asr1)
-    for p in asr1[:SAMPLE_CAP]:
+    for p in asr1[:T4_CAP]:
         pid = p["key"].split(":", 1)[1]
         rec = rt_eval[pid]
         for ckpt in ("dpo", "repair", "orpo"):
@@ -179,7 +186,7 @@ def build_plan() -> list[dict]:
         (drift if multi else miss).append(p)
     rng.shuffle(drift)
     rng.shuffle(miss)
-    for p in (drift + miss)[:SAMPLE_CAP]:
+    for p in (drift + miss)[:T3_CAP]:
         pid = p["key"].split(":", 1)[1]
         for ckpt in ("dpo", "repair", "kto"):
             if ckpt not in comps:
@@ -201,7 +208,8 @@ def build_plan() -> list[dict]:
         (gate_miss if p["meta"]["gate"] else other_miss).append(p)
     rng.shuffle(gate_miss)
     rng.shuffle(other_miss)
-    for p in (gate_miss + other_miss)[:SAMPLE_CAP]:
+    t2_pool = gate_miss if T2_GATE_ONLY else gate_miss + other_miss
+    for p in t2_pool[:SAMPLE_CAP]:
         pid = p["key"].split(":", 1)[1]
         for ckpt in ("dpo", "repair", "orpo"):
             if ckpt not in comps:
@@ -312,6 +320,71 @@ def _call_hf(client, model: str, system: str, user: str) -> dict:
     return {"error": f"{type(last).__name__}: {str(last)[:200]}"}
 
 
+def _judge_one(meta_cli, hf_cli, model: str, effort: str,
+               max_out: int, rec: dict) -> tuple[dict, list[dict]]:
+    """Judge one plan row with all three judges (shared run/topup)."""
+    res = _call_meta(meta_cli, model, effort, max_out,
+                     rec["system"], rec["user"])
+    row = {"key": rec["key"], "kind": rec["kind"],
+           "judge": "meta-ember", "config": META_CONFIG,
+           "model": model, "gold": rec["gold"]}
+    if "error" in res:
+        row["error"] = res["error"]
+        print(f"meta {rec['key']} ERROR {res['error']}", flush=True)
+    else:
+        row.update(res)
+        row["computed_cost"] = judgment_cost(
+            res["prompt_tokens"], res["completion_tokens"], model)
+        print(f"meta {rec['key']} in={res['prompt_tokens']} "
+              f"out={res['completion_tokens']} "
+              f"(reason={res['reasoning_tokens']}) "
+              f"${row['computed_cost']:.5f} {res['latency_s']}s",
+              flush=True)
+    hf_rows = []
+    for judge, hf_model in (("hf-v41", HF_JUDGE_A),
+                            ("hf-gemma", HF_JUDGE_B)):
+        res = _call_hf(hf_cli, hf_model, rec["system"], rec["user"])
+        hrow = {"key": rec["key"], "kind": rec["kind"],
+                "judge": judge, "model": hf_model, "gold": rec["gold"]}
+        if "error" in res:
+            hrow["error"] = res["error"]
+            print(f"{judge} {rec['key']} ERROR {res['error']}", flush=True)
+        else:
+            hrow.update(res)
+            print(f"{judge} {rec['key']} out={res['completion_tokens']} "
+                  f"${res['computed_cost']:.5f} {res['latency_s']}s",
+                  flush=True)
+        hf_rows.append(hrow)
+    return row, hf_rows
+
+
+def _write_spend(hf_rows: list[dict], meta_rows: list[dict],
+                 minutes: float, model: str) -> None:
+    ok_hf = [r for r in hf_rows if "error" not in r]
+    ok_meta = [r for r in meta_rows if "error" not in r]
+    with open(RUN_DIR / "judge_spend_followup.json", "w") as fh:
+        json.dump({
+            "judges": ["hf-v41", "hf-gemma"], "calls": len(ok_hf),
+            "errors": len(hf_rows) - len(ok_hf),
+            "prompt_tokens": sum(r["prompt_tokens"] for r in ok_hf),
+            "completion_tokens": sum(r["completion_tokens"]
+                                     for r in ok_hf),
+            "computed_cost": sum(r["computed_cost"] for r in ok_hf),
+            "minutes": round(minutes, 2)}, fh, indent=2)
+    with open(RUN_DIR / "judge_spend_followup_meta.json", "w") as fh:
+        json.dump({
+            "config": META_CONFIG, "model": model,
+            "calls": len(ok_meta),
+            "errors": len(meta_rows) - len(ok_meta),
+            "prompt_tokens": sum(r["prompt_tokens"] for r in ok_meta),
+            "completion_tokens": sum(r["completion_tokens"]
+                                     for r in ok_meta),
+            "reasoning_tokens": sum(r["reasoning_tokens"]
+                                    for r in ok_meta),
+            "computed_cost": sum(r["computed_cost"] for r in ok_meta),
+            "minutes": round(minutes, 2)}, fh, indent=2)
+
+
 def cmd_run() -> None:
     from openai import OpenAI
 
@@ -336,69 +409,58 @@ def cmd_run() -> None:
                 fh.write(json.dumps(row) + "\n")
 
     for rec in plan:
-        res = _call_meta(meta, model, effort, max_out,
-                         rec["system"], rec["user"])
-        row = {"key": rec["key"], "kind": rec["kind"],
-               "judge": "meta-ember", "config": META_CONFIG,
-               "model": model, "gold": rec["gold"]}
-        if "error" in res:
-            row["error"] = res["error"]
-            print(f"meta {rec['key']} ERROR {res['error']}", flush=True)
-        else:
-            row.update(res)
-            row["computed_cost"] = judgment_cost(
-                res["prompt_tokens"], res["completion_tokens"], model)
-            print(f"meta {rec['key']} in={res['prompt_tokens']} "
-                  f"out={res['completion_tokens']} "
-                  f"(reason={res['reasoning_tokens']}) "
-                  f"${row['computed_cost']:.5f} {res['latency_s']}s",
-                  flush=True)
-        meta_rows.append(row)
-        for judge, hf_model in (("hf-v41", HF_JUDGE_A),
-                                ("hf-gemma", HF_JUDGE_B)):
-            res = _call_hf(hf, hf_model, rec["system"], rec["user"])
-            hrow = {"key": rec["key"], "kind": rec["kind"],
-                    "judge": judge, "model": hf_model, "gold": rec["gold"]}
-            if "error" in res:
-                hrow["error"] = res["error"]
-                print(f"{judge} {rec['key']} ERROR {res['error']}",
-                      flush=True)
-            else:
-                hrow.update(res)
-                print(f"{judge} {rec['key']} out={res['completion_tokens']} "
-                      f"${res['computed_cost']:.5f} {res['latency_s']}s",
-                      flush=True)
-            hf_rows.append(hrow)
+        mrow, hrows = _judge_one(meta, hf, model, effort, max_out, rec)
+        meta_rows.append(mrow)
+        hf_rows.extend(hrows)
         if len(meta_rows) % 10 == 0:
             _flush()
     _flush()
     minutes = (time.time() - t0) / 60
-    ok_hf = [r for r in hf_rows if "error" not in r]
-    ok_meta = [r for r in meta_rows if "error" not in r]
-    with open(RUN_DIR / "judge_spend_followup.json", "w") as fh:
-        json.dump({
-            "judges": ["hf-v41", "hf-gemma"], "calls": len(ok_hf),
-            "errors": len(hf_rows) - len(ok_hf),
-            "prompt_tokens": sum(r["prompt_tokens"] for r in ok_hf),
-            "completion_tokens": sum(r["completion_tokens"]
-                                     for r in ok_hf),
-            "computed_cost": sum(r["computed_cost"] for r in ok_hf),
-            "minutes": round(minutes, 2)}, fh, indent=2)
-    with open(RUN_DIR / "judge_spend_followup_meta.json", "w") as fh:
-        json.dump({
-            "config": META_CONFIG, "model": model,
-            "calls": len(ok_meta),
-            "errors": len(meta_rows) - len(ok_meta),
-            "prompt_tokens": sum(r["prompt_tokens"] for r in ok_meta),
-            "completion_tokens": sum(r["completion_tokens"]
-                                     for r in ok_meta),
-            "reasoning_tokens": sum(r["reasoning_tokens"]
-                                    for r in ok_meta),
-            "computed_cost": sum(r["computed_cost"] for r in ok_meta),
-            "minutes": round(minutes, 2)}, fh, indent=2)
-    print(f"calls={len(ok_hf) + len(ok_meta)} "
-          f"errors={len(hf_rows) + len(meta_rows) - len(ok_hf) - len(ok_meta)} "
+    _write_spend(hf_rows, meta_rows, minutes, model)
+    ok = sum(1 for r in hf_rows + meta_rows if "error" not in r)
+    print(f"calls={ok} errors={len(hf_rows) + len(meta_rows) - ok} "
           f"minutes={minutes:.1f}")
+
+
+def cmd_topup() -> None:
+    """Judge plan keys lacking any judge (resume or added rows)."""
+    from openai import OpenAI
+
+    plan = _load_plan()
+    with open(RUN_DIR / "judgments_followup.jsonl") as fh:
+        hf_rows = [json.loads(line) for line in fh if line.strip()]
+    with open(RUN_DIR / "judgments_followup_meta.jsonl") as fh:
+        meta_rows = [json.loads(line) for line in fh if line.strip()]
+    have = {(r["key"], r["judge"]) for r in hf_rows + meta_rows
+            if "error" not in r}
+    missing = [r for r in plan
+               if not all((r["key"], j) in have
+                          for j in ("hf-v41", "hf-gemma", "meta-ember"))]
+    print(f"topup targets: {len(missing)}")
+    if not missing:
+        return
+    cfg = META_JUDGE_CONFIGS[META_CONFIG]
+    model = str(cfg["model"])
+    effort = str(cfg["reasoning_effort"])
+    max_out = int(cfg["max_tokens"])
+    meta = OpenAI(api_key=_key("META_AI_API_KEY"), base_url=META_BASE_URL)
+    hf = OpenAI(api_key=_key("HF_API_KEY", "HUGGINGFACE_TOKEN"),
+                base_url=HF_BASE_URL)
+    t0 = time.time()
+    for rec in missing:
+        mrow, hrows = _judge_one(meta, hf, model, effort, max_out, rec)
+        meta_rows.append(mrow)
+        hf_rows.extend(hrows)
+    with open(RUN_DIR / "judgments_followup.jsonl", "w") as fh:
+        for row in hf_rows:
+            fh.write(json.dumps(row) + "\n")
+    with open(RUN_DIR / "judgments_followup_meta.jsonl", "w") as fh:
+        for row in meta_rows:
+            fh.write(json.dumps(row) + "\n")
+    prev = json.load(open(RUN_DIR / "judge_spend_followup.json"))
+    minutes = prev.get("minutes", 0) + (time.time() - t0) / 60
+    _write_spend(hf_rows, meta_rows, minutes, model)
+    print(f"topup done: {len(missing)} keys")
 
 
 def cmd_respot() -> None:
@@ -673,10 +735,11 @@ def cmd_plot() -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="issue-73 follow-up judge")
     parser.add_argument("command", choices=["plan", "estimate", "run",
-                                            "respot", "analyze", "plot"])
+                                            "topup", "respot", "analyze",
+                                            "plot"])
     args = parser.parse_args(argv)
     {"plan": cmd_plan, "estimate": cmd_estimate, "run": cmd_run,
-     "respot": cmd_respot, "analyze": cmd_analyze,
+     "topup": cmd_topup, "respot": cmd_respot, "analyze": cmd_analyze,
      "plot": cmd_plot}[args.command]()
 
 

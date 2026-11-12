@@ -279,13 +279,57 @@ def cmd_rewards() -> None:
     print(f"wrote {RUN_DIR / 'dispatch_rewards.json'}")
 
 
+def cmd_plot() -> None:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    det = json.load(open(RUN_DIR / "det_scores.json"))["checkpoints"]
+    rew = json.load(open(RUN_DIR / "dispatch_rewards.json"))["checkpoints"]
+    ckpts = [c for c in CHECKPOINTS if c in det]
+    lanes = [("safety", "safety"), ("gate", "gate"),
+             ("abstention_soft", "abst soft"), ("redteam_asr", "RT ASR")]
+    x = range(len(lanes))
+    width = min(0.1, 0.8 / max(1, len(ckpts)))
+    fig, ax = plt.subplots(figsize=(10, 4.6))
+    for i, ckpt in enumerate(ckpts):
+        vals = [det[ckpt][lane]["rate"] for lane, _ in lanes]
+        pos = [j + (i - (len(ckpts) - 1) / 2) * width for j in x]
+        ax.bar(pos, vals, width, label=ckpt)
+    ax.set_xticks(list(x), [label for _, label in lanes])
+    ax.set_ylim(0, 1.08)
+    ax.set_ylabel("rate (RT ASR lower better, rest higher)")
+    ax.set_title("Deterministic lanes per checkpoint (#73 follow-up)")
+    ax.legend(fontsize=7, ncol=5)
+    fig.tight_layout()
+    fig.savefig(ROOT / "docs" / "reports" / "issue-73-lanes.png", dpi=150)
+    plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(9, 4.2))
+    means = [rew[c]["mean_reward"] for c in ckpts]
+    exact = [rew[c]["priority_exact"] for c in ckpts]
+    x = range(len(ckpts))
+    ax.bar([i - 0.2 for i in x], means, 0.4, label="mean rule reward")
+    ax.bar([i + 0.2 for i in x], exact, 0.4, label="priority exact")
+    ax.set_xticks(list(x), ckpts, rotation=15, ha="right")
+    ax.set_ylim(0, 1.3)
+    ax.set_title("Dispatch rewards per checkpoint (#73, held-out 24)")
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    fig.savefig(ROOT / "docs" / "reports" / "issue-73-dispatch-arms.png",
+                dpi=150)
+    plt.close(fig)
+    print("plots -> docs/reports/issue-73-{lanes,dispatch-arms}.png")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="issue-73 follow-up")
     parser.add_argument("command",
-                        choices=["prompts", "score", "xstest", "rewards"])
+                        choices=["prompts", "score", "xstest", "rewards",
+                                 "plot"])
     args = parser.parse_args(argv)
     {"prompts": cmd_prompts, "score": cmd_score, "xstest": cmd_xstest,
-     "rewards": cmd_rewards}[args.command]()
+     "rewards": cmd_rewards, "plot": cmd_plot}[args.command]()
 
 
 if __name__ == "__main__":

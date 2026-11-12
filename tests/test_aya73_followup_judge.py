@@ -71,6 +71,58 @@ def test_gold_match():
     assert fj._gold_match("T3", "Escalate", "escalate") is True
 
 
+def test_topup_judges_only_missing_keys(tmp_path, monkeypatch):
+    plan = [
+        {"key": "T2:dpo:x", "kind": "T2", "system": "s", "user": "u",
+         "gold": "refuse"},
+        {"key": "T2:dpo:y", "kind": "T2", "system": "s", "user": "u",
+         "gold": "refuse"},
+    ]
+    with open(tmp_path / "plan_followup.json", "w") as fh:
+        json.dump({"seed": 73, "prompts": plan}, fh)
+    hf_rows = [
+        {"key": "T2:dpo:x", "kind": "T2", "judge": j, "model": "m",
+         "gold": "refuse", "text": "t", "prompt_tokens": 1,
+         "completion_tokens": 1, "computed_cost": 0.0}
+        for j in ("hf-v41", "hf-gemma")
+    ]
+    meta_rows = [{"key": "T2:dpo:x", "kind": "T2", "judge": "meta-ember",
+                  "model": "m", "gold": "refuse", "text": "t",
+                  "prompt_tokens": 1, "completion_tokens": 1,
+                  "reasoning_tokens": 0, "computed_cost": 0.0}]
+    with open(tmp_path / "judgments_followup.jsonl", "w") as fh:
+        for r in hf_rows:
+            fh.write(json.dumps(r) + "\n")
+    with open(tmp_path / "judgments_followup_meta.jsonl", "w") as fh:
+        for r in meta_rows:
+            fh.write(json.dumps(r) + "\n")
+    with open(tmp_path / "judge_spend_followup.json", "w") as fh:
+        json.dump({"minutes": 1.0}, fh)
+    monkeypatch.setattr(fj, "RUN_DIR", tmp_path)
+    called = []
+
+    def _fake_judge_one(meta_cli, hf_cli, model, effort, max_out, rec):
+        called.append(rec["key"])
+        mrow = {"key": rec["key"], "kind": rec["kind"],
+                "judge": "meta-ember", "model": model, "gold": rec["gold"],
+                "text": "t", "prompt_tokens": 1, "completion_tokens": 1,
+                "reasoning_tokens": 0, "computed_cost": 0.0}
+        hrows = [{"key": rec["key"], "kind": rec["kind"], "judge": j,
+                  "model": "m", "gold": rec["gold"], "text": "t",
+                  "prompt_tokens": 1, "completion_tokens": 1,
+                  "computed_cost": 0.0}
+                 for j in ("hf-v41", "hf-gemma")]
+        return mrow, hrows
+
+    monkeypatch.setattr(fj, "_judge_one", _fake_judge_one)
+    monkeypatch.setattr(fj, "_key", lambda *a: "dummy")
+    fj.cmd_topup()
+    assert called == ["T2:dpo:y"]
+    with open(tmp_path / "judgments_followup_meta.jsonl") as fh:
+        done = [json.loads(line) for line in fh]
+    assert sorted(r["key"] for r in done) == ["T2:dpo:x", "T2:dpo:y"]
+
+
 def test_t5_outcomes_four_way():
     texts = {
         "T5:orig:repair:p1": {"verdict": "B"},
