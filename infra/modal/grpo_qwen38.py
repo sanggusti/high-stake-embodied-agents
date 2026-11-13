@@ -542,7 +542,8 @@ def train(probe: bool = False) -> dict:
     minutes = (time.time() - t0) / 60
     commit = os.environ.get("HSEA_COMMIT", "unknown")
     logs = trainer.state.log_history or [{}]
-    mean_reward = float(logs[-1].get("reward", 0.0))
+    scored = [entry for entry in logs if "reward" in entry]
+    mean_reward = float(scored[-1]["reward"]) if scored else 0.0
     card = build_model_card(mean_reward, stats.global_step, len(rows),
                             commit, gpu_name)
     hf_rev = None

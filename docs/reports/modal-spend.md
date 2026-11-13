@@ -184,5 +184,7 @@ count against the same $150 cap as Modal GPU spend.
 8 ipo-eval+rft200 h200 101 $7.64
 8 rft-sample-st h100 14.4 $0.95
 8 rft-train a100-80gb 4.8 $0.20
-TOTAL 121.18
+8 grpo-fail-imports h100 2.5 $0.16
+8 grpo-train h100 12.3 $0.81
+TOTAL 122.15
 ```
