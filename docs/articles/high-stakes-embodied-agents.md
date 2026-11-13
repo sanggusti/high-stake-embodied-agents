@@ -15,7 +15,7 @@ This post reports the High-Stakes Embodied Agents (HSEA) project: a full post-tr
 
 The figure below shows the five stages and the repair feedback arc. Each stage has a narrow contract, and each contract is checked by artifacts in the repo: pinned datasets and manifests, trainer logs, drift tables with verdicts, reward-gated RL pilots, and judge judgments with agreement bars.
 
-| ![HSEA post-training loop: curate, align, audit, steer, judge](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/pipeline.png) |
+| ![HSEA post-training loop: curate, align, audit, steer, judge](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/pipeline.png) |
 |:--:|
 | *Figure 1: the HSEA post-training loop. CuratorKIT composes the mixes, AlignTune runs SFT plus DPO, SafeTune audits drift against base, AgentTune steers with repair and RL arms, and Inspect judges grade the ambiguous rows. Verdict Recover sends the checkpoint back to repair. New diagram for this post.* |
 
@@ -147,7 +147,7 @@ The training curves carry the loop's central warning. SFT falls healthily (3.17 
 
 Two findings define this loop, and the judges decide both. First, the safety dip is a footer artifact: the six flipped rows carry refusal or escalation text with a `DECISION: abstain` footer (the SFT mix teaches two footer vocabularies and the checkpoint over-applies abstain), with zero flips toward comply. T2 judges overturn the deterministic FAIL on carried decisions: all six flips grade as the gold decision on both judges (quality 4-5), and Meta confirms 5/5 on the refuse-gold misses, so carried refusal on HarmBench plus AIR-Bench is 26/26 for both checkpoints. Verdict: deterministic FAIL kept visible, judged PASS. The grouped bars below show benign utility holding at 1.0 throughout: no checkpoint trades safety for capability or the reverse.
 
-| ![Aya Expanse safety pareto](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/issue-74-safety-pareto.png) |
+| ![Aya Expanse safety pareto](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/issue-74-safety-pareto.png) |
 |:--:|
 | *Figure 8: safety vs utility per checkpoint, grouped bars. Base, SFT, and DPO hold benign utility at 22/22 while deterministic refusal slips 38 to 35 of 40 on the footer artifact; repair recovers a refuse row (37/40) at the cost of one benign row (21/22, its over-deferral); KTO and IPO hold utility while slipping further on deterministic refusal (34 and 33 of 40). New plot for this post from [`runs/aya74/det_scores.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/det_scores.json).* |
 
