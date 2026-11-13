@@ -13,7 +13,7 @@ This post reports the High-Stakes Embodied Agents (HSEA) project: a full post-tr
 
 ## The loop in one picture
 
-The figure below shows the five stages and the repair feedback arc. Each stage has a narrow contract, and each contract is checked by artifacts in the repo: pinned datasets and manifests, trainer logs, drift tables with verdicts, reward-gated RL pilots, and judge judgments with agreement bars.
+The figure below shows the five stages and the repair feedback arc. Each stage has a narrow contract, and each contract is checked by artifacts in the repo: pinned datasets and manifests, trainer logs, drift tables with verdicts, reward-gated RL pilots, and judge judgments with agreement panels.
 
 | ![HSEA post-training loop: curate, align, audit, steer, judge](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/pipeline.png) |
 |:--:|
@@ -49,7 +49,7 @@ When the audit says Recover, AgentTune re-tunes on a constrained repair mix: the
 
 ### Inspect judges T1 through T5
 
-Deterministic scorers stay primary wherever truth is cheap. Judges open only the rows where exact match hides behavior: T1 rescues semantic matches on footage VQA and counting, T2 grades the carried safety decision plus quality 1-5, T3 grades the carried abstention verdict from the reasoning (the footer never decides alone), T4 adjudicates ambiguous red-team rows as succeeded, refused, flagged, or partial, and T5 ranks blind dispatch pairs A/B with swap-twice ([MT-Bench](https://arxiv.org/abs/2306.05685): a win counts only when the same response wins in both orders, else tie, with the Conflict Rate reported). Every template forces reasoning before the verdict ([Fair Evaluators](https://arxiv.org/abs/2305.17926)), parses totally (malformed output routes to human review, never to a default label), and hides model identity. The agreement bar for dual judges from different families is verdict agreement at 0.80 or above AND Cohen kappa at 0.60 or above, else a third judge breaks the tie. Judge calibration details and the one expensive lesson (a $5.69 wonder-low run that the later loops never repeated) appear in Section 5.
+Deterministic scorers stay primary wherever truth is cheap. Judges open only the rows where exact match hides behavior: T1 rescues semantic matches on footage VQA and counting, T2 grades the carried safety decision plus quality 1-5, T3 grades the carried abstention verdict from the reasoning (the footer never decides alone), T4 adjudicates ambiguous red-team rows as succeeded, refused, flagged, or partial, and T5 ranks blind dispatch pairs A/B with swap-twice ([MT-Bench](https://arxiv.org/abs/2306.05685): a win counts only when the same response wins in both orders, else tie, with the Conflict Rate reported). Every template forces reasoning before the verdict ([Fair Evaluators](https://arxiv.org/abs/2305.17926)), parses totally (malformed output routes to human review, never to a default label), and hides model identity. The agreement bar for dual judges from different families is verdict agreement at 0.80 or above AND Cohen kappa at 0.60 or above, else a third judge breaks the tie. The three judges are [DeepSeek-V4.1-Flash](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash) (DeepSeek), [Gemma-3-27B](https://huggingface.co/google/gemma-3-27b-it) (Gemma), and Meta muse-ember-1.0 (Ember, ember-minimal config), with Meta muse-wonder-1.0 (Wonder, wonder-low config) reserved for high-stakes third-judge duty. Judge calibration details and the one expensive lesson (a $5.69 Wonder run that the later loops never repeated) appear in Section 5.
 
 ## Loop 1: Tiny Aya 3.35B ([issue #73](https://github.com/sanggusti/expert-spork/issues/73))
 
@@ -71,11 +71,11 @@ The deterministic before/after table below is the loop in miniature: safety clim
 
 *Table 1: Tiny Aya deterministic lanes. Safety gains hold through DPO; abstention and red-team retreat from the SFT peak. The refusal gate passes with a wide margin (Wilson intervals 0.062-0.335 base vs 0.665-0.938 finetune), and benign compliance reaches 10/10, so the gate gain reflects real refusal behavior. The ASR rise crosses above base (McNemar p = 0.146 at n = 30, outside significance, with the wrong direction).*
 
-The bar chart carries the same story visually: SFT does most of the work on every track except red-team, and DPO extends the safety gain while giving back abstention and red-team.
+The slope chart carries the same story visually: rising slopes where SFT does the work, kinks where DPO gives back abstention and red-team.
 
-| ![Tiny Aya deterministic before/after bars](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/issue-73-delta-bars.png) |
+| ![Tiny Aya deterministic before/after slopes](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/issue-73-delta-bars.png) |
 |:--:|
-| *Figure 2: Tiny Aya before/after. Safety, gate, and benign climb monotonically; abstention peaks at SFT and falls back at DPO; red-team ASR rises at DPO; footage stays flat at the text-only floor. Source: [`runs/aya73-recompute/before_after.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-recompute/before_after.json).* |
+| *Figure 2: Tiny Aya before/after slopes across base, SFT, and DPO. Safety, gate, and benign climb monotonically; abstention peaks at SFT and falls back at DPO; red-team ASR (rust, lower better) dips at SFT then rises past base at DPO; footage stays flat at the text-only floor. New plot for this post from [`runs/aya73-recompute/before_after.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-recompute/before_after.json).* |
 
 The loss curves explain part of the shape. Both stages converge, and DPO converges suspiciously fast: near zero within about 50 steps. Template-opposite chosen/rejected pairs separate trivially, so DPO moved style (DECISION lines, dispatch phrasing) more than judgment.
 
@@ -107,11 +107,11 @@ The follow-up stages attack both symptoms. The repair mix holds 334 SFT rows, 52
 
 Two arms deserve their own sentences. ORPO, the single-stage ablation from base over the full 7,054-pair mix, separates totally (loss 3.82 to 0.0001 over 882 steps) and learns dispatch brilliantly (rule reward 0.929, priority exact 22/24, no-footer 24/24) while under-learning the minority safety contract (safety 0.551, gate 0.654): the split is the finding. GRPO-beats-RFT passes on the pre-registered rule (0.458 vs 0.442) while reading honestly as a statistical tie (paired permutation p = 0.41; 9 wins, 4 losses, 11 ties over 24 prompts), with RFT itself adding only 0.054 over DPO. No ReMax fallback fired: GRPO ran stable with KL under 0.002 and zero clipped steps.
 
-The judge duels confirm the dispatch ordering on all three judges (DeepSeek-V4.1-Flash, Gemma, Meta ember-minimal; 24 situations, swap-twice): every arm beats base, and ORPO's margins (20-2, 17-3, 21-1) confirm the deterministic blowout.
+The judge duels confirm the dispatch ordering on all three judges (DeepSeek, Gemma, Ember; 24 situations, swap-twice): every arm beats base, and ORPO's margins (20-2, 17-3, 21-1) confirm the deterministic blowout.
 
-| ![Tiny Aya T5 arm duels vs base](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/issue-73-t5-arms.png) |
+| ![Tiny Aya T5 arm duels vs base](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/issue-73-t5-arms.png) |
 |:--:|
-| *Figure 5: T5 dispatch duels, each arm vs base. Repair and GRPO beat base narrowly on every judge; ORPO dominates on every judge. Judges also confirm the repair abstention gains (T3) and the repair ASR non-fix (T4, unanimous 1/10 vs DPO 2-3/10). Source: [`analysis_followup.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-followup/analysis_followup.json).* |
+| *Figure 5: T5 dispatch duels, each arm vs base, diverging rows per judge. Arm wins extend right, base wins left. Repair and GRPO beat base narrowly on every judge; ORPO dominates on every judge. Judges also confirm the repair abstention gains (T3) and the repair ASR non-fix (T4, unanimous 1/10 vs DPO 2-3/10). New plot for this post from [`analysis_followup.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-followup/analysis_followup.json).* |
 
 Loop spend: $23.70 total ($20.17 Phase 1 including $5.69 in judges, plus $3.53 follow-up: $3.13 GPU, $0.40 judges), inside the $15 plus $10 slice caps with every leg estimate-gated.
 
@@ -145,23 +145,23 @@ The training curves carry the loop's central warning. SFT falls healthily (3.17 
 |:--:|
 | *Figure 7: all-leg training curves. DPO and IPO separate almost perfectly, an overfit warning; with nothing left to learn from the pair loss, DPO keeps the contract style while losing action concreteness, the price Section 6 of the loop report traces to the dispatch regression. Source: [`runs/aya74/training_curves.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/training_curves.json).* |
 
-Two findings define this loop, and the judges decide both. First, the safety dip is a footer artifact: the six flipped rows carry refusal or escalation text with a `DECISION: abstain` footer (the SFT mix teaches two footer vocabularies and the checkpoint over-applies abstain), with zero flips toward comply. T2 judges overturn the deterministic FAIL on carried decisions: all six flips grade as the gold decision on both judges (quality 4-5), and Meta confirms 5/5 on the refuse-gold misses, so carried refusal on HarmBench plus AIR-Bench is 26/26 for both checkpoints. Verdict: deterministic FAIL kept visible, judged PASS. The grouped bars below show benign utility holding at 1.0 throughout: no checkpoint trades safety for capability or the reverse.
+Two findings define this loop, and the judges decide both. First, the safety dip is a footer artifact: the six flipped rows carry refusal or escalation text with a `DECISION: abstain` footer (the SFT mix teaches two footer vocabularies and the checkpoint over-applies abstain), with zero flips toward comply. T2 judges overturn the deterministic FAIL on carried decisions: all six flips grade as the gold decision on both judges (quality 4-5), and Ember confirms 5/5 on the refuse-gold misses, so carried refusal on HarmBench plus AIR-Bench is 26/26 for both checkpoints. Verdict: deterministic FAIL kept visible, judged PASS. The grouped bars below show benign utility holding at 1.0 throughout: no checkpoint trades safety for capability or the reverse.
 
 | ![Aya Expanse safety pareto](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/issue-74-safety-pareto.png) |
 |:--:|
 | *Figure 8: safety vs utility per checkpoint, grouped bars. Base, SFT, and DPO hold benign utility at 22/22 while deterministic refusal slips 38 to 35 of 40 on the footer artifact; repair recovers a refuse row (37/40) at the cost of one benign row (21/22, its over-deferral); KTO and IPO hold utility while slipping further on deterministic refusal (34 and 33 of 40). New plot for this post from [`runs/aya74/det_scores.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/det_scores.json).* |
 
-Second, the dispatch regression is the alignment tax made visible. T5 base-vs-DPO duels over the 24 held-out situations run 18-5-1 under v41 (DPO rate 0.208) and 19-4-1 under Meta (0.167): base wins nearly four to one. Two traced mechanisms: footer leakage (off-label `ACTION: standdown`, `ACTION: notify_coordinator`, `DECISION: prioritize` in a setting with no footer) and hedged actions (P1 downgraded to P2, notify-before-acting proposals that the priority-first rubric punishes).
+Second, the dispatch regression is the alignment tax made visible. T5 base-vs-DPO duels over the 24 held-out situations run 18-5-1 under DeepSeek (DPO rate 0.208) and 19-4-1 under Ember (0.167): base wins nearly four to one. Two traced mechanisms: footer leakage (off-label `ACTION: standdown`, `ACTION: notify_coordinator`, `DECISION: prioritize` in a setting with no footer) and hedged actions (P1 downgraded to P2, notify-before-acting proposals that the priority-first rubric punishes).
 
 | ![Aya Expanse T5 duels base vs DPO](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/issue-74-t5-duels.png) |
 |:--:|
 | *Figure 9: T5 dispatch duels, base vs DPO. Base wins nearly four to one on the T5 priority-first rubric: the safety contract generalized into the dispatch head as deferral. Source: [`runs/aya74/judgments.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments.jsonl).* |
 
-Repair reverses it. Base-vs-repair duels over the same 24 situations run 20-2 under v41 (rate 0.833), 13-7 under Gemma (0.542), and 12-5 with 2 ties under Meta (0.500): every judge flips from the DPO verdict. Deterministic dispatch reward agrees (priority exact 4/24 to 21/24, no-footer 2/24 to 21/24, verifier pass 0/24 to 19/24). Honest footnote from the loop report: the footer unification did not take (repair abstention rows still emit `ACTION:`), so the reversal belongs to the dispatch anchors plus debiased pairs.
+Repair reverses it. Base-vs-repair duels over the same 24 situations run 20-2 under DeepSeek (rate 0.833), 13-7 under Gemma (0.542), and 12-5 with 2 ties under Ember (0.500): every judge flips from the DPO verdict. Deterministic dispatch reward agrees (priority exact 4/24 to 21/24, no-footer 2/24 to 21/24, verifier pass 0/24 to 19/24). Honest footnote from the loop report: the footer unification did not take (repair abstention rows still emit `ACTION:`), so the reversal belongs to the dispatch anchors plus debiased pairs.
 
-| ![Aya Expanse T5 repair duels](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/issue-74-t5-repair.png) |
+| ![Aya Expanse T5 repair duels](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/issue-74-t5-repair.png) |
 |:--:|
-| *Figure 10: T5 dispatch duels, base vs repair. The chart mirrors Figure 9 with the colors swapped: repair wins nearly every row under v41 and a clear majority under Gemma and Meta. The judge spread reflects real disagreement about hedged-yet-correct rows. Source: [`judgments_t5_repair.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments_t5_repair.jsonl) plus Meta judgments.* |
+| *Figure 10: T5 dispatch duels, base vs repair. The chart mirrors Figure 9 with the colors swapped: repair wins nearly every row under DeepSeek and a clear majority under Gemma and Ember. The judge spread reflects real disagreement about hedged-yet-correct rows. Source: [`judgments_t5_repair.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments_t5_repair.jsonl) plus Ember judgments.* |
 
 The RL read is careful. GRPO-beats-RFT passes decisively on the rule (0.954 vs 0.154), and the loop report re-measures it honestly: GRPO cold-started from repair (0.962) while RFT started from DPO (0.112), so the gate mostly re-measures the repair lift. The meaningful finding is preservation: 100 RL steps held the cold-start (0.954 vs 0.962, 21/24 exact both) with the in-training reward slope still positive (0.52 to 0.69), KL under 0.01, zero clipped steps, no ReMax fallback. RFT kept 38/400 rows (7.5% pass rate) and barely moves greedy dispatch (0.154 vs DPO 0.112, pass still 0/24): 38 kept rows cannot re-teach the head.
 
@@ -169,24 +169,34 @@ Loop spend: $17.54 slice against the $25 cap (GPU legs $5.90 against the $10.95 
 
 ## Judge calibration across both loops
 
-The dual-judge bar (agreement 0.80 or above AND kappa 0.60 or above) passes on every Aya Expanse track, and Meta ember-minimal as third judge matches or beats the HF pair on three of four tracks, with a perfect 30/30 on T1. The two dips sit on Meta-vs-Gemma pairs only, with wide intervals at small n.
+The dual-judge bar (agreement 0.80 or above AND kappa 0.60 or above) passes on every Aya Expanse track, and Ember as third judge matches or beats the DeepSeek-Gemma pair on three of four tracks, with a perfect 30/30 on T1. The two dips sit on Ember-vs-Gemma pairs only, with wide intervals at small n.
 
-| track | n | v41 x gemma | v41 x meta | gemma x meta |
+| track | n | DeepSeek x Gemma | DeepSeek x Ember | Gemma x Ember |
 |---|---|---|---|---|
 | T2 safety | 44 | 41 (k 0.90) | 42 (k 0.94) | 41 (k 0.90) |
 | T3 abstention | 36 | 31 (k 0.78) | 33 (k 0.88) | 28 (k 0.67) |
 | T4 red-team | 16 | 14 (k 0.73) | 14 (k 0.73) | 12 (k 0.54) |
 | T1 footage | 30 | 26 (k 0.76) | 30 (k 1.00) | 26 (k 0.76) |
 
-*Table 4: Aya Expanse three-way agreement with Wilson bars. The playbook dual-pair bar passes everywhere; Meta resolves the third-family coverage. T5 under Meta runs 19-4-1 for base over DPO with per-pair winner agreement 20/24 against v41. Source: [`runs/aya74/agreement3.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/agreement3.json).*
+*Table 4: Aya Expanse three-way agreement with Wilson bars. The playbook dual-pair bar passes everywhere; Ember resolves the third-family coverage. T5 under Ember runs 19-4-1 for base over DPO with per-pair winner agreement 20/24 against DeepSeek. Source: [`runs/aya74/agreement3.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/agreement3.json).*
 
-The agreement chart below plots the same table: every dual pair clears the bar, Meta-vs-v41 matches or beats the HF pair on each track, and the T3/T4 Meta-vs-Gemma dips show where partial-vs-succeeded splits stay genuinely ambiguous.
+Why these two numbers per cell. Observed agreement answers the plain question (how often did the pair return the same verdict):
 
-| ![Aya Expanse three-judge agreement](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/issue-74-agreement3.png) |
+\(p_o = n_{agree} / n\)
+
+Raw agreement alone inflates when labels skew: on T2 most rows carry one verdict, so two judges agree often by chance. Cohen kappa subtracts that chance baseline. With \(p_e\) the agreement expected from the pair's marginal verdict rates,
+
+\(\kappa = (p_o - p_e) / (1 - p_e)\)
+
+so kappa 0 means chance-level and 1.0 means perfect. That pairing is why the bar has two halves: 0.80 observed agreement anchored to the [MT-Bench](https://arxiv.org/abs/2306.05685) 80% human-level line, plus kappa 0.60, the standard substantial-agreement floor from [Landis and Koch (1977)](https://doi.org/10.2307/2529310). [Cohen (1960)](https://doi.org/10.1177/001316446002000104) defines the coefficient; [PandaLM](https://arxiv.org/abs/2306.05087) human inter-annotator kappa of 0.85 to 0.88 sets the ceiling no judge pair is expected to clear. Every rate carries a [Wilson 95% interval](https://doi.org/10.1080/01621459.1927.10502953), which stays well-behaved at small n and near the 0/1 edges where the T4 cells live.
+
+Read the table against that bar. The dual pair (DeepSeek x Gemma) clears both halves on all four tracks, so every track ships without human review. The heatmap below plots the same table: DeepSeek-vs-Ember matches or beats the dual pair on each track, and the T3/T4 Ember-vs-Gemma dips (k 0.67, k 0.54) show where partial-vs-succeeded splits stay genuinely ambiguous rather than judge noise, since the other two pairs hold high kappa on the same rows.
+
+| ![Aya Expanse three-judge agreement](https://huggingface.co/datasets/sanggusti/hsea-datasets/resolve/main/blog/high-stakes-embodied-agents/v2/issue-74-agreement3.png) |
 |:--:|
-| *Figure 11: three-way judge agreement. Bars clear 0.80 agreement with kappa 0.60 or above on the dual pair for all four tracks; Meta-vs-v41 reaches a perfect 30/30 on T1. Source: [`runs/aya74/agreement3.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/agreement3.json).* |
+| *Figure 11: three-way judge agreement heatmap. Cells hold agree/n plus kappa; the dual pair clears 0.80 agreement with kappa 0.60 or above on all four tracks, and DeepSeek-vs-Ember reaches a perfect 30/30 on T1. New plot for this post from [`runs/aya74/agreement3.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/agreement3.json).* |
 
-Tiny Aya tells the cost story. Phase 1 ran Meta muse-wonder-1.0 at low effort as primary judge (parse rate 181/190, 9 truncations routed to human review, 2 provider-filtered rows covered by v41), with v41 spot-checks on a seeded 20% sample: 19/24 agreement with kappa 0.752, clearing the kappa bar and landing just under raw agreement. Total judge spend $5.69. The follow-up stages switched to ember-minimal plus the HF dual pair (204 prompts x 3 judges, 612 calls, 0 errors, $0.40), and the calibration guidance now pins ember-minimal as the default Meta judge: it ties the dearer configs on gold-match (31/40 on the core set for all three) at a fraction of the cost, while wonder-low stays reserved for high-stakes third-judge duty at 137x the HF reference cost. Tiny Aya stage-6 agreement clears T3 on all three pairs (20/24, kappa about 0.75) while T4 fails kappa on two pairs (v41-gemma 23/30 k 0.57, gemma-meta 22/30 k 0.54) with v41-meta holding (27/30 k 0.81): partial-vs-succeeded splits are genuinely ambiguous, and the report says so.
+Tiny Aya tells the cost story. Phase 1 ran Wonder at low effort as primary judge (parse rate 181/190, 9 truncations routed to human review, 2 provider-filtered rows covered by DeepSeek), with DeepSeek spot-checks on a seeded 20% sample: 19/24 agreement with kappa 0.752, clearing the kappa bar and landing just under raw agreement. Total judge spend $5.69. The follow-up stages switched to Ember plus the DeepSeek-Gemma dual pair (204 prompts x 3 judges, 612 calls, 0 errors, $0.40), and the calibration guidance now pins Ember as the default Meta judge: it ties the dearer configs on gold-match (31/40 on the core set for all three) at a fraction of the cost, while Wonder stays reserved for high-stakes third-judge duty at 137x the DeepSeek-Gemma reference cost. Tiny Aya stage-6 agreement clears T3 on all three pairs (20/24, kappa about 0.75) while T4 fails kappa on two pairs (DeepSeek-Gemma 23/30 k 0.57, Gemma-Ember 22/30 k 0.54) with DeepSeek-Ember holding (27/30 k 0.81): partial-vs-succeeded splits are genuinely ambiguous, and the report says so.
 
 ## SafeTune as a shared harness ([issue #10](https://github.com/sanggusti/expert-spork/issues/10))
 
@@ -202,19 +212,19 @@ The verdicts-plus-gates table is the honest center of the whole project. Every a
 
 | loop | arm | verdict | fail/severe/drift | G1 | G2 | G3 |
 |---|---|---|---|---|---|---|
-| aya74 | sft | Recover | 6/2/0 | fail | fail | fail |
-| aya74 | dpo | Recover | 7/1/0 | fail | fail | fail |
-| aya74 | repair | Recover | 5/1/2 | fail | fail | fail |
-| aya74 | kto | Recover | 7/1/0 | fail | fail | fail |
-| aya74 | ipo | Recover | 7/1/0 | fail | fail | fail |
-| aya73 | sft | Recover | 3/2/0 | fail | fail | pass |
-| aya73 | dpo | Recover | 3/4/0 | fail | pass | fail |
-| aya73 | repair | Recover | 3/4/0 | fail | fail | pass |
-| aya73 | kto | Recover | 3/3/0 | fail | pass | fail |
-| aya73 | ipo | Recover | 2/2/0 | fail | pass | pass |
-| aya73 | orpo | Recover | 7/5/0 | fail | fail | fail |
-| aya73 | rft | Recover | 3/4/0 | fail | pass | fail |
-| aya73 | grpo | Recover | 3/4/0 | fail | fail | pass |
+| Aya Expanse (#74) | sft | Recover | 6/2/0 | fail | fail | fail |
+| Aya Expanse (#74) | dpo | Recover | 7/1/0 | fail | fail | fail |
+| Aya Expanse (#74) | repair | Recover | 5/1/2 | fail | fail | fail |
+| Aya Expanse (#74) | kto | Recover | 7/1/0 | fail | fail | fail |
+| Aya Expanse (#74) | ipo | Recover | 7/1/0 | fail | fail | fail |
+| Tiny Aya (#73) | sft | Recover | 3/2/0 | fail | fail | pass |
+| Tiny Aya (#73) | dpo | Recover | 3/4/0 | fail | pass | fail |
+| Tiny Aya (#73) | repair | Recover | 3/4/0 | fail | fail | pass |
+| Tiny Aya (#73) | kto | Recover | 3/3/0 | fail | pass | fail |
+| Tiny Aya (#73) | ipo | Recover | 2/2/0 | fail | pass | pass |
+| Tiny Aya (#73) | orpo | Recover | 7/5/0 | fail | fail | fail |
+| Tiny Aya (#73) | rft | Recover | 3/4/0 | fail | pass | fail |
+| Tiny Aya (#73) | grpo | Recover | 3/4/0 | fail | fail | pass |
 
 *Table 5: shared-harness verdicts and gates per arm, recomputed from recorded generations. IPO on Tiny Aya is closest (fewest fails/severes); ORPO genuinely regresses safety (violation rate 0.46 to 0.54 severe, misuse refusal 0.50 to 0.125). No re-grade reaches Steer on any arm. Source: [`docs/reports/issue-10-safetune-harness.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/issue-10-safetune-harness.md) recompute.*
 
@@ -254,6 +264,10 @@ The live demo below embeds the [project Space](https://huggingface.co/spaces/san
 - Qi et al. Fine-tuning Aligned Language Models Compromises Safety, Even When Users Do Not Intend To! ICLR 2024. [arXiv:2310.03693](https://arxiv.org/abs/2310.03693)
 - Zheng et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. NeurIPS 2023. [arXiv:2306.05685](https://arxiv.org/abs/2306.05685)
 - Wang et al. Large Language Models are not Fair Evaluators. ACL 2024. [arXiv:2305.17926](https://arxiv.org/abs/2305.17926)
+- Cohen, J. A Coefficient of Agreement for Nominal Scales. Educational and Psychological Measurement 1960. [DOI:10.1177/001316446002000104](https://doi.org/10.1177/001316446002000104)
+- Landis, J. R., Koch, G. G. The Measurement of Observer Agreement for Categorical Data. Biometrics 1977. [DOI:10.2307/2529310](https://doi.org/10.2307/2529310)
+- Wilson, E. B. Probable Inference, the Law of Succession, and Statistical Inference. JASA 1927. [DOI:10.1080/01621459.1927.10502953](https://doi.org/10.1080/01621459.1927.10502953)
+- Wang et al. PandaLM: An Automatic Evaluation Benchmark for LLM Instruction Tuning Optimization. ICLR 2024. [arXiv:2306.05087](https://arxiv.org/abs/2306.05087)
 
 ## Trace appendix
 
@@ -262,16 +276,16 @@ Every rate in this post resolves to a bench artifact. The three loop reports are
 | item | claim | source |
 |---|---|---|
 | Figure 1 | pipeline stages and repair arc | new diagram for this post; stage contracts in [`docs/safetune.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/safetune.md), [`docs/safety-gates.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/safety-gates.md), [`docs/judge-playbook.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/judge-playbook.md) |
-| Table 1, Figure 2 | Tiny Aya before/after | [`runs/aya73-recompute/before_after.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-recompute/before_after.json) via [`docs/reports/issue-73-loop.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/issue-73-loop.md) §3 |
+| Table 1, Figure 2 | Tiny Aya before/after, new slope plot for this post | [`runs/aya73-recompute/before_after.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-recompute/before_after.json) via [`docs/reports/issue-73-loop.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/issue-73-loop.md) §3 |
 | Figure 3 | Tiny Aya loss, DPO collapse | [`runs/aya73_train_log.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73_train_log.json) via §2/§6 |
 | Figure 4 | verdict drift mechanism | [`runs/aya73-followup/`](https://github.com/sanggusti/expert-spork/tree/main/runs/aya73-followup/) panels via §5/§9 |
 | Table 2 | nine-checkpoint follow-up lanes | [`runs/aya73-followup/det_scores.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-followup/det_scores.json) via §12 |
-| Figure 5 | T5 arm duels, ORPO margins | [`analysis_followup.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-followup/analysis_followup.json) via §12 |
+| Figure 5 | T5 arm duels, ORPO margins, new diverging plot for this post | [`analysis_followup.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya73-followup/analysis_followup.json) via §12 |
 | Table 3, Figure 6 | Aya Expanse before/after + arms | [`runs/aya74/recompute.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/recompute.json), [`runs/aya74/det_scores.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/det_scores.json) via [`docs/reports/issue-74-aya-expanse.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/issue-74-aya-expanse.md) §3 |
 | Figure 7 | all-leg training curves | [`runs/aya74/training_curves.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/training_curves.json) via §2 |
-| Figure 8 | safety pareto | [`runs/aya74/det_scores.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/det_scores.json) via §4 |
-| Figure 9, Figure 10 | dispatch regression + reversal | [`runs/aya74/judgments.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments.jsonl), [`judgments_t5_repair.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments_t5_repair.jsonl) via §6 |
-| Table 4, Figure 11 | three-way judge agreement | [`runs/aya74/agreement3.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/agreement3.json) via §7 |
+| Figure 8 | safety vs utility bars, new plot for this post | [`runs/aya74/det_scores.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/det_scores.json) via §4 |
+| Figure 9, Figure 10 | dispatch regression + reversal (Fig 10 replotted with conventional judge names) | [`runs/aya74/judgments.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments.jsonl), [`judgments_t5_repair.jsonl`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/judgments_t5_repair.jsonl) via §6 |
+| Table 4, Figure 11 | three-way judge agreement, new heatmap for this post | [`runs/aya74/agreement3.json`](https://github.com/sanggusti/expert-spork/blob/main/runs/aya74/agreement3.json) via §7 |
 | Figure 12 | shared drift bars example | shared `audit` recompute via [`docs/reports/issue-10-safetune-harness.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/issue-10-safetune-harness.md) |
 | Table 5 | verdicts + gates, all arms | shared `audit` recompute via [issue #10 report](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/issue-10-safetune-harness.md) |
 | spend | $23.70 + $17.54 + $0.00 | [`docs/reports/modal-spend.md`](https://github.com/sanggusti/expert-spork/blob/main/docs/reports/modal-spend.md) ledger rows via §7/§9/§14 of the loop reports |
