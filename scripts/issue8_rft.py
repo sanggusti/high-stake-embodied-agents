@@ -51,7 +51,7 @@ def _client(base_url: str):
 
 def cmd_sample(url: str, model: str, n: int, limit: int,
                temperature: float = 1.0, workers: int = 1,
-               no_think: bool = False) -> None:
+               no_think: bool = False, offset: int = 0) -> None:
     """Sample N completions per prompt from the served checkpoint.
 
     ``workers`` parallelizes the requests (server bills by wall time,
@@ -63,7 +63,8 @@ def cmd_sample(url: str, model: str, n: int, limit: int,
     """
     import concurrent.futures  # noqa: PLC0415
 
-    prompts = [json.loads(line) for line in open(PROMPTS)][:limit]
+    prompts = [json.loads(line) for line in open(PROMPTS)]
+    prompts = prompts[offset:offset + limit] if offset else prompts[:limit]
     client = _client(url)
     t0 = time.time()
     jobs = [(rec, k) for rec in prompts for k in range(n)]
@@ -169,12 +170,15 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--workers", type=int, default=1)
     p.add_argument("--no-think", action="store_true",
                    help="disable spoken reasoning via template kwargs")
+    p.add_argument("--offset", type=int, default=0,
+                   help="prompt offset (held-out reads skip train slice)")
     sub.add_parser("filter", help="verifier-filter into SFT rows")
     sub.add_parser("report", help="print the RFT report")
     args = parser.parse_args(argv)
     if args.cmd == "sample":
         cmd_sample(args.url, args.model, args.n, args.limit,
-                   args.temperature, args.workers, args.no_think)
+                   args.temperature, args.workers, args.no_think,
+                   args.offset)
     elif args.cmd == "filter":
         cmd_filter()
     elif args.cmd == "report":
